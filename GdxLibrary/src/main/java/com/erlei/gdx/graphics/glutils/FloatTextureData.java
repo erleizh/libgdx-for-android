@@ -75,7 +75,7 @@ public class FloatTextureData implements TextureData {
 
     @Override
     public void consumeCustomData(int target) {
-        if (!Gdx.graphics.supportsExtension("OES_texture_float"))
+        if (!Gdx.app.supportsExtension("OES_texture_float"))
             throw new GdxRuntimeException("Extension OES_texture_float not supported!");
 
         // GLES and WebGL defines texture format by 3rd and 8th argument,

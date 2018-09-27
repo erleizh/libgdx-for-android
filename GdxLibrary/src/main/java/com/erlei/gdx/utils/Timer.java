@@ -51,7 +51,7 @@ public class Timer {
 		}
 	}
 
-	final Array<Task> tasks = new Array(false, 8);
+	final Array<Task> tasks = new Array<>(false, 8);
 
 	public Timer () {
 		start();

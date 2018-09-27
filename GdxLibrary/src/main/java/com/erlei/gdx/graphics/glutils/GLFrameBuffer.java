@@ -231,8 +231,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
         int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
         if (result == GL20.GL_FRAMEBUFFER_UNSUPPORTED && bufferBuilder.hasDepthRenderBuffer && bufferBuilder.hasStencilRenderBuffer
-                && (Gdx.graphics.supportsExtension("GL_OES_packed_depth_stencil")
-                || Gdx.graphics.supportsExtension("GL_EXT_packed_depth_stencil"))) {
+                && (Gdx.app.supportsExtension("GL_OES_packed_depth_stencil")
+                || Gdx.app.supportsExtension("GL_EXT_packed_depth_stencil"))) {
             if (bufferBuilder.hasDepthRenderBuffer) {
                 gl.glDeleteRenderbuffer(depthbufferHandle);
                 depthbufferHandle = 0;
@@ -291,7 +291,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
     }
 
     private void checkValidBuilder() {
-        boolean runningGL30 = Gdx.graphics.isGL30Available();
+        boolean runningGL30 = Gdx.isGL30Available();
 
         if (!runningGL30) {
             if (bufferBuilder.hasPackedStencilDepthRenderBuffer) {
@@ -306,7 +306,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
                 if (spec.isStencil)
                     throw new GdxRuntimeException("Stencil texture FrameBuffer Attachment not available on GLES 2.0");
                 if (spec.isFloat) {
-                    if (!Gdx.graphics.supportsExtension("OES_texture_float")) {
+                    if (!Gdx.app.supportsExtension("OES_texture_float")) {
                         throw new GdxRuntimeException("Float texture FrameBuffer Attachment not available on GLES 2.0");
                     }
                 }

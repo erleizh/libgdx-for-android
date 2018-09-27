@@ -21,13 +21,16 @@ import android.os.Debug;
 
 import com.erlei.gdx.android.AndroidApplicationLogger;
 import com.erlei.gdx.android.AndroidPreferences;
+import com.erlei.gdx.files.AndroidFiles;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.GL30;
 import com.erlei.gdx.utils.SnapshotArray;
 
+import javax.microedition.khronos.opengles.GL10;
+
 /**
- * Environment class holding references to the {@link Application}, {@link Graphics}, {@link Audio}, {@link Files} and
- * {@link Input} instances. The references are held in public static fields which allows static access to all sub systems. Do not
+ * Environment class holding references to the {@link Application}, {@link Graphics}, {@link Files} and
+ * instances. The references are held in public static fields which allows static access to all sub systems. Do not
  * use Graphics in a thread that is not the rendering thread.
  * <p>
  * This is normally a design faux pas but in this case is better than the alternatives.
@@ -37,7 +40,6 @@ import com.erlei.gdx.utils.SnapshotArray;
 public class Gdx implements Application {
     public static Application app;
     public static Graphics graphics;
-    public static Audio audio;
     public static Files files;
 
     public static GL20 gl;
@@ -50,9 +52,15 @@ public class Gdx implements Application {
 
     private Context mContext;
     protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<>(LifecycleListener.class);
+    private String extensions;
+
+    public static void init(Context context) {
+        app = new Gdx(context.getApplicationContext());
+    }
 
     private Gdx(Context context) {
         mContext = context;
+        files = new AndroidFiles(context.getAssets(), context.getFilesDir().getAbsolutePath());
         setApplicationLogger(new AndroidApplicationLogger());
     }
 
@@ -64,13 +72,6 @@ public class Gdx implements Application {
         return graphics;
     }
 
-    /**
-     * @return the {@link Audio} instance
-     */
-    @Override
-    public Audio getAudio() {
-        return audio;
-    }
 
     /**
      * @return the {@link Files} instance
@@ -159,7 +160,20 @@ public class Gdx implements Application {
         }
     }
 
+    @Override
+    public void postRunnable(Runnable runnable) {
+
+    }
+    @Override
+    public boolean supportsExtension (String extension) {
+        if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+        return extensions.contains(extension);
+    }
     public Context getContext() {
         return mContext;
+    }
+
+    public static boolean isGL30Available() {
+        return gl30 != null;
     }
 }

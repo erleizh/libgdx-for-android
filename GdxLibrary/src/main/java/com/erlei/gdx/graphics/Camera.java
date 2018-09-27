@@ -18,7 +18,6 @@ package com.erlei.gdx.graphics;
 
 import com.erlei.gdx.Gdx;
 import com.erlei.gdx.Graphics;
-import com.erlei.gdx.Input;
 import com.erlei.gdx.graphics.g2d.Batch;
 import com.erlei.gdx.math.Frustum;
 import com.erlei.gdx.math.Matrix4;

@@ -18,15 +18,12 @@ package com.erlei.gdx.utils.viewport;
 
 import com.erlei.gdx.ApplicationListener;
 import com.erlei.gdx.Gdx;
-import com.erlei.gdx.Screen;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.glutils.HdpiUtils;
 import com.erlei.gdx.math.Matrix4;
-import com.erlei.gdx.math.Rectangle;
 import com.erlei.gdx.math.Vector2;
 import com.erlei.gdx.math.Vector3;
 import com.erlei.gdx.math.collision.Ray;
-import com.erlei.gdx.scenes.scene2d.utils.ScissorStack;
 
 /** Manages a {@link Camera} and determines how world coordinates are mapped to and from the screen.
  * @author Daniel Holderbaum
@@ -107,10 +104,6 @@ public abstract class Viewport {
 		return camera.getPickRay(screenX, screenY, this.screenX, this.screenY, screenWidth, screenHeight);
 	}
 
-	/** @see ScissorStack#calculateScissors(Camera, float, float, float, float, Matrix4, Rectangle, Rectangle) */
-	public void calculateScissors (Matrix4 batchTransform, Rectangle area, Rectangle scissor) {
-		ScissorStack.calculateScissors(camera, screenX, screenY, screenWidth, screenHeight, batchTransform, area, scissor);
-	}
 
 	/** Transforms a point to real screen coordinates (as opposed to OpenGL ES window coordinates), where the origin is in the top
 	 * left and the the y-axis is pointing downwards. */

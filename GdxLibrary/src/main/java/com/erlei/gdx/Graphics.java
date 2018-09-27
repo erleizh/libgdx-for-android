@@ -22,10 +22,11 @@ import com.erlei.gdx.graphics.glutils.GLVersion;
 
 
 public interface Graphics {
+
     /**
      * Class describing the bits per pixel, depth buffer precision, stencil precision and number of MSAA samples.
      */
-    public static class BufferFormat {
+    class BufferFormat {
         /* number of bits per color channel */
         public final int r, g, b, a;
         /* number of bits for depth and stencil buffer */
@@ -56,54 +57,46 @@ public interface Graphics {
         }
     }
 
-    /**
-     * Returns whether OpenGL ES 3.0 is available. If it is you can get an instance of {@link GL30} via {@link #getGL30()} to
-     * access OpenGL ES 3.0 functionality. Note that this functionality will only be available if you instructed the
-     * {@link Application} instance to use OpenGL ES 3.0!
-     *
-     * @return whether OpenGL ES 3.0 is available
-     */
-    public boolean isGL30Available();
 
     /**
      * @return the {@link GL20} instance
      */
-    public GL20 getGL20();
+    GL20 getGL20();
 
     /**
      * @return the {@link GL30} instance or null if not supported
      */
-    public GL30 getGL30();
+    GL30 getGL30();
 
     /**
      * Set the GL20 instance
      **/
-    public void setGL20(GL20 gl20);
+    void setGL20(GL20 gl20);
 
     /**
      * Set the GL30 instance
      **/
-    public void setGL30(GL30 gl30);
+    void setGL30(GL30 gl30);
 
     /**
      * @return the width of the client area in logical pixels.
      */
-    public int getWidth();
+    int getWidth();
 
     /**
      * @return the height of the client area in logical pixels
      */
-    public int getHeight();
+    int getHeight();
 
     /**
      * @return the width of the framebuffer in physical pixels
      */
-    public int getBackBufferWidth();
+    int getBackBufferWidth();
 
     /**
      * @return the height of the framebuffer in physical pixels
      */
-    public int getBackBufferHeight();
+    int getBackBufferHeight();
 
     /**
      * Returns the id of the current frame. The general contract of this method is that the id is incremented only when the
@@ -113,47 +106,47 @@ public interface Graphics {
      *
      * @return the id of the current frame
      */
-    public long getFrameId();
+    long getFrameId();
 
     /**
      * @return the time span between the current frame and the last frame in seconds. Might be smoothed over n frames.
      */
-    public float getDeltaTime();
+    float getDeltaTime();
 
     /**
      * @return the time span between the current frame and the last frame in seconds, without smoothing
      **/
-    public float getRawDeltaTime();
+    float getRawDeltaTime();
 
     /**
      * @return the average number of frames per second
      */
-    public int getFramesPerSecond();
+    int getFramesPerSecond();
 
     /**
      * @return the {@link GLVersion} of this Graphics instance
      */
-    public GLVersion getGLVersion();
+    GLVersion getGLVersion();
 
     /**
      * @return the pixels per inch on the x-axis
      */
-    public float getPpiX();
+    float getPpiX();
 
     /**
      * @return the pixels per inch on the y-axis
      */
-    public float getPpiY();
+    float getPpiY();
 
     /**
      * @return the pixels per centimeter on the x-axis
      */
-    public float getPpcX();
+    float getPpcX();
 
     /**
      * @return the pixels per centimeter on the y-axis.
      */
-    public float getPpcY();
+    float getPpcY();
 
     /**
      * This is a scaling factor for the Density Independent Pixel unit, following the same conventions as
@@ -162,16 +155,8 @@ public interface Graphics {
      *
      * @return the logical density of the Display.
      */
-    public float getDensity();
+    float getDensity();
 
-    /**
-     * @return the format of the color, depth and stencil buffer in a {@link BufferFormat} instance
-     */
-    public BufferFormat getBufferFormat();
 
-    /**
-     * @param extension the extension name
-     * @return whether the extension is supported
-     */
-    public boolean supportsExtension(String extension);
+
 }
