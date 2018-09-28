@@ -1,5 +1,5 @@
 移植java游戏开发框架[libgdx](https://github.com/libgdx/libgdx)到Android平台 ， 移除了 audio ， scenes ，maps ，net ，input模块
-删除了一些其他平台的东西
+删除了一些其他平台的东西 ， 主要目的是为了更方便的在Android端使用用openGLES api 。
 
 
 一个简单的使用例子
