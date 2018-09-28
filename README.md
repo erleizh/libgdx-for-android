@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
             clear();
 
-            //绘制到frameBuffer
+            //绘制到frameBuffer,只是单纯的为了使用FBO 而已 ，实际完全没有必要
             mFrameBuffer.begin();
             mBatch.begin();
             mBatch.draw(mTexture, 0, 0, getWidth(), getHeight());

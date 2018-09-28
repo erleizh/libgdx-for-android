@@ -63,8 +63,6 @@ public abstract class Gdx implements Application, IRenderView.Renderer {
     private IRenderView mRenderView;
     private boolean mPause;
     private FPSCounter mFPSCounter;
-    private EglSurfaceBase mWindowSurface;
-    private Runnable mSwapErrorRunnable;
 
     public Gdx(Context context, IRenderView renderView) {
         this(context.getApplicationContext(), renderView, null);
@@ -205,11 +203,8 @@ public abstract class Gdx implements Application, IRenderView.Renderer {
     }
 
     @Override
-    public void render(EglSurfaceBase windowSurface, Runnable swapErrorRunnable) {
+    public void render() {
         mFPSCounter.update();
-        mWindowSurface = windowSurface;
-        mSwapErrorRunnable = swapErrorRunnable;
-
 
     }
 
@@ -255,11 +250,6 @@ public abstract class Gdx implements Application, IRenderView.Renderer {
         return mFPSCounter.getFPS();
     }
 
-
-    protected void renderEnd() {
-        boolean swapResult = mWindowSurface.swapBuffers();
-        if (!swapResult) mSwapErrorRunnable.run();
-    }
 
     @Override
     public void pause() {

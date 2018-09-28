@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void render(EglSurfaceBase windowSurface, Runnable swapErrorRunnable) {
-            super.render(windowSurface, swapErrorRunnable);
+        public void render() {
+            super.render();
             mLogger.info("render");
 
             clear();
@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                     mFrameBuffer.getColorBufferTexture().getHeight(), false, true);
             mBatch.end();
 
-            renderEnd();
         }
 
 

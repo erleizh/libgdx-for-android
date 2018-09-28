@@ -163,20 +163,7 @@ public interface IRenderView {
 
         void resize(int width, int height);
 
-        /**
-         * example:
-         * <pre class="prettyprint">
-         * public void render(EglSurfaceBase windowSurface, Runnable swapBufferErrorRunnable) {
-         *      //do something .....
-         *      boolean swapResult = windowSurface.swapBuffers();
-         *      if (!swapResult) swapBufferErrorRunnable.run();
-         * }
-         * </pre>
-         *
-         * @param windowSurface     Surface
-         * @param swapErrorRunnable swap error Runnable
-         */
-        void render(EglSurfaceBase windowSurface, Runnable swapErrorRunnable);
+        void render();
 
         void pause();
 
@@ -199,7 +186,7 @@ public interface IRenderView {
         }
 
         @Override
-        public void render(EglSurfaceBase windowSurface, Runnable swapBufferErrorRunnable) {
+        public void render() {
 
         }
 
@@ -265,18 +252,6 @@ public interface IRenderView {
         private WeakReference<IRenderView> mRenderViewWeakRef;
         private EglCore mEglCore;
         private EglSurfaceBase mWindowSurface;
-        private Runnable mSwapBufferErrorRunnable = new Runnable() {
-            @Override
-            public void run() {
-                Logger.error(TAG, "egl context lost tid=" + getId());
-                mLostEglContext = true;
-                synchronized (sGLThreadManager) {
-                    mSurfaceIsBad = true;
-                    sGLThreadManager.notifyAll();
-                }
-            }
-        };
-
 
         GLThread(IRenderView IRenderView) {
             super();
@@ -597,7 +572,7 @@ public interface IRenderView {
                             Renderer renderer = view.getRenderer();
                             if (renderer != null) {
                                 try {
-                                    renderer.render(mWindowSurface, mSwapBufferErrorRunnable);
+                                    renderer.render();
                                     if (finishDrawingRunnable != null) {
                                         finishDrawingRunnable.run();
                                         finishDrawingRunnable = null;
@@ -608,6 +583,17 @@ public interface IRenderView {
                             }
                         }
                     }
+
+                    boolean swapResult = mWindowSurface.swapBuffers();
+                    if (!swapResult) {
+                        Logger.error(TAG, "egl context lost tid=" + getId());
+                        mLostEglContext = true;
+                        synchronized (sGLThreadManager) {
+                            mSurfaceIsBad = true;
+                            sGLThreadManager.notifyAll();
+                        }
+                    }
+
                     if (wantRenderNotification) {
                         doRenderNotification = true;
                         wantRenderNotification = false;
