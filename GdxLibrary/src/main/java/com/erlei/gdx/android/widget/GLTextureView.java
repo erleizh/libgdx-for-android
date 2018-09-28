@@ -5,12 +5,12 @@ import android.graphics.SurfaceTexture;
 import android.util.AttributeSet;
 import android.view.TextureView;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.utils.Logger;
 
 
 public class GLTextureView extends TextureView implements IRenderView, TextureView.SurfaceTextureListener {
     private static final String TAG = "GLSurfaceViewI";
-    private boolean mPreserveEGLContextOnPause;
+    private boolean mPreserveEGLContextOnPause = true;
     private Renderer mRenderer;
     private GLThread mGLThread;
     private boolean mDetached;
@@ -32,6 +32,7 @@ public class GLTextureView extends TextureView implements IRenderView, TextureVi
 
     private void init() {
         setSurfaceTextureListener(this);
+
     }
 
     @Override
@@ -53,6 +54,11 @@ public class GLTextureView extends TextureView implements IRenderView, TextureVi
     @Override
     public RenderMode getRenderMode() {
         return mGLThread.getRenderMode();
+    }
+
+    @Override
+    public int getGLESVersion() {
+        return mGLThread.getGLESVersion();
     }
 
     /**
@@ -98,34 +104,11 @@ public class GLTextureView extends TextureView implements IRenderView, TextureVi
         return mRenderer;
     }
 
-    /**
-     * Control whether the EGL context is preserved when the GLSurfaceViewI is paused and
-     * resumed.
-     * <p>
-     * If set to true, then the EGL context may be preserved when the GLSurfaceViewI is paused.
-     * <p>
-     * Prior to API level 11, whether the EGL context is actually preserved or not
-     * depends upon whether the Android device can support an arbitrary number of
-     * EGL contexts or not. Devices that can only support a limited number of EGL
-     * contexts must release the EGL context in order to allow multiple applications
-     * to share the GPU.
-     * <p>
-     * If set to false, the EGL context will be released when the GLSurfaceViewI is paused,
-     * and recreated when the GLSurfaceViewI is resumed.
-     * <p>
-     * <p>
-     * The default is false.
-     *
-     * @param preserveOnPause preserve the EGL context when paused
-     */
     @Override
     public void setPreserveEGLContextOnPause(boolean preserveOnPause) {
         mPreserveEGLContextOnPause = preserveOnPause;
     }
 
-    /**
-     * @return true if the EGL context will be preserved when paused
-     */
     @Override
     public boolean getPreserveEGLContextOnPause() {
         return mPreserveEGLContextOnPause;
@@ -137,52 +120,32 @@ public class GLTextureView extends TextureView implements IRenderView, TextureVi
     }
 
 
-    /**
-     * Pause the rendering thread, optionally tearing down the EGL context
-     * depending upon the value of {@link #setPreserveEGLContextOnPause(boolean)}.
-     * <p>
-     * This method should be called when it is no longer desirable for the
-     * GLSurfaceViewI to continue rendering, such as in response to
-     * {@link android.app.Activity#onStop Activity.onStop}.
-     * <p>
-     * Must not be called before a renderer has been set.
-     */
     public void onPause() {
         mGLThread.onPause();
     }
 
-    /**
-     * Resumes the rendering thread, re-creating the OpenGL context if necessary. It
-     * is the counterpart to {@link #onPause()}.
-     * <p>
-     * This method should typically be called in
-     * {@link android.app.Activity#onStart Activity.onStart}.
-     * <p>
-     * Must not be called before a renderer has been set.
-     */
     public void onResume() {
         mGLThread.onResume();
     }
 
-    /**
-     * Queue a runnable to be run on the GL rendering thread. This can be used
-     * to communicate with the Renderer on the rendering thread.
-     * Must not be called before a renderer has been set.
-     *
-     * @param r the runnable to be run on the GL rendering thread.
-     */
     public void queueEvent(Runnable r) {
         mGLThread.queueEvent(r);
     }
 
-    /**
-     * This method is used as part of the View class and is not normally
-     * called or subclassed by clients of GLSurfaceViewI.
-     */
+    @Override
+    public int getSurfaceWidth() {
+        return getWidth();
+    }
+
+    @Override
+    public int getSurfaceHeight() {
+        return getHeight();
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        Gdx.app.log(TAG, "onAttachedToWindow reattach =" + mDetached);
+        Logger.info(TAG, "onAttachedToWindow reattach =" + mDetached);
         if (mDetached && (mRenderer != null)) {
             RenderMode renderMode = RenderMode.CONTINUOUSLY;
             if (mGLThread != null) {
@@ -199,7 +162,7 @@ public class GLTextureView extends TextureView implements IRenderView, TextureVi
 
     @Override
     protected void onDetachedFromWindow() {
-        Gdx.app.log(TAG, "onDetachedFromWindow");
+        Logger.info(TAG, "onDetachedFromWindow");
         if (mGLThread != null) {
             mGLThread.requestExitAndWait();
         }

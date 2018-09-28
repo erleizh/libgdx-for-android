@@ -19,7 +19,7 @@ package com.erlei.gdx;
 /**
  * <p>
  * An <code>Application</code> is the main entry point of your project. It sets up a window and rendering surface and manages the
- * different aspects of your application, namely {@link Graphics}, {@link Files}. Think of an
+ * different aspects of your application, namely , {@link Files}. Think of an
  * Application being equivalent to Swing's <code>JFrame</code> or Android's <code>Activity</code>.
  * </p>
  * <p>
@@ -37,7 +37,7 @@ package com.erlei.gdx;
  * <p>
  * <p>
  * While game programmers are used to having a main loop, libgdx employs a different concept to accommodate the event based nature
- * of Android applications a little more. You application logic must be implemented in a {@link ApplicationListener} which has
+ * of Android applications a little more. You application logic must be implemented in a  which has
  * methods that get called by the Application when the application is created, resumed, paused, disposed or rendered. As a
  * developer you will simply implement the ApplicationListener interface and fill in the functionality accordingly. The
  * ApplicationListener is provided to a concrete Application instance as a parameter to the constructor or another initialization
@@ -50,11 +50,6 @@ package com.erlei.gdx;
  * The Application interface provides you with a set of modules for graphics, audio, input and file i/o.
  * </p>
  * <p>
- * <p>
- * {@link Graphics} offers you various methods to output visuals to the screen. This is achieved via OpenGL ES 2.0 or 3.0
- * depending on what's available an the platform. On the desktop the features of OpenGL ES 2.0 and 3.0 are emulated via desktop
- * OpenGL. On Android the functionality of the Java OpenGL ES bindings is used.
- * </p>
  * <p>
  * <p>
  * {@link Files} offers you various methods to access internal and external files. An internal file is a file that is stored near
@@ -80,73 +75,11 @@ package com.erlei.gdx;
  */
 public interface Application {
 
-    int LOG_NONE = 0;
-    int LOG_DEBUG = 3;
-    int LOG_INFO = 2;
-    int LOG_ERROR = 1;
-
-    /**
-     * @return the {@link Graphics} instance
-     */
-    Graphics getGraphics();
 
     /**
      * @return the {@link Files} instance
      */
     Files getFiles();
-
-    /**
-     * Logs a message to the console or logcat
-     */
-    void log(String tag, String message);
-
-    /**
-     * Logs a message to the console or logcat
-     */
-    void log(String tag, String message, Throwable exception);
-
-    /**
-     * Logs an error message to the console or logcat
-     */
-    void error(String tag, String message);
-
-    /**
-     * Logs an error message to the console or logcat
-     */
-    void error(String tag, String message, Throwable exception);
-
-    /**
-     * Logs a debug message to the console or logcat
-     */
-    void debug(String tag, String message);
-
-    /**
-     * Logs a debug message to the console or logcat
-     */
-    void debug(String tag, String message, Throwable exception);
-
-    /**
-     * Sets the log level. {@link #LOG_NONE} will mute all log output. {@link #LOG_ERROR} will only let error messages through.
-     * {@link #LOG_INFO} will let all non-debug messages through, and {@link #LOG_DEBUG} will let all messages through.
-     *
-     * @param logLevel {@link #LOG_NONE}, {@link #LOG_ERROR}, {@link #LOG_INFO}, {@link #LOG_DEBUG}.
-     */
-    void setLogLevel(int logLevel);
-
-    /**
-     * Gets the log level.
-     */
-    int getLogLevel();
-
-    /**
-     * Sets the current Application logger. Calls to {@link #log(String, String)} are delegated to this {@link ApplicationLogger}
-     */
-    void setApplicationLogger(ApplicationLogger applicationLogger);
-
-    /**
-     * @return the current {@link ApplicationLogger}
-     */
-    ApplicationLogger getApplicationLogger();
 
     /**
      * @return the Java heap memory use in bytes
@@ -168,7 +101,7 @@ public interface Application {
 
     /**
      * Adds a new {@link LifecycleListener} to the application. This can be used by extensions to hook into the lifecycle more
-     * easily. The {@link ApplicationListener} methods are sufficient for application level development.
+     * easily
      *
      * @param listener
      */

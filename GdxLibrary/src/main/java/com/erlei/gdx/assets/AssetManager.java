@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.assets;
 
-import com.erlei.gdx.Application;
 import com.erlei.gdx.assets.loaders.AssetLoader;
 import com.erlei.gdx.assets.loaders.BitmapFontLoader;
 import com.erlei.gdx.assets.loaders.CubemapLoader;
@@ -80,7 +79,7 @@ public class AssetManager implements Disposable {
 
     final FileHandleResolver resolver;
 
-    Logger log = new Logger("AssetManager", Application.LOG_NONE);
+    Logger log = new Logger("AssetManager", Logger.NONE);
 
     /**
      * Creates a new AssetManager with all default loaders.

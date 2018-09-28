@@ -26,10 +26,6 @@ import android.opengl.EGLSurface;
 import android.util.Log;
 import android.view.Surface;
 
-import com.erlei.gdx.Gdx;
-import com.erlei.gdx.graphics.AndroidGL20;
-import com.erlei.gdx.graphics.AndroidGL30;
-
 
 /**
  * Core EGL state (display, context, config).
@@ -58,6 +54,7 @@ public final class EglCore {
     private EGLDisplay mEGLDisplay = EGL14.EGL_NO_DISPLAY;
     private EGLContext mEGLContext = EGL14.EGL_NO_CONTEXT;
     private EGLConfig mEGLConfig = null;
+    private int mGLVersion = -1;
 
     /**
      * Prepares EGL display and context.
@@ -110,7 +107,7 @@ public final class EglCore {
                     //Log.d(TAG, "Got GLES 3 config");
                     mEGLConfig = config;
                     mEGLContext = context;
-                    setGL30(new AndroidGL30());
+                    mGLVersion = 3;
                 }
             }
         }
@@ -129,7 +126,7 @@ public final class EglCore {
             checkEglError("eglCreateContext");
             mEGLConfig = config;
             mEGLContext = context;
-            setGL20(new AndroidGL20());
+            mGLVersion = 2;
         }
 
         // Confirm with query.
@@ -139,21 +136,15 @@ public final class EglCore {
         Log.d(TAG, "EGLContext created, client version " + values[0]);
     }
 
-    public void setGL20(AndroidGL20 androidGL20) {
-        if (androidGL20 != null) {
-            Gdx.gl20 = androidGL20;
-            Gdx.gl = androidGL20;
-            Gdx.gl30 = null;
-        }
+
+    public int getGLVersion() {
+        return mGLVersion;
     }
 
-    public void setGL30(AndroidGL30 androidGL30) {
-        if (androidGL30 != null) {
-            Gdx.gl30 = androidGL30;
-            Gdx.gl20 = androidGL30;
-            Gdx.gl = androidGL30;
-        }
+    public EGLConfig getEGLConfig() {
+        return mEGLConfig;
     }
+
 
     /**
      * Finds a suitable EGLConfig.

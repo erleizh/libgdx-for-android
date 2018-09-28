@@ -16,8 +16,6 @@
 
 package com.erlei.gdx.utils;
 
-import com.erlei.gdx.Gdx;
-
 import java.lang.StringBuilder;
 
 /** @author xoppa */

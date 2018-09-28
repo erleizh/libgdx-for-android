@@ -29,8 +29,8 @@ public class HdpiUtils {
 	/** Calls {@link GL20#glScissor(int, int, int, int)}, expecting the coordinates and sizes given in logical coordinates and
 	 * automatically converts them to backbuffer coordinates, which may be bigger on HDPI screens. */
 	public static void glScissor (int x, int y, int width, int height) {
-		if (Gdx.graphics.getWidth() != Gdx.graphics.getBackBufferWidth()
-			|| Gdx.graphics.getHeight() != Gdx.graphics.getBackBufferHeight()) {
+		if (Gdx.app.getWidth() != Gdx.app.getBackBufferWidth()
+			|| Gdx.app.getHeight() != Gdx.app.getBackBufferHeight()) {
 			Gdx.gl.glScissor(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
 		} else {
 			Gdx.gl.glScissor(x, y, width, height);
@@ -40,8 +40,8 @@ public class HdpiUtils {
 	/** Calls {@link GL20#glViewport(int, int, int, int)}, expecting the coordinates and sizes given in logical coordinates and
 	 * automatically converts them to backbuffer coordinates, which may be bigger on HDPI screens. */
 	public static void glViewport (int x, int y, int width, int height) {
-		if (Gdx.graphics.getWidth() != Gdx.graphics.getBackBufferWidth()
-			|| Gdx.graphics.getHeight() != Gdx.graphics.getBackBufferHeight()) {
+		if (Gdx.app.getWidth() != Gdx.app.getBackBufferWidth()
+			|| Gdx.app.getHeight() != Gdx.app.getBackBufferHeight()) {
 			Gdx.gl.glViewport(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
 		} else {
 			Gdx.gl.glViewport(x, y, width, height);
@@ -53,7 +53,7 @@ public class HdpiUtils {
 	 * logical screen coordinates.
 	 */
 	public static int toLogicalX(int backBufferX) {
-		return (int)(backBufferX * Gdx.graphics.getWidth() / (float)Gdx.graphics.getBackBufferWidth());
+		return (int)(backBufferX * Gdx.app.getWidth() / (float) Gdx.app.getBackBufferWidth());
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class HdpiUtils {
 	 * logical screen coordinates
 	 */
 	public static int toLogicalY(int backBufferY) {
-		return (int)(backBufferY * Gdx.graphics.getHeight() / (float)Gdx.graphics.getBackBufferHeight());
+		return (int)(backBufferY * Gdx.app.getHeight() / (float) Gdx.app.getBackBufferHeight());
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public class HdpiUtils {
 	 * backbuffer coordinates.
 	 */
 	public static int toBackBufferX(int logicalX) {
-		return (int)(logicalX * Gdx.graphics.getBackBufferWidth() / (float)Gdx.graphics.getWidth());
+		return (int)(logicalX * Gdx.app.getBackBufferWidth() / (float) Gdx.app.getWidth());
 	}
 
 	/**
@@ -77,6 +77,6 @@ public class HdpiUtils {
 	 * logical screen coordinates
 	 */
 	public static int toBackBufferY(int logicalY) {
-		return (int)(logicalY * Gdx.graphics.getBackBufferHeight() / (float)Gdx.graphics.getHeight());
+		return (int)(logicalY * Gdx.app.getBackBufferHeight() / (float) Gdx.app.getHeight());
 	}
 }

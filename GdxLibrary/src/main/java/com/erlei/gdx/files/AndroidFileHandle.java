@@ -19,8 +19,8 @@ package com.erlei.gdx.files;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 
-import com.erlei.gdx.Files.FileType;
 import com.erlei.gdx.Gdx;
+import com.erlei.gdx.Files.FileType;
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.StreamUtils;
 

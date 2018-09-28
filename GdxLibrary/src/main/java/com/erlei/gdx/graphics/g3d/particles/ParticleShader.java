@@ -98,7 +98,7 @@ public class ParticleShader extends BaseShader {
 
     public static String getDefaultVertexShader() {
         if (defaultVertexShader == null)
-            defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl").readString();
+            defaultVertexShader = Gdx.files.classpath("com/erlei/gdx/graphics/g3d/particles/particles.vertex.glsl").readString();
         return defaultVertexShader;
     }
 
@@ -106,7 +106,7 @@ public class ParticleShader extends BaseShader {
 
     public static String getDefaultFragmentShader() {
         if (defaultFragmentShader == null)
-            defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl")
+            defaultFragmentShader = Gdx.files.classpath("com/erlei/gdx/graphics/g3d/particles/particles.fragment.glsl")
                     .readString();
         return defaultFragmentShader;
     }
@@ -178,7 +178,7 @@ public class ParticleShader extends BaseShader {
 
             @Override
             public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-                shader.set(inputID, (float) Gdx.graphics.getWidth());
+                shader.set(inputID, (float) Gdx.app.getWidth());
             }
         };
         public final static Setter worldViewTrans = new Setter() {

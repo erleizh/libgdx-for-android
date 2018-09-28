@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.utils.Logger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,7 +53,7 @@ public class GLVersion {
             minorVersion = resultSplit.length < 2 ? 0 : parseInt(resultSplit[1], 0);
             releaseVersion = resultSplit.length < 3 ? 0 : parseInt(resultSplit[2], 0);
         } else {
-            Gdx.app.log(TAG, "Invalid version string: " + versionString);
+            Logger.info(TAG, "Invalid version string: " + versionString);
             majorVersion = 2;
             minorVersion = 0;
             releaseVersion = 0;
@@ -67,7 +67,7 @@ public class GLVersion {
         try {
             return Integer.parseInt(v);
         } catch (NumberFormatException nfe) {
-            Gdx.app.error("LibGDX GL", "Error parsing number: " + v + ", assuming: " + defaultValue);
+            Logger.error("LibGDX GL", "Error parsing number: " + v + ", assuming: " + defaultValue);
             return defaultValue;
         }
     }

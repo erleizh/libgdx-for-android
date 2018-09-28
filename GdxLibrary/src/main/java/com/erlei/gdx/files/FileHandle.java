@@ -38,9 +38,9 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 
+import com.erlei.gdx.Gdx;
 import com.erlei.gdx.Files;
 import com.erlei.gdx.Files.FileType;
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.StreamUtils;
 

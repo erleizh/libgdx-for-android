@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.utils.viewport;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.OrthographicCamera;
 import com.erlei.gdx.math.Vector2;

@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.g2d;
 
-import static com.erlei.gdx.graphics.g2d.Sprite.*;
 import static com.erlei.gdx.graphics.g2d.Sprite.SPRITE_SIZE;
 import static com.erlei.gdx.graphics.g2d.Sprite.VERTEX_SIZE;
 
@@ -147,7 +146,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		} else
 			shader = defaultShader;
 
-		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		projectionMatrix.setToOrtho2D(0, 0, Gdx.app.getWidth(), Gdx.app.getHeight());
 	}
 
 	@Override

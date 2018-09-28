@@ -107,7 +107,7 @@ public class PixmapIO {
 
 				pixelBuf.position(0);
 				pixelBuf.limit(pixelBuf.capacity());
-				// Gdx.app.log("PixmapIO", "write (" + file.name() + "):" + (System.nanoTime() - start) / 1000000000.0f + ", " +
+				// Logger.log("PixmapIO", "write (" + file.name() + "):" + (System.nanoTime() - start) / 1000000000.0f + ", " +
 				// Thread.currentThread().getName());
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't write Pixmap to file '" + file + "'", e);
@@ -140,7 +140,7 @@ public class PixmapIO {
 
 				pixelBuf.position(0);
 				pixelBuf.limit(pixelBuf.capacity());
-				// Gdx.app.log("PixmapIO", "read:" + (System.nanoTime() - start) / 1000000000.0f);
+				// Logger.log("PixmapIO", "read:" + (System.nanoTime() - start) / 1000000000.0f);
 				return pixmap;
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't read Pixmap from file '" + file + "'", e);

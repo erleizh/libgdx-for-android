@@ -16,12 +16,11 @@
 
 package com.erlei.gdx.graphics.g2d;
 
-import static com.erlei.gdx.graphics.Texture.TextureWrap.*;
 import static com.erlei.gdx.graphics.Texture.TextureWrap.ClampToEdge;
 import static com.erlei.gdx.graphics.Texture.TextureWrap.Repeat;
 
-import com.erlei.gdx.Files.FileType;
 import com.erlei.gdx.Gdx;
+import com.erlei.gdx.Files.FileType;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.Pixmap.Format;
 import com.erlei.gdx.graphics.Texture;
@@ -34,7 +33,6 @@ import com.erlei.gdx.utils.Disposable;
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.ObjectMap;
 import com.erlei.gdx.utils.ObjectSet;
-import com.erlei.gdx.utils.Sort;
 import com.erlei.gdx.utils.StreamUtils;
 
 import java.io.BufferedReader;

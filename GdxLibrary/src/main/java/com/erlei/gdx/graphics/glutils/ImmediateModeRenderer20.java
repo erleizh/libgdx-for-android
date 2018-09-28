@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.Mesh;
 import com.erlei.gdx.graphics.VertexAttribute;

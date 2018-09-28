@@ -20,9 +20,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.files.FileHandle;
-import com.erlei.gdx.utils.JsonWriter.OutputType;
 
 /** Lightweight UBJSON parser.<br>
  * <br>

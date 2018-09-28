@@ -19,7 +19,6 @@ package com.erlei.gdx.graphics.g2d;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.assets.AssetDescriptor;
 import com.erlei.gdx.assets.AssetLoaderParameters;
 import com.erlei.gdx.assets.AssetManager;

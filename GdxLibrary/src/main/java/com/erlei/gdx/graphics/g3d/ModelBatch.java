@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.g3d;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.g3d.shaders.DefaultShader;

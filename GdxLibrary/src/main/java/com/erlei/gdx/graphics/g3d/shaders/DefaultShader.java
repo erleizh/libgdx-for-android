@@ -390,7 +390,7 @@ public class DefaultShader extends BaseShader {
 
 	public static String getDefaultVertexShader () {
 		if (defaultVertexShader == null)
-			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl").readString();
+			defaultVertexShader = Gdx.files.classpath("com/erlei/gdx/graphics/g3d/shaders/default.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 
@@ -398,7 +398,7 @@ public class DefaultShader extends BaseShader {
 
 	public static String getDefaultFragmentShader () {
 		if (defaultFragmentShader == null)
-			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl").readString();
+			defaultFragmentShader = Gdx.files.classpath("com/erlei/gdx/graphics/g3d/shaders/default.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 
@@ -756,7 +756,7 @@ public class DefaultShader extends BaseShader {
 			spotLight.set(0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0);
 		lightsSet = false;
 
-		if (has(u_time)) set(u_time, time += Gdx.graphics.getDeltaTime());
+		if (has(u_time)) set(u_time, time += Gdx.app.getDeltaTime());
 	}
 
 	@Override

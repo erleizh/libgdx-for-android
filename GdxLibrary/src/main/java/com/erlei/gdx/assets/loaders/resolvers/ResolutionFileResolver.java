@@ -100,7 +100,7 @@ public class ResolutionFileResolver implements FileHandleResolver {
 	}
 
 	static public Resolution choose (Resolution... descriptors) {
-		int w = Gdx.graphics.getWidth(), h = Gdx.graphics.getHeight();
+		int w = Gdx.app.getWidth(), h = Gdx.app.getHeight();
 
 		// Prefer the shortest side.
 		Resolution best = descriptors[0];

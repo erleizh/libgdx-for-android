@@ -16,8 +16,6 @@
 
 package com.erlei.gdx.utils;
 
-import com.erlei.gdx.Gdx;
-
 public class GdxNativesLoader {
 	static public boolean disableNativesLoading = false;
 

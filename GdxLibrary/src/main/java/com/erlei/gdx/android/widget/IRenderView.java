@@ -4,9 +4,9 @@ package com.erlei.gdx.android.widget;
 import android.graphics.SurfaceTexture;
 import android.view.Surface;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.android.EglCore;
 import com.erlei.gdx.android.EglSurfaceBase;
+import com.erlei.gdx.utils.Logger;
 import com.erlei.gdx.android.WindowSurface;
 
 import java.lang.ref.WeakReference;
@@ -19,46 +19,120 @@ public interface IRenderView {
     }
 
     /**
-     * @return 获取渲染模式
+     * Get the current rendering mode. May be called
+     * from any thread. Must not be called before a renderer has been set.
+     *
+     * @return the current rendering mode.
+     * @see RenderMode#WHEN_DIRTY
+     * @see RenderMode#CONTINUOUSLY
      */
     RenderMode getRenderMode();
 
+    /**
+     *  Must not be called before a Renderer#create(EglCore, EglSurfaceBase) has been set.
+     * @return GLES version code
+     */
+    int getGLESVersion();
 
     /**
-     * 请求渲染
+     * Request that the renderer render a frame.
+     * This method is typically used when the render mode has been set to
+     * {@link RenderMode#WHEN_DIRTY}, so that frames are only rendered on demand.
+     * May be called
+     * from any thread. Must not be called before a renderer has been set.
      */
     void requestRender();
 
 
     /**
-     * 设置渲染模式
+     * Set the rendering mode. When renderMode is
+     * RenderMode#CONTINUOUSLY, the renderer is called
+     * repeatedly to re-render the scene. When renderMode
+     * is RenderMode#WHEN_DIRTY, the renderer only rendered when the surface
+     * is created, or when {@link #requestRender} is called. Defaults to RenderMode#CONTINUOUSLY.
+     * <p>
+     * Using RenderMode#WHEN_DIRTY can improve battery life and overall system performance
+     * by allowing the GPU and CPU to idle when the view does not need to be updated.
+     * <p>
+     * This method can only be called after {@link #setRenderer(IRenderView.Renderer)}
      *
-     * @param renderMode 渲染模式
+     * @param renderMode one of the RenderMode enum
+     * @see RenderMode#CONTINUOUSLY
+     * @see RenderMode#WHEN_DIRTY
      */
     void setRenderMode(RenderMode renderMode);
 
 
     /**
-     * 设置渲染器
+     * Set the renderer associated with this view. Also starts the thread that
+     * will call the renderer, which in turn causes the rendering to start.
+     * <p>This method should be called once and only once in the life-cycle of
+     * a GLSurfaceView.
+     * <p>The following IRenderView methods can only be called <em>before</em>
+     * setRenderer is called:
+     * <p>
+     * The following GLSurfaceView methods can only be called <em>after</em>
+     * setRenderer is called:
+     * <ul>
+     * <li>{@link #getRenderMode()}
+     * <li>{@link #onPause()}
+     * <li>{@link #onResume()}
+     * <li>{@link #queueEvent(Runnable)}
+     * <li>{@link #requestRender()}
+     * <li>{@link #setRenderMode(RenderMode)}}
+     * </ul>
      *
-     * @param renderer 渲染器
+     * @param renderer the renderer to use to perform OpenGL drawing.
      */
     void setRenderer(Renderer renderer);
 
+    /**
+     * Pause the rendering thread, optionally tearing down the EGL context
+     * depending upon the value of {@link #setPreserveEGLContextOnPause(boolean)}.
+     * <p>
+     * This method should be called when it is no longer desirable for the
+     * IRenderView to continue rendering, such as in response to
+     * {@link android.app.Activity#onStop Activity.onStop}.
+     * <p>
+     * Must not be called before a renderer has been set.
+     */
     void onPause();
 
-
+    /**
+     * Resumes the rendering thread, re-creating the OpenGL context if necessary. It
+     * is the counterpart to {@link #onPause()}.
+     * <p>
+     * This method should typically be called in
+     * {@link android.app.Activity#onStart Activity.onStart}.
+     * <p>
+     * Must not be called before a renderer has been set.
+     */
     void onResume();
+
+
+    /**
+     * Queue a runnable to be run on the GL rendering thread. This can be used
+     * to communicate with the Renderer on the rendering thread.
+     * Must not be called before a renderer has been set.
+     *
+     * @param r the runnable to be run on the GL rendering thread.
+     */
+    void queueEvent(Runnable r);
+
+
+    int getSurfaceWidth();
+
+    int getSurfaceHeight();
 
 
     Renderer getRenderer();
 
 
     /**
-     * Control whether the EGL context is preserved when the GLSurfaceViewI is paused and
+     * Control whether the EGL context is preserved when the IRenderView is paused and
      * resumed.
      * <p>
-     * If set to true, then the EGL context may be preserved when the GLSurfaceViewI is paused.
+     * If set to true, then the EGL context may be preserved when the IRenderView is paused.
      * <p>
      * Prior to API level 11, whether the EGL context is actually preserved or not
      * depends upon whether the Android device can support an arbitrary number of
@@ -66,11 +140,11 @@ public interface IRenderView {
      * contexts must release the EGL context in order to allow multiple applications
      * to share the GPU.
      * <p>
-     * If set to false, the EGL context will be released when the GLSurfaceViewI is paused,
-     * and recreated when the GLSurfaceViewI is resumed.
+     * If set to false, the EGL context will be released when the IRenderView is paused,
+     * and recreated when the IRenderView is resumed.
      * <p>
      * <p>
-     * The default is false.
+     * The default is true.
      *
      * @param preserveOnPause preserve the EGL context when paused
      */
@@ -85,11 +159,64 @@ public interface IRenderView {
 
     interface Renderer {
 
-        void onSurfaceCreated(EglCore egl, EglSurfaceBase eglSurface);
+        void create(EglCore egl, EglSurfaceBase eglSurface);
 
-        void onSurfaceChanged(int width, int height);
+        void resize(int width, int height);
 
-        void onDrawFrame();
+        /**
+         * example:
+         * <pre class="prettyprint">
+         * public void render(EglSurfaceBase windowSurface, Runnable swapBufferErrorRunnable) {
+         *      //do something .....
+         *      boolean swapResult = windowSurface.swapBuffers();
+         *      if (!swapResult) swapBufferErrorRunnable.run();
+         * }
+         * </pre>
+         *
+         * @param windowSurface     Surface
+         * @param swapErrorRunnable swap error Runnable
+         */
+        void render(EglSurfaceBase windowSurface, Runnable swapErrorRunnable);
+
+        void pause();
+
+        void resume();
+
+        void dispose();
+    }
+
+    class RendererAdapter implements Renderer {
+
+
+        @Override
+        public void create(EglCore egl, EglSurfaceBase eglSurface) {
+
+        }
+
+        @Override
+        public void resize(int width, int height) {
+
+        }
+
+        @Override
+        public void render(EglSurfaceBase windowSurface, Runnable swapBufferErrorRunnable) {
+
+        }
+
+        @Override
+        public void pause() {
+
+        }
+
+        @Override
+        public void resume() {
+
+        }
+
+        @Override
+        public void dispose() {
+
+        }
     }
 
 
@@ -117,6 +244,7 @@ public interface IRenderView {
         private boolean mWaitingForSurface;
         private boolean mHaveEglContext;
         private boolean mHaveEglSurface;
+        private boolean mLostEglContext;
         private boolean mFinishedCreatingEglSurface;
         private boolean mShouldReleaseEglContext;
         private int mWidth;
@@ -137,6 +265,18 @@ public interface IRenderView {
         private WeakReference<IRenderView> mRenderViewWeakRef;
         private EglCore mEglCore;
         private EglSurfaceBase mWindowSurface;
+        private Runnable mSwapBufferErrorRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Logger.error(TAG, "egl context lost tid=" + getId());
+                mLostEglContext = true;
+                synchronized (sGLThreadManager) {
+                    mSurfaceIsBad = true;
+                    sGLThreadManager.notifyAll();
+                }
+            }
+        };
+
 
         GLThread(IRenderView IRenderView) {
             super();
@@ -151,7 +291,7 @@ public interface IRenderView {
         @Override
         public void run() {
             setName("GLThread " + getId());
-            Gdx.app.log(TAG, "starting tid=" + getId());
+            Logger.info(TAG, "starting tid=" + getId());
 
             try {
                 guardedRun();
@@ -179,6 +319,17 @@ public interface IRenderView {
          */
         private void stopEglContextLocked() {
             if (mHaveEglContext) {
+                IRenderView view = mRenderViewWeakRef.get();
+                if (view != null) {
+                    Renderer renderer = view.getRenderer();
+                    if (renderer != null) {
+                        try {
+                            renderer.dispose();
+                        } catch (Exception e) {
+                            Logger.error(TAG, "renderer dispose error", e);
+                        }
+                    }
+                }
                 mEglCore.release();
                 mHaveEglContext = false;
                 sGLThreadManager.releaseEglContextLocked(this);
@@ -186,10 +337,11 @@ public interface IRenderView {
         }
 
         private Object getSurface() {
-            if (mRenderViewWeakRef.get() == null) {
+            IRenderView renderView = mRenderViewWeakRef.get();
+            if (renderView == null) {
                 throw new RuntimeException("renderView can not be null");
             }
-            Object surface = mRenderViewWeakRef.get().getSurface();
+            Object surface = renderView.getSurface();
             if (!(surface instanceof Surface) && !(surface instanceof SurfaceTexture) && !(surface instanceof EglSurfaceBase)) {
                 throw new RuntimeException("invalid surface: " + surface);
             }
@@ -204,7 +356,6 @@ public interface IRenderView {
             try {
                 boolean createEglContext = false;
                 boolean createEglSurface = false;
-                boolean lostEglContext = false;
                 boolean sizeChanged = false;
                 boolean wantRenderNotification = false;
                 boolean doRenderNotification = false;
@@ -229,15 +380,24 @@ public interface IRenderView {
                             // Update the pause state.
                             boolean pausing = false;
                             if (mPaused != mRequestPaused) {
+                                IRenderView view = mRenderViewWeakRef.get();
+                                if (view != null) {
+                                    if (mRequestPaused) {
+                                        view.getRenderer().pause();
+                                    } else {
+                                        view.getRenderer().resume();
+                                    }
+                                }
+
                                 pausing = mRequestPaused;
                                 mPaused = mRequestPaused;
                                 sGLThreadManager.notifyAll();
-                                Gdx.app.log(TAG, "mPaused is now " + mPaused + " tid=" + getId());
+                                Logger.info(TAG, "mPaused is now " + mPaused + " tid=" + getId());
                             }
 
                             // Do we need to give up the EGL context?
                             if (mShouldReleaseEglContext) {
-                                Gdx.app.log(TAG, "releasing EGL context because asked to tid=" + getId());
+                                Logger.info(TAG, "releasing EGL context because asked to tid=" + getId());
                                 stopEglSurfaceLocked();
                                 stopEglContextLocked();
                                 mShouldReleaseEglContext = false;
@@ -245,15 +405,15 @@ public interface IRenderView {
                             }
 
                             // Have we lost the EGL context?
-                            if (lostEglContext) {
+                            if (mLostEglContext) {
                                 stopEglSurfaceLocked();
                                 stopEglContextLocked();
-                                lostEglContext = false;
+                                mLostEglContext = false;
                             }
 
                             // When pausing, release the EGL surface:
                             if (pausing && mHaveEglSurface) {
-                                Gdx.app.log(TAG, "releasing EGL surface because paused tid=" + getId());
+                                Logger.info(TAG, "releasing EGL surface because paused tid=" + getId());
                                 stopEglSurfaceLocked();
                             }
 
@@ -263,13 +423,13 @@ public interface IRenderView {
                                 boolean preserveEglContextOnPause = view != null && view.getPreserveEGLContextOnPause();
                                 if (!preserveEglContextOnPause) {
                                     stopEglContextLocked();
-                                    Gdx.app.log(TAG, "releasing EGL context because paused tid=" + getId());
+                                    Logger.info(TAG, "releasing EGL context because paused tid=" + getId());
                                 }
                             }
 
                             // Have we lost the SurfaceView surface?
                             if ((!mHasSurface) && (!mWaitingForSurface)) {
-                                Gdx.app.log(TAG, "noticed surfaceView surface lost tid=" + getId());
+                                Logger.info(TAG, "noticed surfaceView surface lost tid=" + getId());
                                 if (mHaveEglSurface) {
                                     stopEglSurfaceLocked();
                                 }
@@ -280,13 +440,13 @@ public interface IRenderView {
 
                             // Have we acquired the surface view surface?
                             if (mHasSurface && mWaitingForSurface) {
-                                Gdx.app.log(TAG, "noticed surfaceView surface acquired tid=" + getId());
+                                Logger.info(TAG, "noticed surfaceView surface acquired tid=" + getId());
                                 mWaitingForSurface = false;
                                 sGLThreadManager.notifyAll();
                             }
 
                             if (doRenderNotification) {
-                                Gdx.app.log(TAG, "sending render notification tid=" + getId());
+                                Logger.info(TAG, "sending render notification tid=" + getId());
                                 mWantRenderNotification = false;
                                 doRenderNotification = false;
                                 mRenderComplete = true;
@@ -331,7 +491,7 @@ public interface IRenderView {
                                         w = mWidth;
                                         h = mHeight;
                                         mWantRenderNotification = true;
-                                        Gdx.app.log(TAG,
+                                        Logger.info(TAG,
                                                 "noticing that we want render notification tid="
                                                         + getId());
 
@@ -349,14 +509,14 @@ public interface IRenderView {
                                 }
                             } else {
                                 if (finishDrawingRunnable != null) {
-                                    Gdx.app.debug(TAG, "Warning, !readyToDraw() but waiting for " +
+                                    Logger.debug(TAG, "Warning, !readyToDraw() but waiting for " +
                                             "draw finished! Early reporting draw finished.");
                                     finishDrawingRunnable.run();
                                     finishDrawingRunnable = null;
                                 }
                             }
                             // By design, this is the only place in a GLThread thread where we wait().
-                            Gdx.app.log(TAG, "waiting tid=" + getId()
+                            Logger.info(TAG, "waiting tid=" + getId()
                                     + " mHaveEglContext: " + mHaveEglContext
                                     + " mHaveEglSurface: " + mHaveEglSurface
                                     + " mFinishedCreatingEglSurface: " + mFinishedCreatingEglSurface
@@ -379,7 +539,7 @@ public interface IRenderView {
                     }
 
                     if (createEglSurface) {
-                        Gdx.app.debug(TAG, "egl createSurface");
+                        Logger.debug(TAG, "egl createSurface");
                         try {
                             mWindowSurface = new WindowSurface(mEglCore, getSurface(), false);
                             mWindowSurface.makeCurrent();
@@ -399,15 +559,15 @@ public interface IRenderView {
                     }
 
                     if (createEglContext) {
-                        Gdx.app.debug(TAG, "onSurfaceCreated");
+                        Logger.debug(TAG, "onSurfaceCreated");
                         IRenderView view = mRenderViewWeakRef.get();
                         if (view != null) {
                             Renderer renderer = view.getRenderer();
                             if (renderer != null) {
                                 try {
-                                    renderer.onSurfaceCreated(mEglCore, mWindowSurface);
+                                    renderer.create(mEglCore, mWindowSurface);
                                 } catch (Exception e) {
-                                    Gdx.app.error(TAG, "renderer onSurfaceCreated error", e);
+                                    Logger.error(TAG, "renderer onSurfaceCreated error", e);
                                 }
                             }
                         }
@@ -415,47 +575,37 @@ public interface IRenderView {
                     }
 
                     if (sizeChanged) {
-                        Gdx.app.debug(TAG, "onSurfaceChanged(" + w + ", " + h + ")");
+                        Logger.debug(TAG, "onSurfaceChanged(" + w + ", " + h + ")");
                         IRenderView view = mRenderViewWeakRef.get();
                         if (view != null) {
                             Renderer renderer = view.getRenderer();
                             if (renderer != null) {
                                 try {
-                                    renderer.onSurfaceChanged(w, h);
+                                    renderer.resize(w, h);
                                 } catch (Exception e) {
-                                    Gdx.app.error(TAG, "renderer onSurfaceChanged error", e);
+                                    Logger.error(TAG, "renderer onSurfaceChanged error", e);
                                 }
                             }
                         }
                         sizeChanged = false;
                     }
 
-                    Gdx.app.debug(TAG, "onDrawFrame tid=" + getId());
+                    Logger.debug(TAG, "onDrawFrame tid=" + getId());
                     {
                         IRenderView view = mRenderViewWeakRef.get();
                         if (view != null) {
                             Renderer renderer = view.getRenderer();
                             if (renderer != null) {
                                 try {
-                                    renderer.onDrawFrame();
+                                    renderer.render(mWindowSurface, mSwapBufferErrorRunnable);
                                     if (finishDrawingRunnable != null) {
                                         finishDrawingRunnable.run();
                                         finishDrawingRunnable = null;
                                     }
                                 } catch (Exception e) {
-                                    Gdx.app.error(TAG, "renderer onDrawFrame error", e);
+                                    Logger.error(TAG, "renderer onDrawFrame error", e);
                                 }
                             }
-                        }
-                    }
-
-                    boolean swapError = mWindowSurface.swapBuffers();
-                    if (!swapError) {
-                        Gdx.app.error(TAG, "egl context lost tid=" + getId());
-                        lostEglContext = true;
-                        synchronized (sGLThreadManager) {
-                            mSurfaceIsBad = true;
-                            sGLThreadManager.notifyAll();
                         }
                     }
                     if (wantRenderNotification) {
@@ -526,7 +676,7 @@ public interface IRenderView {
 
         public void surfaceCreated() {
             synchronized (sGLThreadManager) {
-                Gdx.app.log(TAG, "surfaceCreated tid=" + getId());
+                Logger.info(TAG, "surfaceCreated tid=" + getId());
                 mHasSurface = true;
                 mFinishedCreatingEglSurface = false;
                 sGLThreadManager.notifyAll();
@@ -544,7 +694,7 @@ public interface IRenderView {
 
         public void surfaceDestroyed() {
             synchronized (sGLThreadManager) {
-                Gdx.app.log(TAG, "surfaceDestroyed tid=" + getId());
+                Logger.info(TAG, "surfaceDestroyed tid=" + getId());
                 mHasSurface = false;
                 sGLThreadManager.notifyAll();
                 while ((!mWaitingForSurface) && (!mExited)) {
@@ -559,11 +709,11 @@ public interface IRenderView {
 
         public void onPause() {
             synchronized (sGLThreadManager) {
-                Gdx.app.log(TAG, "onPause tid=" + getId());
+                Logger.info(TAG, "onPause tid=" + getId());
                 mRequestPaused = true;
                 sGLThreadManager.notifyAll();
                 while ((!mExited) && (!mPaused)) {
-                    Gdx.app.log("Main thread", "onPause waiting for mPaused.");
+                    Logger.info("Main thread", "onPause waiting for mPaused.");
                     try {
                         sGLThreadManager.wait();
                     } catch (InterruptedException ex) {
@@ -575,13 +725,13 @@ public interface IRenderView {
 
         public void onResume() {
             synchronized (sGLThreadManager) {
-                Gdx.app.log(TAG, "onResume tid=" + getId());
+                Logger.info(TAG, "onResume tid=" + getId());
                 mRequestPaused = false;
                 mRequestRender = true;
                 mRenderComplete = false;
                 sGLThreadManager.notifyAll();
                 while ((!mExited) && mPaused && (!mRenderComplete)) {
-                    Gdx.app.log("Main thread", "onResume waiting for !mPaused.");
+                    Logger.info("Main thread", "onResume waiting for !mPaused.");
                     try {
                         sGLThreadManager.wait();
                     } catch (InterruptedException ex) {
@@ -613,7 +763,7 @@ public interface IRenderView {
                 // Wait for thread to react to resize and render a frame
                 while (!mExited && !mPaused && !mRenderComplete
                         && ableToDraw()) {
-                    Gdx.app.log("Main thread", "onWindowResize waiting for render complete from tid=" + getId());
+                    Logger.info("Main thread", "onWindowResize waiting for render complete from tid=" + getId());
                     try {
                         sGLThreadManager.wait();
                     } catch (InterruptedException ex) {
@@ -660,13 +810,16 @@ public interface IRenderView {
         }
 
 
+        public int getGLESVersion() {
+            return mEglCore.getGLVersion();
+        }
     }
 
     class GLThreadManager {
         private static String TAG = "GLThreadManager";
 
         public synchronized void threadExiting(GLThread thread) {
-            Gdx.app.log(TAG, "exiting tid=" + thread.getId());
+            Logger.info(TAG, "exiting tid=" + thread.getId());
             thread.mExited = true;
             notifyAll();
         }

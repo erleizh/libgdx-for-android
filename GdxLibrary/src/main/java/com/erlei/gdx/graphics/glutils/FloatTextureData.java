@@ -18,7 +18,6 @@ package com.erlei.gdx.graphics.glutils;
 
 import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.GL20;
-import com.erlei.gdx.graphics.GL30;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Pixmap.Format;
 import com.erlei.gdx.graphics.TextureData;

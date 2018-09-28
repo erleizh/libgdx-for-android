@@ -5,12 +5,12 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.utils.Logger;
 
 
 public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHolder.Callback2 {
     private static final String TAG = "GLSurfaceViewI";
-    private boolean mPreserveEGLContextOnPause;
+    private boolean mPreserveEGLContextOnPause = true;
     private Renderer mRenderer;
     private GLThread mGLThread;
     private boolean mDetached;
@@ -65,6 +65,11 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
         return mGLThread.getRenderMode();
     }
 
+    @Override
+    public int getGLESVersion() {
+        return mGLThread.getGLESVersion();
+    }
+
     /**
      * 请求渲染
      */
@@ -108,26 +113,6 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
         return mRenderer;
     }
 
-    /**
-     * Control whether the EGL context is preserved when the GLSurfaceViewI is paused and
-     * resumed.
-     * <p>
-     * If set to true, then the EGL context may be preserved when the GLSurfaceViewI is paused.
-     * <p>
-     * Prior to API level 11, whether the EGL context is actually preserved or not
-     * depends upon whether the Android device can support an arbitrary number of
-     * EGL contexts or not. Devices that can only support a limited number of EGL
-     * contexts must release the EGL context in order to allow multiple applications
-     * to share the GPU.
-     * <p>
-     * If set to false, the EGL context will be released when the GLSurfaceViewI is paused,
-     * and recreated when the GLSurfaceViewI is resumed.
-     * <p>
-     * <p>
-     * The default is false.
-     *
-     * @param preserveOnPause preserve the EGL context when paused
-     */
     @Override
     public void setPreserveEGLContextOnPause(boolean preserveOnPause) {
         mPreserveEGLContextOnPause = preserveOnPause;
@@ -146,35 +131,19 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
         return getHolder().getSurface();
     }
 
-    /**
-     * This method is part of the SurfaceHolder.Callback interface, and is
-     * not normally called or subclassed by clients of GLSurfaceViewI.
-     */
     public void surfaceCreated(SurfaceHolder holder) {
         mGLThread.surfaceCreated();
     }
 
-    /**
-     * This method is part of the SurfaceHolder.Callback interface, and is
-     * not normally called or subclassed by clients of GLSurfaceViewI.
-     */
     public void surfaceDestroyed(SurfaceHolder holder) {
         // Surface will be destroyed when we return
         mGLThread.surfaceDestroyed();
     }
 
-    /**
-     * This method is part of the SurfaceHolder.Callback interface, and is
-     * not normally called or subclassed by clients of GLSurfaceViewI.
-     */
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         mGLThread.onWindowResize(w, h);
     }
 
-    /**
-     * This method is part of the SurfaceHolder.Callback2 interface, and is
-     * not normally called or subclassed by clients of GLSurfaceViewI.
-     */
     @Override
     public void surfaceRedrawNeededAsync(SurfaceHolder holder, Runnable finishDrawing) {
         if (mGLThread != null) {
@@ -182,10 +151,6 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
         }
     }
 
-    /**
-     * This method is part of the SurfaceHolder.Callback2 interface, and is
-     * not normally called or subclassed by clients of GLSurfaceViewI.
-     */
     @Deprecated
     @Override
     public void surfaceRedrawNeeded(SurfaceHolder holder) {
@@ -194,42 +159,28 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
     }
 
 
-    /**
-     * Pause the rendering thread, optionally tearing down the EGL context
-     * depending upon the value of {@link #setPreserveEGLContextOnPause(boolean)}.
-     * <p>
-     * This method should be called when it is no longer desirable for the
-     * GLSurfaceViewI to continue rendering, such as in response to
-     * {@link android.app.Activity#onStop Activity.onStop}.
-     * <p>
-     * Must not be called before a renderer has been set.
-     */
     public void onPause() {
         mGLThread.onPause();
     }
 
-    /**
-     * Resumes the rendering thread, re-creating the OpenGL context if necessary. It
-     * is the counterpart to {@link #onPause()}.
-     * <p>
-     * This method should typically be called in
-     * {@link android.app.Activity#onStart Activity.onStart}.
-     * <p>
-     * Must not be called before a renderer has been set.
-     */
+
     public void onResume() {
         mGLThread.onResume();
     }
 
-    /**
-     * Queue a runnable to be run on the GL rendering thread. This can be used
-     * to communicate with the Renderer on the rendering thread.
-     * Must not be called before a renderer has been set.
-     *
-     * @param r the runnable to be run on the GL rendering thread.
-     */
+
     public void queueEvent(Runnable r) {
         mGLThread.queueEvent(r);
+    }
+
+    @Override
+    public int getSurfaceWidth() {
+        return getHolder().getSurfaceFrame().width();
+    }
+
+    @Override
+    public int getSurfaceHeight() {
+        return getHolder().getSurfaceFrame().height();
     }
 
     /**
@@ -239,7 +190,7 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        Gdx.app.log(TAG, "onAttachedToWindow reattach =" + mDetached);
+        Logger.info(TAG, "onAttachedToWindow reattach =" + mDetached);
         if (mDetached && (mRenderer != null)) {
             RenderMode renderMode = RenderMode.CONTINUOUSLY;
             if (mGLThread != null) {
@@ -256,7 +207,7 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
 
     @Override
     protected void onDetachedFromWindow() {
-        Gdx.app.log(TAG, "onDetachedFromWindow");
+        Logger.info(TAG, "onDetachedFromWindow");
         if (mGLThread != null) {
             mGLThread.requestExitAndWait();
         }

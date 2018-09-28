@@ -18,7 +18,6 @@ package com.erlei.gdx.graphics.g3d;
 
 import java.util.Comparator;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.Mesh;
 import com.erlei.gdx.graphics.VertexAttributes;

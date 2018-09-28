@@ -1,19 +1,9 @@
-package com.erlei.gdx.simple;
+移植java游戏开发框架[libgdx](https://github.com/libgdx/libgdx)到Android平台 ， 移除了 audio ， scenes ，maps ，net ，input模块
+删除了一些其他平台的东西
 
-import android.content.Context;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
-import com.erlei.gdx.Gdx;
-import com.erlei.gdx.android.EglCore;
-import com.erlei.gdx.android.EglSurfaceBase;
-import com.erlei.gdx.android.widget.GLSurfaceView;
-import com.erlei.gdx.android.widget.IRenderView;
-import com.erlei.gdx.graphics.Pixmap;
-import com.erlei.gdx.graphics.Texture;
-import com.erlei.gdx.graphics.g2d.SpriteBatch;
-import com.erlei.gdx.graphics.glutils.FrameBuffer;
-import com.erlei.gdx.utils.Logger;
+一个简单的使用例子
+```java
 
 public class MainActivity extends AppCompatActivity {
 
@@ -116,3 +106,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 }
+
+```
+<div>
+ <img src="screenshort/device-2018-09-28-195149.png" width="45%">
+</div>

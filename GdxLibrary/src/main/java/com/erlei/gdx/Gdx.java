@@ -17,118 +17,99 @@
 package com.erlei.gdx;
 
 import android.content.Context;
+import android.opengl.GLES10;
+import android.opengl.GLES20;
 import android.os.Debug;
 
-import com.erlei.gdx.android.AndroidApplicationLogger;
 import com.erlei.gdx.android.AndroidPreferences;
+import com.erlei.gdx.android.EglCore;
+import com.erlei.gdx.android.EglSurfaceBase;
+import com.erlei.gdx.utils.Logger;
+import com.erlei.gdx.android.widget.IRenderView;
 import com.erlei.gdx.files.AndroidFiles;
+import com.erlei.gdx.graphics.AndroidGL20;
+import com.erlei.gdx.graphics.AndroidGL30;
+import com.erlei.gdx.graphics.Cubemap;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.GL30;
+import com.erlei.gdx.graphics.Mesh;
+import com.erlei.gdx.graphics.Texture;
+import com.erlei.gdx.graphics.TextureArray;
+import com.erlei.gdx.graphics.glutils.FrameBuffer;
+import com.erlei.gdx.graphics.glutils.ShaderProgram;
+import com.erlei.gdx.utils.FPSCounter;
 import com.erlei.gdx.utils.SnapshotArray;
 
-import javax.microedition.khronos.opengles.GL10;
 
-/**
- * Environment class holding references to the {@link Application}, {@link Graphics}, {@link Files} and
- * instances. The references are held in public static fields which allows static access to all sub systems. Do not
- * use Graphics in a thread that is not the rendering thread.
- * <p>
- * This is normally a design faux pas but in this case is better than the alternatives.
- *
- * @author mzechner
- */
-public class Gdx implements Application {
-    public static Application app;
-    public static Graphics graphics;
+public abstract class Gdx implements Application, IRenderView.Renderer {
+
+
+    static {
+        System.loadLibrary("gdx");
+    }
+
+    private static final String TAG = "Gdx";
+
+    public static Gdx app;
     public static Files files;
 
     public static GL20 gl;
-    public static GL20 gl20;
     public static GL30 gl30;
-
-    protected ApplicationListener listener;
-    protected int logLevel = LOG_INFO;
-    protected ApplicationLogger applicationLogger;
+    public static GL20 gl20;
 
     private Context mContext;
     protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<>(LifecycleListener.class);
     private String extensions;
+    private IRenderView mRenderView;
+    private boolean mPause;
+    private FPSCounter mFPSCounter;
+    private EglSurfaceBase mWindowSurface;
+    private Runnable mSwapErrorRunnable;
 
-    public static void init(Context context) {
-        app = new Gdx(context.getApplicationContext());
+    public Gdx(Context context, IRenderView renderView) {
+        this(context.getApplicationContext(), renderView, null);
     }
 
-    private Gdx(Context context) {
-        mContext = context;
-        files = new AndroidFiles(context.getAssets(), context.getFilesDir().getAbsolutePath());
-        setApplicationLogger(new AndroidApplicationLogger());
+    public Gdx(Context context, IRenderView renderView, GL20 gl) {
+        AndroidGL20.init();
+        mContext = context.getApplicationContext();
+        mRenderView = renderView;
+        files = new AndroidFiles(mContext.getAssets(), mContext.getFilesDir().getAbsolutePath());
+        app = this;
+        if (gl != null) setGLES(gl);
+        mFPSCounter = initFPSCounter();
     }
 
-    /**
-     * @return the {@link Graphics} instance
-     */
-    @Override
-    public Graphics getGraphics() {
-        return graphics;
+    protected FPSCounter initFPSCounter() {
+        return new FPSCounter(new FPSCounter.FPSCounter2());
     }
 
+    public void setGLES(GL20 gles) {
+        gl = gles;
+        gl20 = gles;
+        if (gl instanceof AndroidGL30) gl30 = (GL30) gles;
 
-    /**
-     * @return the {@link Files} instance
-     */
+        Logger.info(TAG, "OGL renderer: " + gl.glGetString(GLES10.GL_RENDERER));
+        Logger.info(TAG, "OGL vendor: " + gl.glGetString(GLES10.GL_VENDOR));
+        Logger.info(TAG, "OGL version: " + gl.glGetString(GLES10.GL_VERSION));
+        Logger.info(TAG, "OGL extensions: " + gl.glGetString(GLES10.GL_EXTENSIONS));
+    }
+
+    public GL20 getGL() {
+        return gl;
+    }
+
+    public GL30 getGL30() {
+        return gl30;
+    }
+
+    public GL20 getGL20() {
+        return gl20;
+    }
+
     @Override
     public Files getFiles() {
         return files;
-    }
-
-    @Override
-    public void debug(String tag, String message) {
-        if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message);
-    }
-
-    @Override
-    public void debug(String tag, String message, Throwable exception) {
-        if (logLevel >= LOG_DEBUG) getApplicationLogger().debug(tag, message, exception);
-    }
-
-    @Override
-    public void log(String tag, String message) {
-        if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message);
-    }
-
-    @Override
-    public void log(String tag, String message, Throwable exception) {
-        if (logLevel >= LOG_INFO) getApplicationLogger().log(tag, message, exception);
-    }
-
-    @Override
-    public void error(String tag, String message) {
-        if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message);
-    }
-
-    @Override
-    public void error(String tag, String message, Throwable exception) {
-        if (logLevel >= LOG_ERROR) getApplicationLogger().error(tag, message, exception);
-    }
-
-    @Override
-    public void setLogLevel(int logLevel) {
-        this.logLevel = logLevel;
-    }
-
-    @Override
-    public int getLogLevel() {
-        return logLevel;
-    }
-
-    @Override
-    public void setApplicationLogger(ApplicationLogger applicationLogger) {
-        this.applicationLogger = applicationLogger;
-    }
-
-    @Override
-    public ApplicationLogger getApplicationLogger() {
-        return applicationLogger;
     }
 
     @Override
@@ -162,18 +143,156 @@ public class Gdx implements Application {
 
     @Override
     public void postRunnable(Runnable runnable) {
-
+        mRenderView.queueEvent(runnable);
     }
+
     @Override
-    public boolean supportsExtension (String extension) {
-        if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+    public boolean supportsExtension(String extension) {
+        if (extensions == null) extensions = gl.glGetString(GLES10.GL_EXTENSIONS);
         return extensions.contains(extension);
     }
+
     public Context getContext() {
         return mContext;
     }
 
     public static boolean isGL30Available() {
         return gl30 != null;
+    }
+
+
+    protected void logManagedCachesStatus() {
+        Logger.info(TAG, Mesh.getManagedStatus());
+        Logger.info(TAG, Texture.getManagedStatus());
+        Logger.info(TAG, Cubemap.getManagedStatus());
+        Logger.info(TAG, ShaderProgram.getManagedStatus());
+        Logger.info(TAG, FrameBuffer.getManagedStatus());
+    }
+
+    public int getWidth() {
+        return mRenderView.getSurfaceWidth();
+    }
+
+    public int getHeight() {
+        return mRenderView.getSurfaceHeight();
+    }
+
+    public int getBackBufferWidth() {
+        return mRenderView.getSurfaceWidth();
+    }
+
+    public int getBackBufferHeight() {
+        return mRenderView.getSurfaceHeight();
+    }
+
+    @Override
+    public void create(EglCore egl, EglSurfaceBase eglSurface) {
+        setGLES(egl.getGLVersion() == 3 ? new AndroidGL30() : new AndroidGL20());
+
+        Mesh.invalidateAllMeshes(app);
+        Texture.invalidateAllTextures(app);
+        Cubemap.invalidateAllCubemaps(app);
+        TextureArray.invalidateAllTextureArrays(app);
+        ShaderProgram.invalidateAllShaderPrograms(app);
+        FrameBuffer.invalidateAllFrameBuffers(app);
+        logManagedCachesStatus();
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void render(EglSurfaceBase windowSurface, Runnable swapErrorRunnable) {
+        mFPSCounter.update();
+        mWindowSurface = windowSurface;
+        mSwapErrorRunnable = swapErrorRunnable;
+
+
+    }
+
+    /**
+     * 使用黑色清除屏幕
+     */
+    protected void clearColor() {
+        gl.glClearColor(0, 0, 0, 0);
+    }
+
+    /**
+     * 使用黑色清除屏幕
+     */
+    protected void clear() {
+        clearColor();
+        clearBuffers();
+    }
+
+
+
+    /**
+     * 清除颜色缓冲区，深度缓冲区
+     */
+    protected void clearBuffers() {
+        gl.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+    }
+
+    /**
+     * 清除颜色缓冲区
+     */
+    protected void clearColorBuffer() {
+        gl.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+    }
+
+    /**
+     * 清除深度缓冲区
+     */
+    protected void clearDepthBuffer() {
+        gl.glClear(GLES20.GL_DEPTH_BUFFER_BIT);
+    }
+
+    public float getDeltaTime() {
+        return mFPSCounter.getFPS();
+    }
+
+
+    protected void renderEnd() {
+        boolean swapResult = mWindowSurface.swapBuffers();
+        if (!swapResult) mSwapErrorRunnable.run();
+    }
+
+    @Override
+    public void pause() {
+        mPause = true;
+    }
+
+    public boolean isPause() {
+        return mPause;
+    }
+
+    @Override
+    public void resume() {
+        mPause = false;
+    }
+
+    @Override
+    public void dispose() {
+        app = null;
+        files = null;
+        gl = null;
+        gl20 = null;
+        gl30 = null;
+        mRenderView = null;
+    }
+
+    public void setGL30(GL30 gles30) {
+        gl = gles30;
+        gl20 = gles30;
+        gl30 = gles30;
+    }
+
+    public void setGL20(GL20 interceptor) {
+        gl20 = interceptor;
+        gl = interceptor;
     }
 }

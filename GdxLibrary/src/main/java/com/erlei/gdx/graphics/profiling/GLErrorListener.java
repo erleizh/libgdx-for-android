@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.profiling;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.utils.Logger;
 import com.erlei.gdx.utils.GdxRuntimeException;
 import static com.erlei.gdx.graphics.profiling.GLInterceptor.resolveErrorNumber;
 
@@ -32,7 +32,7 @@ public interface GLErrorListener {
 
 	// Basic implementations
 
-	/** Listener that will log using Gdx.app.error GL error name and GL function. */
+	/** Listener that will log using Logger.error GL error name and GL function. */
 	public static final GLErrorListener LOGGING_LISTENER = new GLErrorListener() {
 		@Override
 		public void onError (int error) {
@@ -52,9 +52,9 @@ public interface GLErrorListener {
 			}
 
 			if (place != null) {
-				Gdx.app.error("GLProfiler", "Error " + resolveErrorNumber(error) + " from " + place);
+				Logger.error("GLProfiler", "Error " + resolveErrorNumber(error) + " from " + place);
 			} else {
-				Gdx.app.error("GLProfiler", "Error " + resolveErrorNumber(error) + " at: ", new Exception());
+				Logger.error("GLProfiler", "Error " + resolveErrorNumber(error) + " at: ", new Exception());
 				// This will capture current stack trace for logging, if possible
 			}
 		}

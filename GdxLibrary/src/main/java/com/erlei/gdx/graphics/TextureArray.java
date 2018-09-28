@@ -18,10 +18,7 @@ package com.erlei.gdx.graphics;
 
 import com.erlei.gdx.Application;
 import com.erlei.gdx.Gdx;
-import com.erlei.gdx.assets.AssetManager;
-import com.erlei.gdx.assets.loaders.AssetLoader;
 import com.erlei.gdx.files.FileHandle;
-import com.erlei.gdx.graphics.profiling.GLProfiler;
 import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.GdxRuntimeException;
 

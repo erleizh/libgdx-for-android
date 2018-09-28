@@ -7,11 +7,9 @@ import com.erlei.gdx.graphics.Cubemap;
 import com.erlei.gdx.graphics.Cubemap.CubemapSide;
 import com.erlei.gdx.graphics.CubemapData;
 import com.erlei.gdx.graphics.GL20;
-import com.erlei.gdx.graphics.GLTexture;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Pixmap.Blending;
 import com.erlei.gdx.graphics.Pixmap.Format;
-import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.TextureData;
 import com.erlei.gdx.utils.GdxRuntimeException;
 
