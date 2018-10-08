@@ -7,6 +7,9 @@ import android.view.SurfaceView;
 
 import com.erlei.gdx.utils.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHolder.Callback2 {
     private static final String TAG = "GLSurfaceViewI";
@@ -14,6 +17,7 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
     private Renderer mRenderer;
     private GLThread mGLThread;
     private boolean mDetached;
+    private List<SurfaceSizeChangeListener> mSizeChangeListeners = new ArrayList<>();
 
     public GLSurfaceView(Context context) {
         super(context);
@@ -55,6 +59,33 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
         } finally {
             super.finalize();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mRenderer != null) mRenderer.release();
+        mSizeChangeListeners.clear();
+    }
+
+    @Override
+    public void addSurfaceSizeChangeListener(SurfaceSizeChangeListener listener) {
+        mSizeChangeListeners.add(listener);
+    }
+
+    @Override
+    public void removeSurfaceSizeChangeListener(SurfaceSizeChangeListener listener) {
+        mSizeChangeListeners.remove(listener);
+    }
+
+    private void handleSizeChange(int h, int w) {
+        for (SurfaceSizeChangeListener sizeChangeListener : mSizeChangeListeners) {
+            sizeChangeListener.onSizeChanged(w, h);
+        }
+    }
+
+    @Override
+    public ViewType getViewType() {
+        return ViewType.TextureView;
     }
 
     /**
@@ -142,6 +173,7 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         mGLThread.onWindowResize(w, h);
+        handleSizeChange(w,h);
     }
 
     @Override

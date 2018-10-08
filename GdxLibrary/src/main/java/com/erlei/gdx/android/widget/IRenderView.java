@@ -1,7 +1,9 @@
 package com.erlei.gdx.android.widget;
 
 
+import android.content.Context;
 import android.graphics.SurfaceTexture;
+import android.text.TextUtils;
 import android.view.Surface;
 
 import com.erlei.gdx.android.EglCore;
@@ -14,9 +16,63 @@ import java.util.ArrayList;
 
 public interface IRenderView {
 
+    Context getContext();
+
     enum RenderMode {
-        CONTINUOUSLY, WHEN_DIRTY
+        CONTINUOUSLY("CONTINUOUSLY"), WHEN_DIRTY("WHEN_DIRTY");
+
+        private final String name;
+
+        RenderMode(String name) {
+            this.name = name;
+        }
+        static RenderMode from(String name) {
+            for (RenderMode f : values()) {
+                if (TextUtils.equals(f.name,name)) return f;
+            }
+            throw new IllegalArgumentException();
+        }
     }
+
+    enum ViewType {
+
+        SurfaceView("SurfaceView"), TextureView("TextureView");
+
+        private final String name;
+
+        ViewType(String name) {
+            this.name = name;
+        }
+        static ViewType from(String name) {
+            for (ViewType f : values()) {
+                if (TextUtils.equals(f.name,name)) return f;
+            }
+            throw new IllegalArgumentException();
+        }
+    }
+
+
+    interface SurfaceSizeChangeListener {
+        /**
+         * @param w - The new width of the surface.
+         * @param h - The new height of the surface.
+         */
+        void onSizeChanged(int w, int h);
+    }
+
+    void addSurfaceSizeChangeListener(SurfaceSizeChangeListener listener);
+
+    void removeSurfaceSizeChangeListener(SurfaceSizeChangeListener listener);
+
+
+    /**
+     * Get the view type
+     *
+     * @return the view type
+     * @see ViewType#TextureView
+     * @see ViewType#SurfaceView
+     */
+    ViewType getViewType();
 
     /**
      * Get the current rendering mode. May be called
@@ -110,6 +166,8 @@ public interface IRenderView {
     void onResume();
 
 
+    void onDestroy();
+
     /**
      * Queue a runnable to be run on the GL rendering thread. This can be used
      * to communicate with the Renderer on the rendering thread.
@@ -170,6 +228,8 @@ public interface IRenderView {
         void resume();
 
         void dispose();
+
+        void release();
     }
 
     class RendererAdapter implements Renderer {
@@ -202,6 +262,10 @@ public interface IRenderView {
 
         @Override
         public void dispose() {
+
+        }
+        @Override
+        public void release() {
 
         }
     }
