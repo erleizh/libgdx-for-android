@@ -48,6 +48,11 @@ public class GLTextureView extends TextureView implements IRenderView, TextureVi
         }
     }
 
+    @Override
+    public ViewType getViewType() {
+        return ViewType.TextureView;
+    }
+
     /**
      * @return 获取渲染模式
      */

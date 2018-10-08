@@ -57,6 +57,11 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
         }
     }
 
+    @Override
+    public ViewType getViewType() {
+        return ViewType.TextureView;
+    }
+
     /**
      * @return 获取渲染模式
      */

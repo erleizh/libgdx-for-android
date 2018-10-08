@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.android;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
@@ -149,6 +150,7 @@ public class AndroidPreferences implements Preferences {
         editor.clear();
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     @Override
     public void flush() {
         if (editor != null) {
@@ -167,6 +169,7 @@ public class AndroidPreferences implements Preferences {
         editor.remove(key);
     }
 
+    @SuppressLint("CommitPrefEdits")
     private void edit() {
         if (editor == null) {
             editor = sharedPrefs.edit();

@@ -24,6 +24,7 @@ import android.os.Debug;
 import com.erlei.gdx.android.AndroidPreferences;
 import com.erlei.gdx.android.EglCore;
 import com.erlei.gdx.android.EglSurfaceBase;
+import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.utils.Logger;
 import com.erlei.gdx.android.widget.IRenderView;
 import com.erlei.gdx.files.AndroidFiles;
@@ -64,13 +65,13 @@ public abstract class Gdx implements Application, IRenderView.Renderer {
     private boolean mPause;
     private FPSCounter mFPSCounter;
 
-    public Gdx(Context context, IRenderView renderView) {
-        this(context.getApplicationContext(), renderView, null);
+    public Gdx(IRenderView renderView) {
+        this(renderView, null);
     }
 
-    public Gdx(Context context, IRenderView renderView, GL20 gl) {
+    public Gdx(IRenderView renderView, GL20 gl) {
         AndroidGL20.init();
-        mContext = context.getApplicationContext();
+        mContext = renderView.getContext().getApplicationContext();
         mRenderView = renderView;
         files = new AndroidFiles(mContext.getAssets(), mContext.getFilesDir().getAbsolutePath());
         app = this;
@@ -207,12 +208,17 @@ public abstract class Gdx implements Application, IRenderView.Renderer {
         mFPSCounter.update();
 
     }
-
+    /**
+     * 使用黑色清除屏幕
+     */
+    protected void clearColor(Color color) {
+        gl.glClearColor(color.r, color.g, color.b, color.a);
+    }
     /**
      * 使用黑色清除屏幕
      */
     protected void clearColor() {
-        gl.glClearColor(0, 0, 0, 0);
+        clearColor(Color.BLACK);
     }
 
     /**
