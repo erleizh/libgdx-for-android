@@ -7,8 +7,8 @@ import com.erlei.gdx.Gdx;
 import com.erlei.gdx.android.EglCore;
 import com.erlei.gdx.android.EglSurfaceBase;
 import com.erlei.gdx.android.widget.IRenderView;
+import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
-import com.erlei.gdx.graphics.OrthographicCamera;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.VertexAttribute;
 import com.erlei.gdx.graphics.glutils.ShaderProgram;
@@ -29,7 +29,7 @@ public class CameraRender extends Gdx implements SurfaceTexture.OnFrameAvailable
     private float[] mTexMatrixOES = new float[16];
     private Matrix4 mMatrix4 = new Matrix4();
     private Mesh mMesh;
-    private OrthographicCamera mOrthographicCamera;
+
     public CameraRender(IRenderView renderView, CameraControl cameraControl) {
         super(renderView);
         mControl = cameraControl;
@@ -38,6 +38,10 @@ public class CameraRender extends Gdx implements SurfaceTexture.OnFrameAvailable
     @Override
     public void create(EglCore egl, EglSurfaceBase eglSurface) {
         super.create(egl, eglSurface);
+        initSurfaceTexture();
+        initShaderProgram();
+        initMesh();
+        mControl.open(mCameraTexture.getSurfaceTexture());
     }
 
     @Override
@@ -58,12 +62,20 @@ public class CameraRender extends Gdx implements SurfaceTexture.OnFrameAvailable
     @Override
     public void render() {
         super.render();
+        clear();
+        mCameraTexture.getSurfaceTexture().updateTexImage();
+        mCameraTexture.getSurfaceTexture().getTransformMatrix(mTexMatrixOES);
+        mMesh.transform(mMatrix4.set(mTexMatrixOES));
+
+        mProgramOES.begin();
+        mMesh.render(mProgramOES, GL20.GL_TRIANGLE_FAN);
+        mProgramOES.end();
     }
 
     @Override
     public void dispose() {
         super.dispose();
-
+        mControl.close();
     }
 
     protected void initSurfaceTexture() {
@@ -73,10 +85,12 @@ public class CameraRender extends Gdx implements SurfaceTexture.OnFrameAvailable
         mCameraTexture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
         mCameraTexture.getSurfaceTexture().setOnFrameAvailableListener(this);
     }
+
     protected void initShaderProgram() {
         mProgram2d = new ShaderProgram(files.internal("shader/vertex_shader.glsl"), files.internal("shader/fragment_shader_2d.glsl"));
         mProgramOES = new ShaderProgram(files.internal("shader/vertex_shader.glsl"), files.internal("shader/fragment_shader_oes.glsl"));
     }
+
     protected void initMesh() {
         float[] verts = new float[20];
         int i = 0;
@@ -116,9 +130,9 @@ public class CameraRender extends Gdx implements SurfaceTexture.OnFrameAvailable
         getRenderView().requestRender();
     }
 
-    interface CameraControl {
+    public interface CameraControl {
 
-        void open(IRenderView renderView);
+        void open(SurfaceTexture surfaceTexture);
 
         void close();
 

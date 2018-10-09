@@ -92,7 +92,7 @@ public class Camera {
      */
     public static final int UNSUPPORTED_PICTURE_SIZE = 9;
 
-    private Logger mLogger = new Logger("com.erlei.camera.Camera");
+    private Logger mLogger = new Logger("com.erlei.camera.Camera", Logger.INFO);
     private final Context mContext;
     private CameraBuilder mBuilder;
     private int mCameraId = -1;
@@ -607,9 +607,9 @@ public class Camera {
                 return Long.signum((long) pre.width * pre.height - (long) after.width * after.height);
             }
         });
-        if (Logger.LOG_LEVEL >= Logger.DEBUG) {
+        if (Logger.LOG_LEVEL >= Logger.INFO) {
             for (android.hardware.Camera.Size size : supportedPreviewSizes) {
-                log(tag + "\t\twidth :" + size.width + "\t height :" + size.height + "\t ratio : " + ((float) size.width / (float) size.height));
+                Logger.info(tag, "\t\twidth :" + size.width + "\t height :" + size.height + "\t ratio : " + ((float) size.width / (float) size.height));
             }
         }
         //如果设备支持请求的尺寸

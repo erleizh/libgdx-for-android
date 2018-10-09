@@ -8,8 +8,8 @@ import android.view.Surface;
 
 import com.erlei.gdx.android.EglCore;
 import com.erlei.gdx.android.EglSurfaceBase;
-import com.erlei.gdx.utils.Logger;
 import com.erlei.gdx.android.WindowSurface;
+import com.erlei.gdx.utils.Logger;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -26,9 +26,10 @@ public interface IRenderView {
         RenderMode(String name) {
             this.name = name;
         }
+
         static RenderMode from(String name) {
             for (RenderMode f : values()) {
-                if (TextUtils.equals(f.name,name)) return f;
+                if (TextUtils.equals(f.name, name)) return f;
             }
             throw new IllegalArgumentException();
         }
@@ -43,9 +44,10 @@ public interface IRenderView {
         ViewType(String name) {
             this.name = name;
         }
+
         static ViewType from(String name) {
             for (ViewType f : values()) {
-                if (TextUtils.equals(f.name,name)) return f;
+                if (TextUtils.equals(f.name, name)) return f;
             }
             throw new IllegalArgumentException();
         }
@@ -85,7 +87,8 @@ public interface IRenderView {
     RenderMode getRenderMode();
 
     /**
-     *  Must not be called before a Renderer#create(EglCore, EglSurfaceBase) has been set.
+     * Must not be called before a Renderer#create(EglCore, EglSurfaceBase) has been set.
+     *
      * @return GLES version code
      */
     int getGLESVersion();
@@ -264,6 +267,7 @@ public interface IRenderView {
         public void dispose() {
 
         }
+
         @Override
         public void release() {
 
@@ -283,6 +287,7 @@ public interface IRenderView {
      */
     class GLThread extends Thread {
         private static final String TAG = "GLThread";
+        private Logger mLogger = new Logger(TAG, Logger.INFO);
 
         // Once the thread is started, all accesses to the following member
         // variables are protected by the sGLThreadManager monitor
@@ -330,7 +335,7 @@ public interface IRenderView {
         @Override
         public void run() {
             setName("GLThread " + getId());
-            Logger.info(TAG, "starting tid=" + getId());
+            mLogger.info("starting tid=" + getId());
 
             try {
                 guardedRun();
@@ -365,7 +370,7 @@ public interface IRenderView {
                         try {
                             renderer.dispose();
                         } catch (Exception e) {
-                            Logger.error(TAG, "renderer dispose error", e);
+                            mLogger.error("renderer dispose error", e);
                         }
                     }
                 }
@@ -431,12 +436,12 @@ public interface IRenderView {
                                 pausing = mRequestPaused;
                                 mPaused = mRequestPaused;
                                 sGLThreadManager.notifyAll();
-                                Logger.info(TAG, "mPaused is now " + mPaused + " tid=" + getId());
+                                mLogger.info("mPaused is now " + mPaused + " tid=" + getId());
                             }
 
                             // Do we need to give up the EGL context?
                             if (mShouldReleaseEglContext) {
-                                Logger.info(TAG, "releasing EGL context because asked to tid=" + getId());
+                                mLogger.info("releasing EGL context because asked to tid=" + getId());
                                 stopEglSurfaceLocked();
                                 stopEglContextLocked();
                                 mShouldReleaseEglContext = false;
@@ -452,7 +457,7 @@ public interface IRenderView {
 
                             // When pausing, release the EGL surface:
                             if (pausing && mHaveEglSurface) {
-                                Logger.info(TAG, "releasing EGL surface because paused tid=" + getId());
+                                mLogger.info("releasing EGL surface because paused tid=" + getId());
                                 stopEglSurfaceLocked();
                             }
 
@@ -462,13 +467,13 @@ public interface IRenderView {
                                 boolean preserveEglContextOnPause = view != null && view.getPreserveEGLContextOnPause();
                                 if (!preserveEglContextOnPause) {
                                     stopEglContextLocked();
-                                    Logger.info(TAG, "releasing EGL context because paused tid=" + getId());
+                                    mLogger.info("releasing EGL context because paused tid=" + getId());
                                 }
                             }
 
                             // Have we lost the SurfaceView surface?
                             if ((!mHasSurface) && (!mWaitingForSurface)) {
-                                Logger.info(TAG, "noticed surfaceView surface lost tid=" + getId());
+                                mLogger.info("noticed surfaceView surface lost tid=" + getId());
                                 if (mHaveEglSurface) {
                                     stopEglSurfaceLocked();
                                 }
@@ -479,13 +484,13 @@ public interface IRenderView {
 
                             // Have we acquired the surface view surface?
                             if (mHasSurface && mWaitingForSurface) {
-                                Logger.info(TAG, "noticed surfaceView surface acquired tid=" + getId());
+                                mLogger.info("noticed surfaceView surface acquired tid=" + getId());
                                 mWaitingForSurface = false;
                                 sGLThreadManager.notifyAll();
                             }
 
                             if (doRenderNotification) {
-                                Logger.info(TAG, "sending render notification tid=" + getId());
+                                mLogger.info("sending render notification tid=" + getId());
                                 mWantRenderNotification = false;
                                 doRenderNotification = false;
                                 mRenderComplete = true;
@@ -530,9 +535,8 @@ public interface IRenderView {
                                         w = mWidth;
                                         h = mHeight;
                                         mWantRenderNotification = true;
-                                        Logger.info(TAG,
-                                                "noticing that we want render notification tid="
-                                                        + getId());
+                                        mLogger.info("noticing that we want render notification tid="
+                                                + getId());
 
                                         // Destroy and recreate the EGL surface.
                                         createEglSurface = true;
@@ -548,25 +552,27 @@ public interface IRenderView {
                                 }
                             } else {
                                 if (finishDrawingRunnable != null) {
-                                    Logger.debug(TAG, "Warning, !readyToDraw() but waiting for " +
+                                    mLogger.debug("Warning, !readyToDraw() but waiting for " +
                                             "draw finished! Early reporting draw finished.");
                                     finishDrawingRunnable.run();
                                     finishDrawingRunnable = null;
                                 }
                             }
                             // By design, this is the only place in a GLThread thread where we wait().
-                            Logger.info(TAG, "waiting tid=" + getId()
-                                    + " mHaveEglContext: " + mHaveEglContext
-                                    + " mHaveEglSurface: " + mHaveEglSurface
-                                    + " mFinishedCreatingEglSurface: " + mFinishedCreatingEglSurface
-                                    + " mPaused: " + mPaused
-                                    + " mHasSurface: " + mHasSurface
-                                    + " mSurfaceIsBad: " + mSurfaceIsBad
-                                    + " mWaitingForSurface: " + mWaitingForSurface
-                                    + " mWidth: " + mWidth
-                                    + " mHeight: " + mHeight
-                                    + " mRequestRender: " + mRequestRender
-                                    + " mRenderMode: " + mRenderMode);
+                            if (mLogger.getLevel() >= Logger.DEBUG) {
+                                mLogger.debug("waiting tid=" + getId()
+                                        + " mHaveEglContext: " + mHaveEglContext
+                                        + " mHaveEglSurface: " + mHaveEglSurface
+                                        + " mFinishedCreatingEglSurface: " + mFinishedCreatingEglSurface
+                                        + " mPaused: " + mPaused
+                                        + " mHasSurface: " + mHasSurface
+                                        + " mSurfaceIsBad: " + mSurfaceIsBad
+                                        + " mWaitingForSurface: " + mWaitingForSurface
+                                        + " mWidth: " + mWidth
+                                        + " mHeight: " + mHeight
+                                        + " mRequestRender: " + mRequestRender
+                                        + " mRenderMode: " + mRenderMode);
+                            }
                             sGLThreadManager.wait();
                         }
                     } // end of synchronized(sGLThreadManager)
@@ -578,7 +584,7 @@ public interface IRenderView {
                     }
 
                     if (createEglSurface) {
-                        Logger.debug(TAG, "egl createSurface");
+                        mLogger.debug("egl createSurface");
                         try {
                             mWindowSurface = new WindowSurface(mEglCore, getSurface(), false);
                             mWindowSurface.makeCurrent();
@@ -598,7 +604,7 @@ public interface IRenderView {
                     }
 
                     if (createEglContext) {
-                        Logger.debug(TAG, "onSurfaceCreated");
+                        mLogger.debug("onSurfaceCreated");
                         IRenderView view = mRenderViewWeakRef.get();
                         if (view != null) {
                             Renderer renderer = view.getRenderer();
@@ -606,7 +612,7 @@ public interface IRenderView {
                                 try {
                                     renderer.create(mEglCore, mWindowSurface);
                                 } catch (Exception e) {
-                                    Logger.error(TAG, "renderer onSurfaceCreated error", e);
+                                    mLogger.error("renderer onSurfaceCreated error", e);
                                 }
                             }
                         }
@@ -614,7 +620,7 @@ public interface IRenderView {
                     }
 
                     if (sizeChanged) {
-                        Logger.debug(TAG, "onSurfaceChanged(" + w + ", " + h + ")");
+                        mLogger.debug("onSurfaceChanged(" + w + ", " + h + ")");
                         IRenderView view = mRenderViewWeakRef.get();
                         if (view != null) {
                             Renderer renderer = view.getRenderer();
@@ -622,14 +628,14 @@ public interface IRenderView {
                                 try {
                                     renderer.resize(w, h);
                                 } catch (Exception e) {
-                                    Logger.error(TAG, "renderer onSurfaceChanged error", e);
+                                    mLogger.error("renderer onSurfaceChanged error", e);
                                 }
                             }
                         }
                         sizeChanged = false;
                     }
 
-                    Logger.debug(TAG, "onDrawFrame tid=" + getId());
+                    mLogger.debug("onDrawFrame tid=" + getId());
                     {
                         IRenderView view = mRenderViewWeakRef.get();
                         if (view != null) {
@@ -642,7 +648,7 @@ public interface IRenderView {
                                         finishDrawingRunnable = null;
                                     }
                                 } catch (Exception e) {
-                                    Logger.error(TAG, "renderer onDrawFrame error", e);
+                                    mLogger.error("renderer onDrawFrame error", e);
                                 }
                             }
                         }
@@ -650,7 +656,7 @@ public interface IRenderView {
 
                     boolean swapResult = mWindowSurface.swapBuffers();
                     if (!swapResult) {
-                        Logger.error(TAG, "egl context lost tid=" + getId());
+                        mLogger.error("egl context lost tid=" + getId());
                         mLostEglContext = true;
                         synchronized (sGLThreadManager) {
                             mSurfaceIsBad = true;
@@ -726,7 +732,7 @@ public interface IRenderView {
 
         public void surfaceCreated() {
             synchronized (sGLThreadManager) {
-                Logger.info(TAG, "surfaceCreated tid=" + getId());
+                mLogger.info("surfaceCreated tid=" + getId());
                 mHasSurface = true;
                 mFinishedCreatingEglSurface = false;
                 sGLThreadManager.notifyAll();
@@ -744,7 +750,7 @@ public interface IRenderView {
 
         public void surfaceDestroyed() {
             synchronized (sGLThreadManager) {
-                Logger.info(TAG, "surfaceDestroyed tid=" + getId());
+                mLogger.info("surfaceDestroyed tid=" + getId());
                 mHasSurface = false;
                 sGLThreadManager.notifyAll();
                 while ((!mWaitingForSurface) && (!mExited)) {
@@ -759,7 +765,7 @@ public interface IRenderView {
 
         public void onPause() {
             synchronized (sGLThreadManager) {
-                Logger.info(TAG, "onPause tid=" + getId());
+                mLogger.info("onPause tid=" + getId());
                 mRequestPaused = true;
                 sGLThreadManager.notifyAll();
                 while ((!mExited) && (!mPaused)) {
@@ -775,7 +781,7 @@ public interface IRenderView {
 
         public void onResume() {
             synchronized (sGLThreadManager) {
-                Logger.info(TAG, "onResume tid=" + getId());
+                mLogger.info("onResume tid=" + getId());
                 mRequestPaused = false;
                 mRequestRender = true;
                 mRenderComplete = false;
