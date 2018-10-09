@@ -7,6 +7,9 @@ import android.view.TextureView;
 
 import com.erlei.gdx.utils.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class GLTextureView extends TextureView implements IRenderView, TextureView.SurfaceTextureListener {
     private static final String TAG = "GLSurfaceViewI";
@@ -14,6 +17,7 @@ public class GLTextureView extends TextureView implements IRenderView, TextureVi
     private Renderer mRenderer;
     private GLThread mGLThread;
     private boolean mDetached;
+    private List<SurfaceSizeChangeListener> mSizeChangeListeners = new ArrayList<>();
 
     public GLTextureView(Context context) {
         super(context);
@@ -48,6 +52,27 @@ public class GLTextureView extends TextureView implements IRenderView, TextureVi
         }
     }
 
+    @Override
+    public void addSurfaceSizeChangeListener(SurfaceSizeChangeListener listener) {
+        mSizeChangeListeners.add(listener);
+    }
+
+    @Override
+    public void removeSurfaceSizeChangeListener(SurfaceSizeChangeListener listener) {
+        mSizeChangeListeners.remove(listener);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mRenderer != null) mRenderer.release();
+        mSizeChangeListeners.clear();
+    }
+
+    private void handleSizeChange(int h, int w) {
+        for (SurfaceSizeChangeListener sizeChangeListener : mSizeChangeListeners) {
+            sizeChangeListener.onSizeChanged(w, h);
+        }
+    }
     @Override
     public ViewType getViewType() {
         return ViewType.TextureView;
@@ -184,12 +209,14 @@ public class GLTextureView extends TextureView implements IRenderView, TextureVi
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {
         mGLThread.onWindowResize(width, height);
+        handleSizeChange(width, height);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mGLThread.onWindowResize(w, h);
+        handleSizeChange(w, h);
     }
 
     @Override

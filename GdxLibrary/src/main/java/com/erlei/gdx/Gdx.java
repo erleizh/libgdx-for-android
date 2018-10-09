@@ -79,6 +79,11 @@ public abstract class Gdx implements Application, IRenderView.Renderer {
         mFPSCounter = initFPSCounter();
     }
 
+
+    public IRenderView getRenderView() {
+        return mRenderView;
+    }
+
     protected FPSCounter initFPSCounter() {
         return new FPSCounter(new FPSCounter.FPSCounter2());
     }
@@ -270,15 +275,18 @@ public abstract class Gdx implements Application, IRenderView.Renderer {
     public void resume() {
         mPause = false;
     }
-
     @Override
-    public void dispose() {
+    public void release() {
         app = null;
         files = null;
         gl = null;
         gl20 = null;
         gl30 = null;
         mRenderView = null;
+    }
+
+    @Override
+    public void dispose() {
     }
 
     public void setGL30(GL30 gles30) {

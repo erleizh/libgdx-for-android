@@ -51,6 +51,27 @@ public interface IRenderView {
         }
     }
 
+
+    interface SurfaceSizeChangeListener {
+        /**
+         * @param w - The new width of the surface.
+         * @param h - The new height of the surface.
+         */
+        void onSizeChanged(int w, int h);
+    }
+
+    void addSurfaceSizeChangeListener(SurfaceSizeChangeListener listener);
+
+    void removeSurfaceSizeChangeListener(SurfaceSizeChangeListener listener);
+
+
+    /**
+     * Get the view type
+     *
+     * @return the view type
+     * @see ViewType#TextureView
+     * @see ViewType#SurfaceView
+     */
     ViewType getViewType();
 
     /**
@@ -145,6 +166,8 @@ public interface IRenderView {
     void onResume();
 
 
+    void onDestroy();
+
     /**
      * Queue a runnable to be run on the GL rendering thread. This can be used
      * to communicate with the Renderer on the rendering thread.
@@ -205,6 +228,8 @@ public interface IRenderView {
         void resume();
 
         void dispose();
+
+        void release();
     }
 
     class RendererAdapter implements Renderer {
@@ -237,6 +262,10 @@ public interface IRenderView {
 
         @Override
         public void dispose() {
+
+        }
+        @Override
+        public void release() {
 
         }
     }
