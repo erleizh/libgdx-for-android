@@ -46,12 +46,7 @@ public class CameraTexture extends Texture {
 
     public static class CameraTextureData implements TextureData {
 
-        private int width;
-        private int height;
-
-        public CameraTextureData(int width, int height) {
-            this.width = width;
-            this.height = height;
+        public CameraTextureData() {
         }
 
         @Override
@@ -71,12 +66,12 @@ public class CameraTexture extends Texture {
 
         @Override
         public Pixmap consumePixmap() {
-            throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
+            throw new GdxRuntimeException("This CameraTextureData implementation does not return a Pixmap");
         }
 
         @Override
         public boolean disposePixmap() {
-            throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
+            throw new GdxRuntimeException("This CameraTextureData implementation does not return a Pixmap");
         }
 
         @Override
@@ -88,12 +83,12 @@ public class CameraTexture extends Texture {
 
         @Override
         public int getWidth() {
-            return width;
+            throw new GdxRuntimeException("This CameraTextureData implementation does not support getWidth");
         }
 
         @Override
         public int getHeight() {
-            return height;
+            throw new GdxRuntimeException("This CameraTextureData implementation does not support getHeight");
         }
 
         @Override

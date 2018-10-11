@@ -45,6 +45,7 @@ import static android.view.Surface.ROTATION_90;
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Camera {
+    private static final String TAG = "Camera";
     private static final String S_CAMERA_SUPPORTED_MODES = "camera_supported_modes";
     private final SparseArray<HashMap<String, String>> mSupportedModes = new SparseArray<>();
     /**
@@ -97,8 +98,8 @@ public class Camera {
     private CameraBuilder mBuilder;
     private int mCameraId = -1;
     private android.hardware.Camera mCamera;
-    private android.hardware.Camera.Size mPreviewSize;
-    private android.hardware.Camera.Size mPictureSize;
+    private Size mPreviewSize;
+    private Size mPictureSize;
     private int mDisplayOrientation;
     private int mCameraOrientation;
     private boolean mOpened;
@@ -197,7 +198,7 @@ public class Camera {
      * @return 获取预览的尺寸 该方法需要在相机成功预览之后调用才会有正确结果
      */
     public Size getPreviewSize() {
-        return new Size(mPreviewSize);
+        return mPreviewSize;
     }
 
     /**
@@ -253,30 +254,30 @@ public class Camera {
 
         //设置预览大小
         if (mBuilder.mPreviewSizeSelector != null) {
-            mPreviewSize = mBuilder.mPreviewSizeSelector.select(cameraParameters.getSupportedPreviewSizes(), mBuilder.mPreviewSize);
+            mPreviewSize = new Size(mBuilder.mPreviewSizeSelector.select(cameraParameters.getSupportedPreviewSizes(), mBuilder.mPreviewSize));
         } else {
-            mPreviewSize = getOptimalSize("SupportedPreviewSizes", cameraParameters.getSupportedPreviewSizes(), mBuilder.mPreviewSize);
+            mPreviewSize = new Size(getOptimalSize("SupportedPreviewSizes", cameraParameters.getSupportedPreviewSizes(), mBuilder.mPreviewSize));
         }
-        if (mPreviewSize == null) {
+        if (!mPreviewSize.isValid()) {
             handleCameraCallback(UNSUPPORTED_PREVIEW_SIZE, "没有找到合适的预览尺寸");
             throw new IllegalStateException("没有找到合适的预览尺寸");
         }
-        log("requestPreviewSize ：" + mBuilder.mPreviewSize.toString() + "\t\t previewSize : " + getPreviewSize().toString());
+        Logger.info(TAG,"requestPreviewSize ：" + mBuilder.mPreviewSize.toString() + "\t\t previewSize : " + getPreviewSize().toString());
         cameraParameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
 
 
         //设置拍照的图片尺寸
         if (mBuilder.mPictureSize != null) {
             if (mBuilder.mPictureSizeSelector != null) {
-                mPictureSize = mBuilder.mPictureSizeSelector.select(cameraParameters.getSupportedPreviewSizes(), mBuilder.mPictureSize);
+                mPictureSize = new Size(mBuilder.mPictureSizeSelector.select(cameraParameters.getSupportedPreviewSizes(), mBuilder.mPictureSize));
             } else {
-                mPictureSize = getOptimalSize("SupportedPictureSizes", cameraParameters.getSupportedPictureSizes(), mBuilder.mPictureSize);
+                mPictureSize = new Size(getOptimalSize("SupportedPictureSizes", cameraParameters.getSupportedPictureSizes(), mBuilder.mPictureSize));
             }
-            if (mPictureSize == null) {
+            if (!mPictureSize.isValid()) {
                 handleCameraCallback(UNSUPPORTED_PICTURE_SIZE, "没有找到合适的图片尺寸");
                 throw new IllegalStateException("没有找到合适的图片尺寸");
             }
-            log("requestPictureSize ：" + mBuilder.mPictureSize.toString() + "\t\t pictureSize : " + getPictureSize().toString());
+            Logger.info(TAG,"requestPictureSize ：" + mBuilder.mPictureSize.toString() + "\t\t pictureSize : " + getPictureSize().toString());
             cameraParameters.setPictureSize(mPictureSize.width, mPictureSize.height);
         }
         //拍照的图片缩放
@@ -395,7 +396,7 @@ public class Camera {
 
 
     public Size getPictureSize() {
-        return new Size(mPictureSize);
+        return mPictureSize;
     }
 
 

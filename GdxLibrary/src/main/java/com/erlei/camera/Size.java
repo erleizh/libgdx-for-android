@@ -2,8 +2,8 @@ package com.erlei.camera;
 
 
 public class Size {
-    protected int width;
-    protected int height;
+    protected int width = -1;
+    protected int height = -1;
 
     public Size(android.hardware.Camera.Size size) {
         if (size == null) return;
@@ -15,6 +15,10 @@ public class Size {
         if (size == null) return;
         width = size.width;
         height = size.height;
+    }
+
+    public boolean isValid(){
+        return width != -1 && height != -1;
     }
 
     public int getWidth() {

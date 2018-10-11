@@ -5,6 +5,6 @@ attribute vec4 a_texCoord0;
 varying vec2 v_texCoords;
 void main()
 {
-   v_texCoords = (a_texCoord0 * u_texMatrix).xy;
+   v_texCoords = (u_texMatrix * a_texCoord0 ).xy;
    gl_Position =  u_projectionViewMatrix * a_position;
 }
