@@ -22,7 +22,6 @@ import com.erlei.gdx.graphics.g3d.particles.ParticleChannels.Rotation2dInitializ
 import com.erlei.gdx.graphics.g3d.particles.ParticleChannels.ScaleInitializer;
 import com.erlei.gdx.graphics.g3d.particles.ParticleChannels.TextureRegionInitializer;
 import com.erlei.gdx.graphics.g3d.particles.ParticleControllerComponent;
-import com.erlei.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 import com.erlei.gdx.graphics.g3d.particles.batches.ParticleBatch;
 import com.erlei.gdx.graphics.g3d.particles.batches.PointSpriteParticleBatch;
 

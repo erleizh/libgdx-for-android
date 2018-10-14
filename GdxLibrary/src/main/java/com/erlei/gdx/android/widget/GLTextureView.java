@@ -5,7 +5,6 @@ import android.graphics.SurfaceTexture;
 import android.util.AttributeSet;
 import android.view.TextureView;
 
-import com.erlei.gdx.android.widget.IRenderView;
 import com.erlei.gdx.utils.Logger;
 
 import java.util.ArrayList;

@@ -467,13 +467,13 @@ public class PixmapPacker implements Disposable {
      *
      * @author Nathan Sweet
      */
-    static public interface PackStrategy {
-        public void sort(Array<Pixmap> images);
+    public interface PackStrategy {
+        void sort(Array<Pixmap> images);
 
         /**
          * Returns the page the rectangle should be placed in and modifies the specified rectangle position.
          */
-        public Page pack(PixmapPacker packer, String name, Rectangle rect);
+        Page pack(PixmapPacker packer, String name, Rectangle rect);
     }
 
     /**

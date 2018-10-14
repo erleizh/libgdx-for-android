@@ -53,8 +53,6 @@ import com.erlei.gdx.files.FileHandle;
  */
 public class ResolutionFileResolver implements FileHandleResolver {
 
-    private final GLContext mGlContext;
-
     public static class Resolution {
         public final int portraitWidth;
         public final int portraitHeight;
@@ -87,17 +85,16 @@ public class ResolutionFileResolver implements FileHandleResolver {
      * @param baseResolver The {@link FileHandleResolver} that will ultimately used to resolve the file.
      * @param descriptors  A list of {@link Resolution}s. At least one has to be supplied.
      */
-    public ResolutionFileResolver(GLContext glContext, FileHandleResolver baseResolver, Resolution... descriptors) {
+    public ResolutionFileResolver(FileHandleResolver baseResolver, Resolution... descriptors) {
         if (descriptors.length == 0)
             throw new IllegalArgumentException("At least one Resolution needs to be supplied.");
         this.baseResolver = baseResolver;
         this.descriptors = descriptors;
-        mGlContext = glContext;
     }
 
     @Override
     public FileHandle resolve(String fileName) {
-        Resolution bestResolution = choose(mGlContext, descriptors);
+        Resolution bestResolution = choose(descriptors);
         FileHandle originalHandle = new FileHandle(fileName);
         FileHandle handle = baseResolver.resolve(resolve(originalHandle, bestResolution.folder));
         if (!handle.exists()) handle = baseResolver.resolve(fileName);
@@ -113,7 +110,8 @@ public class ResolutionFileResolver implements FileHandleResolver {
         return parentString + suffix + "/" + originalHandle.name();
     }
 
-    static public Resolution choose(GLContext glContext, Resolution... descriptors) {
+    static public Resolution choose(Resolution... descriptors) {
+        GLContext glContext = GLContext.getGLContext();
         int w = glContext.getWidth(), h = glContext.getHeight();
 
         // Prefer the shortest side.

@@ -16,11 +16,11 @@
 
 package com.erlei.gdx.utils;
 
+import com.erlei.gdx.files.FileHandle;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import com.erlei.gdx.files.FileHandle;
 
 /** Lightweight UBJSON parser.<br>
  * <br>
@@ -216,7 +216,7 @@ public class UBJsonReader implements BaseJsonReader {
 		throws IOException {
 		if (type == 'i') return (long)readUChar(din);
 		if (type == 'I') return (long)readUShort(din);
-		if (type == 'l') return (long)readUInt(din);
+		if (type == 'l') return readUInt(din);
 		if (type == 'L') return din.readLong();
 		if (useIntOnError) {
 			long result = (long)((short)type & 0xFF) << 24;

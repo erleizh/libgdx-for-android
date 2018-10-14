@@ -15,12 +15,12 @@
  */
 package com.erlei.gdx.files;
 
+import android.content.Context;
+import android.os.Environment;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
-
-import android.content.Context;
-import android.os.Environment;
 
 public class APKExpansionSupport {
 	// The shared path to all app expansion files

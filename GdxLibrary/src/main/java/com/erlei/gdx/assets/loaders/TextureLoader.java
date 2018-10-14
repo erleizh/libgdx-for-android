@@ -20,17 +20,12 @@ import com.erlei.gdx.assets.AssetDescriptor;
 import com.erlei.gdx.assets.AssetLoaderParameters;
 import com.erlei.gdx.assets.AssetManager;
 import com.erlei.gdx.files.FileHandle;
-import com.erlei.gdx.graphics.GLTexture;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Pixmap.Format;
-import com.erlei.gdx.graphics.PixmapIO;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.Texture.TextureFilter;
 import com.erlei.gdx.graphics.Texture.TextureWrap;
 import com.erlei.gdx.graphics.TextureData;
-import com.erlei.gdx.graphics.glutils.ETC1TextureData;
-import com.erlei.gdx.graphics.glutils.FileTextureData;
-import com.erlei.gdx.graphics.glutils.KTXTextureData;
 import com.erlei.gdx.utils.Array;
 
 /** {@link AssetLoader} for {@link Texture} instances. The pixel data is loaded asynchronously. The texture is then created on the
@@ -43,9 +38,9 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 		String filename;
 		TextureData data;
 		Texture texture;
-	};
+	}
 
-	TextureLoaderInfo info = new TextureLoaderInfo();
+    TextureLoaderInfo info = new TextureLoaderInfo();
 
 	public TextureLoader (FileHandleResolver resolver) {
 		super(resolver);

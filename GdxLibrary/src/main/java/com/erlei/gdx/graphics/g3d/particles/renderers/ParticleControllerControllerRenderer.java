@@ -16,12 +16,10 @@
 
 package com.erlei.gdx.graphics.g3d.particles.renderers;
 
-import com.erlei.gdx.graphics.g3d.ModelInstance;
 import com.erlei.gdx.graphics.g3d.particles.ParallelArray.ObjectChannel;
 import com.erlei.gdx.graphics.g3d.particles.ParticleChannels;
 import com.erlei.gdx.graphics.g3d.particles.ParticleController;
 import com.erlei.gdx.graphics.g3d.particles.ParticleControllerComponent;
-import com.erlei.gdx.graphics.g3d.particles.batches.ModelInstanceParticleBatch;
 import com.erlei.gdx.graphics.g3d.particles.batches.ParticleBatch;
 import com.erlei.gdx.utils.GdxRuntimeException;
 

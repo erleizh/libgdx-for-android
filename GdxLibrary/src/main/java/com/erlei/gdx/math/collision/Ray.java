@@ -16,10 +16,10 @@
 
 package com.erlei.gdx.math.collision;
 
-import java.io.Serializable;
-
 import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.math.Vector3;
+
+import java.io.Serializable;
 
 /** Encapsulates a ray having a starting position and a unit length direction.
  * 

@@ -16,8 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.particles;
 
-import java.io.IOException;
-
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.assets.AssetDescriptor;
 import com.erlei.gdx.assets.AssetLoaderParameters;
 import com.erlei.gdx.assets.AssetManager;
@@ -30,6 +29,8 @@ import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.Json;
 import com.erlei.gdx.utils.ObjectMap;
 import com.erlei.gdx.utils.reflect.ClassReflection;
+
+import java.io.IOException;
 
 /** This class can save and load a {@link ParticleEffect}. It should be added as {@link AsynchronousAssetLoader} to the
  * {@link AssetManager} so it will be able to load the effects. It's important to note that the two classes
@@ -68,7 +69,7 @@ public class ParticleEffectLoader extends
 
 			// If the asset doesn't exist try to load it from loading effect directory
 			if (!resolve(assetData.filename).exists()) {
-				assetData.filename = file.parent().child(AndroidFiles.getInstance().internal(assetData.filename).name()).path();
+				assetData.filename = file.parent().child(GLContext.getFiles().internal(assetData.filename).name()).path();
 			}
 
 			if (assetData.type == ParticleEffect.class) {
@@ -82,7 +83,7 @@ public class ParticleEffectLoader extends
 	}
 
 	/** Saves the effect to the given file contained in the passed in parameter. */
-	public void save (ParticleEffect effect, ParticleEffectSaveParameter parameter) throws IOException {
+	public void save (ParticleEffect effect, ParticleEffectSaveParameter parameter) {
 		ResourceData<ParticleEffect> data = new ResourceData<ParticleEffect>(effect);
 
 		// effect assets

@@ -24,13 +24,9 @@ import com.erlei.gdx.graphics.Cubemap;
 import com.erlei.gdx.graphics.CubemapData;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Pixmap.Format;
-import com.erlei.gdx.graphics.PixmapIO;
-import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.Texture.TextureFilter;
 import com.erlei.gdx.graphics.Texture.TextureWrap;
 import com.erlei.gdx.graphics.TextureData;
-import com.erlei.gdx.graphics.glutils.ETC1TextureData;
-import com.erlei.gdx.graphics.glutils.FileTextureData;
 import com.erlei.gdx.graphics.glutils.KTXTextureData;
 import com.erlei.gdx.utils.Array;
 
@@ -44,9 +40,9 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 		String filename;
 		CubemapData data;
 		Cubemap cubemap;
-	};
+	}
 
-	CubemapLoaderInfo info = new CubemapLoaderInfo();
+    CubemapLoaderInfo info = new CubemapLoaderInfo();
 
 	public CubemapLoader (FileHandleResolver resolver) {
 		super(resolver);

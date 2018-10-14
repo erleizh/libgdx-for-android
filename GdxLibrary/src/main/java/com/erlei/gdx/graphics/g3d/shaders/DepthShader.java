@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.shaders;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.VertexAttribute;
@@ -47,7 +48,7 @@ public class DepthShader extends DefaultShader {
 
 	public final static String getDefaultVertexShader () {
 		if (defaultVertexShader == null)
-			defaultVertexShader = AndroidFiles.getInstance().classpath("com/erlei/gdx/graphics/g3d/shaders/depth.vertex.glsl").readString();
+			defaultVertexShader = GLContext.getFiles().classpath("com/erlei/gdx/graphics/g3d/shaders/depth.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 
@@ -55,7 +56,7 @@ public class DepthShader extends DefaultShader {
 
 	public final static String getDefaultFragmentShader () {
 		if (defaultFragmentShader == null)
-			defaultFragmentShader = AndroidFiles.getInstance().classpath("com/erlei/gdx/graphics/g3d/shaders/depth.fragment.glsl").readString();
+			defaultFragmentShader = GLContext.getFiles().classpath("com/erlei/gdx/graphics/g3d/shaders/depth.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 
@@ -104,14 +105,14 @@ public class DepthShader extends DefaultShader {
 	@Override
 	public void begin (Camera camera, RenderContext context) {
 		super.begin(camera, context);
-		// Gdx.gl20.glEnable(GL20.GL_POLYGON_OFFSET_FILL);
-		// Gdx.gl20.glPolygonOffset(2.f, 100.f);
+		// GLContext.getGL20().glEnable(GL20.GL_POLYGON_OFFSET_FILL);
+		// GLContext.getGL20().glPolygonOffset(2.f, 100.f);
 	}
 
 	@Override
 	public void end () {
 		super.end();
-		// Gdx.gl20.glDisable(GL20.GL_POLYGON_OFFSET_FILL);
+		// GLContext.getGL20().glDisable(GL20.GL_POLYGON_OFFSET_FILL);
 	}
 
 	@Override

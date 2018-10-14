@@ -16,8 +16,6 @@
 
 package com.erlei.gdx.graphics.g3d.particles.influencers;
 
-import java.util.Iterator;
-
 import com.erlei.gdx.assets.AssetDescriptor;
 import com.erlei.gdx.assets.AssetManager;
 import com.erlei.gdx.graphics.g3d.particles.ParallelArray.ObjectChannel;
@@ -29,6 +27,8 @@ import com.erlei.gdx.graphics.g3d.particles.ResourceData.SaveData;
 import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.IntArray;
 import com.erlei.gdx.utils.Pool;
+
+import java.util.Iterator;
 
 /** It's an {@link Influencer} which controls which {@link ParticleController} will be assigned to a particle.
  * @author Inferno */

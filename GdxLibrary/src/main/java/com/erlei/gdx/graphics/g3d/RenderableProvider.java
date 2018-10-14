@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.g3d;
 
-import com.erlei.gdx.graphics.g3d.model.Node;
 import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.Pool;
 
@@ -28,5 +27,5 @@ public interface RenderableProvider {
 	 * internally. The resulting array can be rendered via a {@link ModelBatch}.
 	 * @param renderables the output array
 	 * @param pool the pool to obtain Renderables from */
-	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool);
+    void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool);
 }

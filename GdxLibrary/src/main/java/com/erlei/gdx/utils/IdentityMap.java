@@ -16,11 +16,11 @@
 
 package com.erlei.gdx.utils;
 
+import com.erlei.gdx.math.MathUtils;
+
 import java.lang.StringBuilder;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import com.erlei.gdx.math.MathUtils;
 
 /** An unordered map that uses identity comparison for keys. This implementation is a cuckoo hash map using 3 hashes, random
  * walking, and a small stash for problematic keys. Null keys are not allowed. Null values are allowed. No allocation is done

@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics.glutils;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Pixmap.Format;
@@ -73,12 +74,12 @@ public class FloatTextureData implements TextureData {
 
     @Override
     public void consumeCustomData(int target) {
-        if (!Gdx.app.supportsExtension("OES_texture_float"))
+        if (!GLContext.getGLContext().supportsExtension("OES_texture_float"))
             throw new GdxRuntimeException("Extension OES_texture_float not supported!");
 
         // GLES and WebGL defines texture format by 3rd and 8th argument,
         // so to get a float texture one needs to supply GL_RGBA and GL_FLOAT there.
-        Gdx.gl.glTexImage2D(target, 0, GL20.GL_RGBA, width, height, 0, GL20.GL_RGBA, GL20.GL_FLOAT, buffer);
+        GLContext.getGL20().glTexImage2D(target, 0, GL20.GL_RGBA, width, height, 0, GL20.GL_RGBA, GL20.GL_FLOAT, buffer);
 
     }
 

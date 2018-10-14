@@ -16,11 +16,11 @@
 
 package com.erlei.gdx.utils;
 
+import com.erlei.gdx.utils.reflect.ArrayReflection;
+
 import java.lang.StringBuilder;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import com.erlei.gdx.utils.reflect.ArrayReflection;
 
 /** A resizable, ordered array of objects with efficient add and remove at the beginning and end. Values in the backing array may
  * wrap back to the beginning, making add and remove at the beginning and end O(1) (unless the backing array needs to resize when

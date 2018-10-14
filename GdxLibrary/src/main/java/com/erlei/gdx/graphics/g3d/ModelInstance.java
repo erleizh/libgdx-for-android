@@ -27,7 +27,6 @@ import com.erlei.gdx.math.Vector3;
 import com.erlei.gdx.math.collision.BoundingBox;
 import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.ArrayMap;
-import com.erlei.gdx.utils.ObjectMap;
 import com.erlei.gdx.utils.Pool;
 
 /** An instance of a {@link Model}, allows to specify global transform and modify the materials, as it has a copy of the model's

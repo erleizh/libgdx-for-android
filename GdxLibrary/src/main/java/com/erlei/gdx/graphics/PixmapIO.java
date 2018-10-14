@@ -16,6 +16,13 @@
 
 package com.erlei.gdx.graphics;
 
+import com.erlei.gdx.files.FileHandle;
+import com.erlei.gdx.graphics.Pixmap.Format;
+import com.erlei.gdx.utils.ByteArray;
+import com.erlei.gdx.utils.Disposable;
+import com.erlei.gdx.utils.GdxRuntimeException;
+import com.erlei.gdx.utils.StreamUtils;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -28,13 +35,6 @@ import java.util.zip.CheckedOutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
-
-import com.erlei.gdx.files.FileHandle;
-import com.erlei.gdx.graphics.Pixmap.Format;
-import com.erlei.gdx.utils.ByteArray;
-import com.erlei.gdx.utils.Disposable;
-import com.erlei.gdx.utils.GdxRuntimeException;
-import com.erlei.gdx.utils.StreamUtils;
 
 /** Writes Pixmaps to various formats.
  * @author mzechner

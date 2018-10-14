@@ -41,10 +41,10 @@ import com.erlei.gdx.utils.reflect.ReflectionException;
 public class ResourceData<T> implements Json.Serializable {
 
 	/** This interface must be implemented by any class requiring additional assets to be loaded/saved */
-	public static interface Configurable<T> {
-		public void save(AssetManager manager, ResourceData<T> resources);
+	public interface Configurable<T> {
+		void save(AssetManager manager, ResourceData<T> resources);
 
-		public void load(AssetManager manager, ResourceData<T> resources);
+		void load(AssetManager manager, ResourceData<T> resources);
 	}
 
 	/** Contains all the saved data. {@link #data} is a map which link an asset name to its instance. {@link #assets} is an array of

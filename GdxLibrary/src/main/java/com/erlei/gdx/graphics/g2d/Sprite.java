@@ -16,6 +16,12 @@
 
 package com.erlei.gdx.graphics.g2d;
 
+import com.erlei.gdx.graphics.Color;
+import com.erlei.gdx.graphics.Texture;
+import com.erlei.gdx.math.MathUtils;
+import com.erlei.gdx.math.Rectangle;
+import com.erlei.gdx.utils.NumberUtils;
+
 import static com.erlei.gdx.graphics.g2d.Batch.C1;
 import static com.erlei.gdx.graphics.g2d.Batch.C2;
 import static com.erlei.gdx.graphics.g2d.Batch.C3;
@@ -36,13 +42,6 @@ import static com.erlei.gdx.graphics.g2d.Batch.Y1;
 import static com.erlei.gdx.graphics.g2d.Batch.Y2;
 import static com.erlei.gdx.graphics.g2d.Batch.Y3;
 import static com.erlei.gdx.graphics.g2d.Batch.Y4;
-import static com.erlei.gdx.graphics.g2d.SpriteBatch.*;
-
-import com.erlei.gdx.graphics.Color;
-import com.erlei.gdx.graphics.Texture;
-import com.erlei.gdx.math.MathUtils;
-import com.erlei.gdx.math.Rectangle;
-import com.erlei.gdx.utils.NumberUtils;
 
 /** Holds the geometry, color, and texture information for drawing 2D sprites using {@link Batch}. A Sprite has a position and a
  * size given as width and height. The position is relative to the origin of the coordinate system specified via

@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics.glutils;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.GL20;
 
 /** To deal with HDPI monitors properly, use the glViewport and glScissor functions of this class instead of directly calling
@@ -28,22 +29,22 @@ public class HdpiUtils {
 	/** Calls {@link GL20#glScissor(int, int, int, int)}, expecting the coordinates and sizes given in logical coordinates and
 	 * automatically converts them to backbuffer coordinates, which may be bigger on HDPI screens. */
 	public static void glScissor (int x, int y, int width, int height) {
-		if (Gdx.app.getWidth() != Gdx.app.getBackBufferWidth()
-			|| Gdx.app.getHeight() != Gdx.app.getBackBufferHeight()) {
-			Gdx.gl.glScissor(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
+		if (GLContext.getGLContext().getWidth() != GLContext.getGLContext().getBackBufferWidth()
+			|| GLContext.getGLContext().getHeight() != GLContext.getGLContext().getBackBufferHeight()) {
+			GLContext.getGL20().glScissor(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
 		} else {
-			Gdx.gl.glScissor(x, y, width, height);
+			GLContext.getGL20().glScissor(x, y, width, height);
 		}
 	}
 
 	/** Calls {@link GL20#glViewport(int, int, int, int)}, expecting the coordinates and sizes given in logical coordinates and
 	 * automatically converts them to backbuffer coordinates, which may be bigger on HDPI screens. */
 	public static void glViewport (int x, int y, int width, int height) {
-		if (Gdx.app.getWidth() != Gdx.app.getBackBufferWidth()
-			|| Gdx.app.getHeight() != Gdx.app.getBackBufferHeight()) {
-			Gdx.gl.glViewport(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
+		if (GLContext.getGLContext().getWidth() != GLContext.getGLContext().getBackBufferWidth()
+			|| GLContext.getGLContext().getHeight() != GLContext.getGLContext().getBackBufferHeight()) {
+			GLContext.getGL20().glViewport(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
 		} else {
-			Gdx.gl.glViewport(x, y, width, height);
+			GLContext.getGL20().glViewport(x, y, width, height);
 		}
 	}
 	
@@ -52,7 +53,7 @@ public class HdpiUtils {
 	 * logical screen coordinates.
 	 */
 	public static int toLogicalX(int backBufferX) {
-		return (int)(backBufferX * Gdx.app.getWidth() / (float) Gdx.app.getBackBufferWidth());
+		return (int)(backBufferX * GLContext.getGLContext().getWidth() / (float) GLContext.getGLContext().getBackBufferWidth());
 	}
 
 	/**
@@ -60,7 +61,7 @@ public class HdpiUtils {
 	 * logical screen coordinates
 	 */
 	public static int toLogicalY(int backBufferY) {
-		return (int)(backBufferY * Gdx.app.getHeight() / (float) Gdx.app.getBackBufferHeight());
+		return (int)(backBufferY * GLContext.getGLContext().getHeight() / (float) GLContext.getGLContext().getBackBufferHeight());
 	}
 	
 	/**
@@ -68,7 +69,7 @@ public class HdpiUtils {
 	 * backbuffer coordinates.
 	 */
 	public static int toBackBufferX(int logicalX) {
-		return (int)(logicalX * Gdx.app.getBackBufferWidth() / (float) Gdx.app.getWidth());
+		return (int)(logicalX * GLContext.getGLContext().getBackBufferWidth() / (float) GLContext.getGLContext().getWidth());
 	}
 
 	/**
@@ -76,6 +77,6 @@ public class HdpiUtils {
 	 * logical screen coordinates
 	 */
 	public static int toBackBufferY(int logicalY) {
-		return (int)(logicalY * Gdx.app.getBackBufferHeight() / (float) Gdx.app.getHeight());
+		return (int)(logicalY * GLContext.getGLContext().getBackBufferHeight() / (float) GLContext.getGLContext().getHeight());
 	}
 }

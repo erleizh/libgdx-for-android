@@ -248,13 +248,13 @@ public interface IRenderView {
      * This interface must be implemented by clients wishing to call
      * {@link android.opengl.GLSurfaceView#setEGLContextFactory(android.opengl.GLSurfaceView.EGLContextFactory)}
      */
-    public interface EGLContextFactory {
+    interface EGLContextFactory {
         EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig);
 
         void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context);
     }
 
-    public class DefaultContextFactory implements android.opengl.GLSurfaceView.EGLContextFactory {
+    class DefaultContextFactory implements android.opengl.GLSurfaceView.EGLContextFactory {
         private static final boolean LOG_THREADS = true;
         private int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
         private int mEGLContextClientVersion = 3;
@@ -285,7 +285,7 @@ public interface IRenderView {
      * This interface must be implemented by clients wishing to call
      * {@link android.opengl.GLSurfaceView#setEGLWindowSurfaceFactory(android.opengl.GLSurfaceView.EGLWindowSurfaceFactory)}
      */
-    public interface EGLWindowSurfaceFactory {
+    interface EGLWindowSurfaceFactory {
         /**
          * @return null if the surface cannot be constructed.
          */
@@ -329,7 +329,7 @@ public interface IRenderView {
      * This interface must be implemented by clients wishing to call
      * {@link android.opengl.GLSurfaceView#setEGLConfigChooser(android.opengl.GLSurfaceView.EGLConfigChooser)}
      */
-    public interface EGLConfigChooser {
+    interface EGLConfigChooser {
         /**
          * Choose a configuration from the list. Implementors typically
          * implement this method by calling
@@ -343,7 +343,7 @@ public interface IRenderView {
         EGLConfig chooseConfig(EGL10 egl, EGLDisplay display);
     }
 
-    public abstract class BaseConfigChooser
+    abstract class BaseConfigChooser
             implements android.opengl.GLSurfaceView.EGLConfigChooser {
         private int mEGLContextClientVersion;
 
@@ -407,7 +407,7 @@ public interface IRenderView {
      * Choose a configuration with exactly the specified r,g,b,a sizes,
      * and at least the specified depth and stencil sizes.
      */
-    public class ComponentSizeChooser extends BaseConfigChooser {
+    class ComponentSizeChooser extends BaseConfigChooser {
         public ComponentSizeChooser(int redSize, int greenSize, int blueSize,
                                     int alphaSize, int depthSize, int stencilSize) {
             super(new int[]{
@@ -476,7 +476,7 @@ public interface IRenderView {
      * This class will choose a RGB_888 surface with
      * or without a depth buffer.
      */
-    public class SimpleEGLConfigChooser extends ComponentSizeChooser {
+    class SimpleEGLConfigChooser extends ComponentSizeChooser {
         public SimpleEGLConfigChooser(boolean withDepthBuffer) {
             super(8, 8, 8, 0, withDepthBuffer ? 16 : 0, 0);
         }
@@ -486,13 +486,12 @@ public interface IRenderView {
      * An EGL helper class.
      */
 
-    public static class EglHelper {
+    class EglHelper {
         private static final boolean LOG_EGL = true;
         private static final boolean LOG_THREADS = true;
         private DefaultContextFactory mEGLContextFactory = new DefaultContextFactory();
         private BaseConfigChooser mEGLConfigChooser = new SimpleEGLConfigChooser(false);
         private DefaultWindowSurfaceFactory mEGLWindowSurfaceFactory = new DefaultWindowSurfaceFactory();
-        ;
 
         public EglHelper(WeakReference<IRenderView> glSurfaceViewWeakRef) {
             mGLSurfaceViewWeakRef = glSurfaceViewWeakRef;
@@ -686,7 +685,7 @@ public interface IRenderView {
      * All potentially blocking synchronization is done through the
      * sGLThreadManager object. This avoids multiple-lock ordering issues.
      */
-    static class GLThread extends Thread {
+    class GLThread extends Thread {
         private static final boolean LOG_THREADS = true;
         private static final boolean LOG_PAUSE_RESUME = true;
         private static final boolean LOG_SURFACE = true;
@@ -815,8 +814,7 @@ public interface IRenderView {
                             // When pausing, optionally release the EGL Context:
                             if (pausing && mHaveEglContext) {
                                 IRenderView view = mGLSurfaceViewWeakRef.get();
-                                boolean preserveEglContextOnPause = view == null ?
-                                        false : view.getPreserveEGLContextOnPause();
+                                boolean preserveEglContextOnPause = view != null && view.getPreserveEGLContextOnPause();
                                 if (!preserveEglContextOnPause) {
                                     stopEglContextLocked();
                                     if (LOG_SURFACE) {

@@ -18,7 +18,6 @@ package com.erlei.gdx.graphics.g3d.model;
 
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
-import com.erlei.gdx.graphics.VertexAttributes;
 import com.erlei.gdx.graphics.g3d.Model;
 import com.erlei.gdx.graphics.glutils.ShaderProgram;
 import com.erlei.gdx.math.Vector3;

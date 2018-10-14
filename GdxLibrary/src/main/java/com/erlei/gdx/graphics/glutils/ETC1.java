@@ -16,13 +16,6 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.nio.ByteBuffer;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Pixmap.Format;
@@ -31,6 +24,13 @@ import com.erlei.gdx.utils.BufferUtils;
 import com.erlei.gdx.utils.Disposable;
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.StreamUtils;
+
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.nio.ByteBuffer;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /** Class for encoding and decoding ETC1 compressed images. Also provides methods to add a PKM header.
  * @author mzechner */

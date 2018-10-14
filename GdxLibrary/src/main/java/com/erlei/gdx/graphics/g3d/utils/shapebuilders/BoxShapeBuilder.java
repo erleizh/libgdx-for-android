@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.g3d.utils.shapebuilders;
 
-import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.VertexAttributes.Usage;
 import com.erlei.gdx.graphics.g3d.utils.MeshPartBuilder;

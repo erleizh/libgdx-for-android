@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics.glutils;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.Cubemap;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
@@ -41,8 +42,8 @@ import com.erlei.gdx.utils.GdxRuntimeException;
  * frameBuffer.getSide().getDirection(camera.direction);<br />
  * camera.update(); <br />
  *
- * Gdx.gl.glClearColor(0, 0, 0, 1); <br />
- * Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); <br />
+ * GLContext.getGL20().glClearColor(0, 0, 0, 1); <br />
+ * GLContext.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); <br />
  * modelBatch.begin(camera); <br />
  * modelBatch.render(renderableProviders); <br />
  * modelBatch.end(); <br />
@@ -117,7 +118,7 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 
 	@Override
 	protected void attachFrameBufferColorTexture (Cubemap texture) {
-		GL20 gl = Gdx.gl20;
+		GL20 gl = GLContext.getGL20();
 		int glHandle = texture.getTextureObjectHandle();
 		Cubemap.CubemapSide[] sides = Cubemap.CubemapSide.values();
 		for (Cubemap.CubemapSide side : sides) {
@@ -151,7 +152,7 @@ public class FrameBufferCubemap extends GLFrameBuffer<Cubemap> {
 	/** Bind the side, making it active to render on. Should be called in between a call to {@link #begin()} and {@link #end()}.
 	 * @param side The side to bind */
 	protected void bindSide (final Cubemap.CubemapSide side) {
-		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum, getColorBufferTexture().getTextureObjectHandle(), 0);
+		GLContext.getGL20().glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, side.glEnum, getColorBufferTexture().getTextureObjectHandle(), 0);
 	}
 
 	/** Get the currently bound side. */

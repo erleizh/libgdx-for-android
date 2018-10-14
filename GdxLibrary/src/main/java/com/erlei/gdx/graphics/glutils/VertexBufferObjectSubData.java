@@ -16,14 +16,15 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.VertexAttribute;
 import com.erlei.gdx.graphics.VertexAttributes;
 import com.erlei.gdx.utils.BufferUtils;
 import com.erlei.gdx.utils.GdxRuntimeException;
+
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 /** <p>
  * A {@link VertexData} implementation based on OpenGL vertex buffer objects.
@@ -75,10 +76,11 @@ public class VertexBufferObjectSubData implements VertexData {
 	}
 
 	private int createBufferObject () {
-		int result = Gdx.gl20.glGenBuffer();
-		Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, result);
-		Gdx.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
-		Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
+		GL20 gl20 = GLContext.getGL20();
+		int result = gl20.glGenBuffer();
+		gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, result);
+		gl20.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
+		gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
 		return result;
 	}
 
@@ -105,7 +107,7 @@ public class VertexBufferObjectSubData implements VertexData {
 
 	private void bufferChanged () {
 		if (isBound) {
-			Gdx.gl20.glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
+			GLContext.getGL20().glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
 			isDirty = false;
 		}
 	}
@@ -152,7 +154,7 @@ public class VertexBufferObjectSubData implements VertexData {
 
 	@Override
 	public void bind (final ShaderProgram shader, final int[] locations) {
-		final GL20 gl = Gdx.gl20;
+		final GL20 gl = GLContext.getGL20();
 
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
@@ -196,7 +198,7 @@ public class VertexBufferObjectSubData implements VertexData {
 
 	@Override
 	public void unbind (final ShaderProgram shader, final int[] locations) {
-		final GL20 gl = Gdx.gl20;
+		final GL20 gl = GLContext.getGL20();
 		final int numAttributes = attributes.size();
 		if (locations == null) {
 			for (int i = 0; i < numAttributes; i++) {
@@ -221,7 +223,7 @@ public class VertexBufferObjectSubData implements VertexData {
 	/** Disposes of all resources this VertexBufferObject uses. */
 	@Override
 	public void dispose () {
-		GL20 gl = Gdx.gl20;
+		GL20 gl = GLContext.getGL20();
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
 		gl.glDeleteBuffer(bufferHandle);
 		bufferHandle = 0;

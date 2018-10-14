@@ -16,18 +16,18 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import java.nio.ShortBuffer;
-
 import com.erlei.gdx.utils.Disposable;
+
+import java.nio.ShortBuffer;
 
 /** An IndexData instance holds index data. Can be either a plain short buffer or an OpenGL buffer object.
  * @author mzechner */
 public interface IndexData extends Disposable {
 	/** @return the number of indices currently stored in this buffer */
-	public int getNumIndices();
+    int getNumIndices();
 
 	/** @return the maximum number of indices this IndexBufferObject can store. */
-	public int getNumMaxIndices();
+    int getNumMaxIndices();
 
 	/** <p>
 	 * Sets the indices of this IndexBufferObject, discarding the old indices. The count must equal the number of indices to be
@@ -41,21 +41,21 @@ public interface IndexData extends Disposable {
 	 * @param indices the index data
 	 * @param offset the offset to start copying the data from
 	 * @param count the number of shorts to copy */
-	public void setIndices(short[] indices, int offset, int count);
+    void setIndices(short[] indices, int offset, int count);
 
 	/** Copies the specified indices to the indices of this IndexBufferObject, discarding the old indices. Copying start at the
 	 * current {@link ShortBuffer#position()} of the specified buffer and copied the {@link ShortBuffer#remaining()} amount of
 	 * indices. This can be called in between calls to {@link #bind()} and {@link #unbind()}. The index data will be updated
 	 * instantly.
 	 * @param indices the index data to copy */
-	public void setIndices(ShortBuffer indices);
+    void setIndices(ShortBuffer indices);
 
 	/** Update (a portion of) the indices.
 	 * @param targetOffset offset in indices buffer
 	 * @param indices the index data
 	 * @param offset the offset to start copying the data from
 	 * @param count the number of shorts to copy */
-	public void updateIndices(int targetOffset, short[] indices, int offset, int count);
+    void updateIndices(int targetOffset, short[] indices, int offset, int count);
 
 	/** <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
@@ -63,17 +63,17 @@ public interface IndexData extends Disposable {
 	 * </p>
 	 *
 	 * @return the underlying short buffer. */
-	public ShortBuffer getBuffer();
+    ShortBuffer getBuffer();
 
 	/** Binds this IndexBufferObject for rendering with glDrawElements. */
-	public void bind();
+    void bind();
 
 	/** Unbinds this IndexBufferObject. */
-	public void unbind();
+    void unbind();
 
 	/** Invalidates the IndexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
-	public void invalidate();
+    void invalidate();
 
 	/** Disposes this IndexDatat and all its associated OpenGL resources. */
-	public void dispose();
+    void dispose();
 }

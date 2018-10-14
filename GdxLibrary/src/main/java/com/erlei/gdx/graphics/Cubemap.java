@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.Pixmap.Format;
 import com.erlei.gdx.graphics.Texture.TextureFilter;
@@ -186,7 +187,7 @@ public class Cubemap extends GLTexture {
         unsafeSetFilter(minFilter, magFilter, true);
         unsafeSetWrap(uWrap, vWrap, true);
         data.consumeCubemapData();
-        Gdx.gl.glBindTexture(glTarget, 0);
+        GLContext.getGL20().glBindTexture(glTarget, 0);
     }
 
     public CubemapData getCubemapData() {
@@ -195,7 +196,7 @@ public class Cubemap extends GLTexture {
 
     @Override
     protected void reload() {
-        glHandle = Gdx.gl.glGenTexture();
+        glHandle = GLContext.getGL20().glGenTexture();
         load(data);
     }
 

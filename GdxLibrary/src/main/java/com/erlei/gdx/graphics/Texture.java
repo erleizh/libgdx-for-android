@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.Pixmap.Format;
 import com.erlei.gdx.graphics.glutils.PixmapTextureData;
@@ -106,7 +107,7 @@ public class Texture extends GLTexture {
     TextureData data;
 
     public Texture(String internalPath) {
-        this(AndroidFiles.getInstance().internal(internalPath));
+        this(GLContext.getFiles().internal(internalPath));
     }
 
     public Texture(FileHandle file) {
@@ -138,7 +139,7 @@ public class Texture extends GLTexture {
     }
 
     public Texture(TextureData data) {
-        this(GL20.GL_TEXTURE_2D, Gdx.gl.glGenTexture(), data);
+        this(GL20.GL_TEXTURE_2D, GLContext.getGL20().glGenTexture(), data);
     }
 
     protected Texture(int glTarget, int glHandle, TextureData data) {
@@ -156,7 +157,7 @@ public class Texture extends GLTexture {
 
         unsafeSetFilter(minFilter, magFilter, true);
         unsafeSetWrap(uWrap, vWrap, true);
-        Gdx.gl.glBindTexture(glTarget, 0);
+        GLContext.getGL20().glBindTexture(glTarget, 0);
     }
 
     /**
@@ -165,7 +166,7 @@ public class Texture extends GLTexture {
      */
     @Override
     protected void reload() {
-        glHandle = Gdx.gl.glGenTexture();
+        glHandle = GLContext.getGL20().glGenTexture();
         load(data);
     }
 
@@ -179,7 +180,7 @@ public class Texture extends GLTexture {
      */
     public void draw(Pixmap pixmap, int x, int y) {
         bind();
-        Gdx.gl.glTexSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(), pixmap.getGLType(),
+        GLContext.getGL20().glTexSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(), pixmap.getGLType(),
                 pixmap.getPixels());
     }
 

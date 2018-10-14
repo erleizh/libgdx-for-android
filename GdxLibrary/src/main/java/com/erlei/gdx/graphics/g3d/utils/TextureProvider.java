@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.utils;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.assets.AssetManager;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.g3d.Model;
@@ -24,9 +25,9 @@ import com.erlei.gdx.graphics.g3d.model.data.ModelData;
 /** Used by {@link Model} to load textures from {@link ModelData}.
  * @author badlogic */
 public interface TextureProvider {
-	public Texture load(String fileName);
+	Texture load(String fileName);
 
-	public static class FileTextureProvider implements TextureProvider {
+	class FileTextureProvider implements TextureProvider {
 		private Texture.TextureFilter minFilter, magFilter;
 		private Texture.TextureWrap uWrap, vWrap;
 		private boolean useMipMaps;
@@ -48,14 +49,14 @@ public interface TextureProvider {
 
 		@Override
 		public Texture load (String fileName) {
-			Texture result = new Texture(AndroidFiles.getInstance().internal(fileName), useMipMaps);
+			Texture result = new Texture(GLContext.getFiles().internal(fileName), useMipMaps);
 			result.setFilter(minFilter, magFilter);
 			result.setWrap(uWrap, vWrap);
 			return result;
 		}
 	}
 
-	public static class AssetTextureProvider implements TextureProvider {
+	class AssetTextureProvider implements TextureProvider {
 		public final AssetManager assetManager;
 
 		public AssetTextureProvider (final AssetManager assetManager) {

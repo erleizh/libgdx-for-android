@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics.glutils;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.GL20;
@@ -116,7 +117,7 @@ public class ShapeRenderer implements Disposable {
 		} else {
 			renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0, defaultShader);
 		}
-		projectionMatrix.setToOrtho2D(0, 0, Gdx.app.getWidth(), Gdx.app.getHeight());
+		projectionMatrix.setToOrtho2D(0, 0, GLContext.getGLContext().getWidth(), GLContext.getGLContext().getHeight());
 		matrixDirty = true;
 	}
 

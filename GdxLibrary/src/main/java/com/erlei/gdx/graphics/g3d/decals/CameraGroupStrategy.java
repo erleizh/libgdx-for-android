@@ -16,8 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.decals;
 
-import java.util.Comparator;
-
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.glutils.ShaderProgram;
@@ -25,6 +24,8 @@ import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.Disposable;
 import com.erlei.gdx.utils.ObjectMap;
 import com.erlei.gdx.utils.Pool;
+
+import java.util.Comparator;
 
 /** <p>
  * Minimalistic grouping strategy that splits decals into opaque and transparent ones enabling and disabling blending as needed.
@@ -128,7 +129,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	@Override
 	public void beforeGroup (int group, Array<Decal> contents) {
 		if (group == GROUP_BLEND) {
-			Gdx.gl.glEnable(GL20.GL_BLEND);
+			GLContext.getGL20().glEnable(GL20.GL_BLEND);
 			contents.sort(cameraSorter);
 		} else {
 			for (int i = 0, n = contents.size; i < n; i++) {
@@ -157,13 +158,13 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	@Override
 	public void afterGroup (int group) {
 		if (group == GROUP_BLEND) {
-			Gdx.gl.glDisable(GL20.GL_BLEND);
+			GLContext.getGL20().glDisable(GL20.GL_BLEND);
 		}
 	}
 
 	@Override
 	public void beforeGroups () {
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		GLContext.getGL20().glEnable(GL20.GL_DEPTH_TEST);
 		shader.begin();
 		shader.setUniformMatrix("u_projectionViewMatrix", camera.combined);
 		shader.setUniformi("u_texture", 0);
@@ -172,7 +173,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	@Override
 	public void afterGroups () {
 		shader.end();
-		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+		GLContext.getGL20().glDisable(GL20.GL_DEPTH_TEST);
 	}
 
 	private void createDefaultShader () {

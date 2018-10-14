@@ -16,9 +16,7 @@
 
 package com.erlei.gdx.graphics;
 
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
-
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.VertexAttributes.Usage;
 import com.erlei.gdx.graphics.glutils.IndexArray;
 import com.erlei.gdx.graphics.glutils.IndexBufferObject;
@@ -37,6 +35,9 @@ import com.erlei.gdx.math.Vector3;
 import com.erlei.gdx.math.collision.BoundingBox;
 import com.erlei.gdx.utils.Disposable;
 import com.erlei.gdx.utils.GdxRuntimeException;
+
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 /** <p>
  * A Mesh holds vertices composed of attributes specified by a {@link VertexAttributes} instance. The vertices are held either in
@@ -111,7 +112,7 @@ public class Mesh implements Disposable {
 	}
 
 	private VertexData makeVertexBuffer (boolean isStatic, int maxVertices, VertexAttributes vertexAttributes) {
-		if (Gdx.gl30 != null) {
+		if (GLContext.getGL30() != null) {
 			return new VertexBufferObjectWithVAO(isStatic, maxVertices, vertexAttributes);
 		} else {
 			return new VertexBufferObject(isStatic, maxVertices, vertexAttributes);
@@ -471,11 +472,11 @@ public class Mesh implements Disposable {
 				int oldLimit = buffer.limit();
 				buffer.position(offset);
 				buffer.limit(offset + count);
-				Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
+				GLContext.getGL20().glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
 				buffer.position(oldPosition);
 				buffer.limit(oldLimit);
 			} else {
-				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
+				GLContext.getGL20().glDrawArrays(primitiveType, offset, count);
 			}
 		} else {
 			if (indices.getNumIndices() > 0) {
@@ -484,9 +485,9 @@ public class Mesh implements Disposable {
 						+ count + ", offset: " + offset + ", max: " + indices.getNumMaxIndices() + ")");
 				}
 				
-				Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
+				GLContext.getGL20().glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
 			} else {
-				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
+				GLContext.getGL20().glDrawArrays(primitiveType, offset, count);
 			}
 		}
 

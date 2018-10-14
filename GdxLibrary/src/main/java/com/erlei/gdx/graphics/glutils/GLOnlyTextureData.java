@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics.glutils;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Pixmap.Format;
@@ -82,7 +83,7 @@ public class GLOnlyTextureData implements TextureData {
 
     @Override
     public void consumeCustomData(int target) {
-        Gdx.gl.glTexImage2D(target, mipLevel, internalFormat, width, height, 0, format, type, null);
+        GLContext.getGL20().glTexImage2D(target, mipLevel, internalFormat, width, height, 0, format, type, null);
     }
 
     @Override

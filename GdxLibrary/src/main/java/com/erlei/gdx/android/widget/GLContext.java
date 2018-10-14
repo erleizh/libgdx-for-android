@@ -8,6 +8,7 @@ import android.os.Debug;
 import android.view.WindowManager;
 
 import com.erlei.gdx.Files;
+import com.erlei.gdx.LifecycleListener;
 import com.erlei.gdx.Preferences;
 import com.erlei.gdx.android.AndroidPreferences;
 import com.erlei.gdx.files.AndroidFiles;
@@ -20,7 +21,7 @@ import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 
 public class GLContext implements IRenderView.Renderer {
-
+    private static final ThreadLocal<GLContext> sThreadLocal = new ThreadLocal<>();
     protected final IRenderView mRenderView;
     protected final Context mContext;
     protected final Files files;
@@ -32,8 +33,7 @@ public class GLContext implements IRenderView.Renderer {
     public GLContext(IRenderView renderView) {
         mRenderView = renderView;
         mContext = renderView.getContext();
-        AndroidFiles.init(renderView.getContext().getApplicationContext());
-        files = AndroidFiles.getInstance();
+        files = new AndroidFiles(mContext.getAssets(), mContext.getFilesDir().getAbsolutePath());
         mFPSCounter = initFPSCounter();
     }
 
@@ -41,14 +41,11 @@ public class GLContext implements IRenderView.Renderer {
         return new FPSCounter(new FPSCounter.FPSCounter2());
     }
 
-    public Files getFiles() {
-        return files;
-    }
 
     @Override
     public void create(EglHelper egl, GL20 gl) {
-        this.gl = gl;
-        this.gl30 = isGL30Available() ? (GL30) gl : null;
+        setGL20(gl);
+        sThreadLocal.set(this);
     }
 
     @Override
@@ -73,7 +70,7 @@ public class GLContext implements IRenderView.Renderer {
 
     @Override
     public void dispose() {
-
+        sThreadLocal.remove();
     }
 
     /**
@@ -186,5 +183,43 @@ public class GLContext implements IRenderView.Renderer {
 
     public IRenderView getRenderView() {
         return mRenderView;
+    }
+
+    public static GLContext getGLContext() {
+        GLContext glContext = sThreadLocal.get();
+        if (glContext == null) {
+            throw new IllegalStateException("GLContext == null Cannot be called on a non GL thread = " + Thread.currentThread().getName());
+        }
+        return glContext;
+    }
+
+    public static GL20 getGL20() {
+        return getGLContext().gl;
+    }
+
+    public static GL30 getGL30() {
+        return getGLContext().gl30;
+    }
+
+
+    public static Files getFiles() {
+        return getGLContext().files;
+    }
+
+    public void addLifecycleListener(LifecycleListener listener) {
+
+    }
+
+    public void removeLifecycleListener(LifecycleListener lifecycleListener) {
+    }
+
+    public void setGL30(GL30 gl30) {
+        this.gl = gl30;
+        this.gl30 = gl30;
+    }
+
+    public void setGL20(GL20 gl20) {
+        this.gl = gl20;
+        this.gl30 = isGL30Available() ? (GL30) gl20 : null;
     }
 }

@@ -16,6 +16,12 @@
 
 package com.erlei.gdx.files;
 
+import com.erlei.gdx.Files;
+import com.erlei.gdx.Files.FileType;
+import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.utils.GdxRuntimeException;
+import com.erlei.gdx.utils.StreamUtils;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -37,11 +43,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
-
-import com.erlei.gdx.Files;
-import com.erlei.gdx.Files.FileType;
-import com.erlei.gdx.utils.GdxRuntimeException;
-import com.erlei.gdx.utils.StreamUtils;
 
 /** Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
@@ -85,7 +86,7 @@ public class FileHandle {
 		this.type = type;
 	}
 
-	/** @return the path of the file as specified on construction, e.g. AndroidFiles.getInstance().internal("dir/file.png") -> dir/file.png.
+	/** @return the path of the file as specified on construction, e.g. GLContext.getFiles().internal("dir/file.png") -> dir/file.png.
 	 *         backward slashes will be replaced by forward slashes. */
 	public String path () {
 		return file.getPath().replace('\\', '/');
@@ -128,7 +129,7 @@ public class FileHandle {
 	/** Returns a java.io.File that represents this file handle. Note the returned file will only be usable for
 	 * {@link FileType#Absolute} and {@link FileType#External} file handles. */
 	public File file () {
-		if (type == FileType.External) return new File(AndroidFiles.getInstance().getExternalStoragePath(), file.getPath());
+		if (type == FileType.External) return new File(GLContext.getFiles().getExternalStoragePath(), file.getPath());
 		return file;
 	}
 

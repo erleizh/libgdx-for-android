@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.decals;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
 import com.erlei.gdx.graphics.VertexAttribute;
@@ -88,7 +89,7 @@ public class DecalBatch implements Disposable {
 		vertices = new float[size * Decal.SIZE];
 
 		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
-		if(Gdx.gl30 != null) {
+		if(GLContext.getGL30() != null) {
 			vertexDataType = Mesh.VertexDataType.VertexBufferObjectWithVAO;
 		}
 		mesh = new Mesh(vertexDataType, false, size * 4, size * 6, new VertexAttribute(

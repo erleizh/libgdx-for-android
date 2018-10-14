@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.erlei.gdx.android.widget.IRenderView;
 import com.erlei.gdx.utils.Logger;
 
 import java.util.ArrayList;

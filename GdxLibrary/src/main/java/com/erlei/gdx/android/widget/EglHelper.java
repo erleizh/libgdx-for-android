@@ -26,12 +26,12 @@ public class EglHelper {
     private IRenderView.EGLConfigChooser mEGLConfigChooser;
     private IRenderView.EGLContextFactory mEGLContextFactory;
     private IRenderView.EGLWindowSurfaceFactory mEGLWindowSurfaceFactory;
+    private IRenderView.GLWrapper mGLWrapper;
     private EGL10 mEgl;
     private EGLDisplay mEglDisplay;
     private EGLSurface mEglSurface;
     private EGLConfig mEglConfig;
     private EGLContext mEglContext;
-    private IRenderView.GLWrapper mGLWrapper;
 
     public EglHelper(WeakReference<IRenderView> weakReference) {
         mWeakReference = weakReference;
@@ -199,8 +199,8 @@ public class EglHelper {
     }
 
     public void finish() {
-        mLogger.info("finish() tid=" + Thread.currentThread().getId());
         if (mEglContext != null) {
+            mLogger.info("destroyContext() tid=" + Thread.currentThread().getId());
             mEGLContextFactory.destroyContext(mEgl, mEglDisplay, mEglContext);
             mEglContext = null;
         }
@@ -208,6 +208,13 @@ public class EglHelper {
             mEgl.eglTerminate(mEglDisplay);
             mEglDisplay = null;
         }
+        mEglConfig = null;
+        mEGLConfigChooser = null;
+        mEGLContextFactory = null;
+        mEGLWindowSurfaceFactory = null;
+        mGLWrapper = null;
+        mWeakReference.clear();
+        mLogger.info("finish() tid=" + Thread.currentThread().getId());
     }
 
     private void throwEglException(String function) {

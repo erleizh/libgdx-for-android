@@ -16,13 +16,6 @@
 
 package com.erlei.gdx.graphics.g2d;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Writer;
-
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.math.collision.BoundingBox;
@@ -31,6 +24,13 @@ import com.erlei.gdx.utils.Disposable;
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.ObjectMap;
 import com.erlei.gdx.utils.StreamUtils;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Writer;
 
 /** See <a href="http://www.badlogicgames.com/wordpress/?p=1255">http://www.badlogicgames.com/wordpress/?p=1255</a>
  * @author mzechner */

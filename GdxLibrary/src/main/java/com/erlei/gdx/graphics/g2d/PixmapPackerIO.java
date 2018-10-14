@@ -1,21 +1,20 @@
 package com.erlei.gdx.graphics.g2d;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.PixmapIO;
-import com.erlei.gdx.graphics.PixmapIO.PNG;
 import com.erlei.gdx.graphics.Texture.TextureFilter;
 import com.erlei.gdx.graphics.g2d.PixmapPacker.Page;
 import com.erlei.gdx.math.Rectangle;
+
+import java.io.IOException;
+import java.io.Writer;
 
 /** Saves PixmapPackers to files.
  * @author jshapcott */
 public class PixmapPackerIO {
 
 	/** Image formats which can be used when saving a PixmapPacker. */
-	public static enum ImageFormat {
+	public enum ImageFormat {
 		/** A simple compressed image format which is libgdx specific. */
 		CIM(".cim"),
 		/** A standard compressed image format which is not libgdx specific. */

@@ -16,11 +16,8 @@
 
 package com.erlei.gdx.graphics.g2d;
 
-import static com.erlei.gdx.graphics.Texture.TextureWrap.ClampToEdge;
-import static com.erlei.gdx.graphics.Texture.TextureWrap.Repeat;
-
 import com.erlei.gdx.Files.FileType;
-import com.erlei.gdx.files.AndroidFiles;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.Pixmap.Format;
 import com.erlei.gdx.graphics.Texture;
@@ -39,6 +36,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Comparator;
+
+import static com.erlei.gdx.graphics.Texture.TextureWrap.ClampToEdge;
+import static com.erlei.gdx.graphics.Texture.TextureWrap.Repeat;
 
 /** Loads images from texture atlases created by TexturePacker.<br>
  * <br>
@@ -206,7 +206,7 @@ public class TextureAtlas implements Disposable {
 	/** Loads the specified pack file using {@link FileType#Internal}, using the parent directory of the pack file to find the page
 	 * images. */
 	public TextureAtlas (String internalPackFile) {
-		this(AndroidFiles.getInstance().internal(internalPackFile));
+		this(GLContext.getFiles().internal(internalPackFile));
 	}
 
 	/** Loads the specified pack file, using the parent directory of the pack file to find the page images. */

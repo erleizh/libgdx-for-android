@@ -16,11 +16,11 @@
 
 package com.erlei.gdx.math.collision;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.math.Vector3;
+
+import java.io.Serializable;
+import java.util.List;
 
 /** Encapsulates an axis aligned bounding box represented by a minimum and a maximum Vector. Additionally you can query for the
  * bounding box's center, dimensions and corner points.

@@ -1,13 +1,7 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
-import java.util.zip.GZIPInputStream;
-
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.Cubemap;
 import com.erlei.gdx.graphics.CubemapData;
@@ -20,6 +14,13 @@ import com.erlei.gdx.graphics.glutils.ETC1.ETC1Data;
 import com.erlei.gdx.utils.BufferUtils;
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.StreamUtils;
+
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+import java.util.zip.GZIPInputStream;
 
 /** A KTXTextureData holds the data from a KTX (or zipped KTX file, aka ZKTX). That is to say an OpenGL ready texture data. The KTX
  * file format is just a thin wrapper around OpenGL textures and therefore is compatible with most OpenGL texture capabilities
@@ -215,9 +216,9 @@ public class KTXTextureData implements TextureData, CubemapData {
 		}
 
 		// KTX files require an unpack alignment of 4
-		Gdx.gl.glGetIntegerv(GL20.GL_UNPACK_ALIGNMENT, buffer);
+		GLContext.getGL20().glGetIntegerv(GL20.GL_UNPACK_ALIGNMENT, buffer);
 		int previousUnpackAlignment = buffer.get(0);
-		if (previousUnpackAlignment != 4) Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 4);
+		if (previousUnpackAlignment != 4) GLContext.getGL20().glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 4);
 		int glInternalFormat = this.glInternalFormat;
 		int glFormat = this.glFormat;
 		int pos = imagePos;
@@ -237,44 +238,44 @@ public class KTXTextureData implements TextureData, CubemapData {
 				data.limit(faceLodSizeRounded);
 				if (textureDimensions == 1) {
 					// if (compressed)
-					// Gdx.gl.glCompressedTexImage1D(target + face, level, glInternalFormat, pixelWidth, 0, faceLodSize,
+					// GLContext.getGL20().glCompressedTexImage1D(target + face, level, glInternalFormat, pixelWidth, 0, faceLodSize,
 					// data);
 					// else
-					// Gdx.gl.glTexImage1D(target + face, level, glInternalFormat, pixelWidth, 0, glFormat, glType, data);
+					// GLContext.getGL20().glTexImage1D(target + face, level, glInternalFormat, pixelWidth, 0, glFormat, glType, data);
 				} else if (textureDimensions == 2) {
 					if (numberOfArrayElements > 0) pixelHeight = numberOfArrayElements;
 					if (compressed) {
 						if (glInternalFormat == ETC1.ETC1_RGB8_OES) {
-							if (!Gdx.app.supportsExtension("GL_OES_compressed_ETC1_RGB8_texture")) {
+							if (!GLContext.getGLContext().supportsExtension("GL_OES_compressed_ETC1_RGB8_texture")) {
 								ETC1Data etcData = new ETC1Data(pixelWidth, pixelHeight, data, 0);
 								Pixmap pixmap = ETC1.decodeImage(etcData, Format.RGB888);
-								Gdx.gl.glTexImage2D(target + face, level, pixmap.getGLInternalFormat(), pixmap.getWidth(),
+								GLContext.getGL20().glTexImage2D(target + face, level, pixmap.getGLInternalFormat(), pixmap.getWidth(),
 									pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 								pixmap.dispose();
 							} else {
-								Gdx.gl.glCompressedTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0,
+								GLContext.getGL20().glCompressedTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0,
 									faceLodSize, data);
 							}
 						} else {
 							// Try to load (no software unpacking fallback)
-							Gdx.gl.glCompressedTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0,
+							GLContext.getGL20().glCompressedTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0,
 								faceLodSize, data);
 						}
 					} else
-						Gdx.gl.glTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0, glFormat, glType, data);
+						GLContext.getGL20().glTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0, glFormat, glType, data);
 				} else if (textureDimensions == 3) {
 					if (numberOfArrayElements > 0) pixelDepth = numberOfArrayElements;
 					// if (compressed)
-					// Gdx.gl.glCompressedTexImage3D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, pixelDepth, 0,
+					// GLContext.getGL20().glCompressedTexImage3D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, pixelDepth, 0,
 					// faceLodSize, data);
 					// else
-					// Gdx.gl.glTexImage3D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, pixelDepth, 0, glFormat,
+					// GLContext.getGL20().glTexImage3D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, pixelDepth, 0, glFormat,
 					// glType, data);
 				}
 			}
 		}
-		if (previousUnpackAlignment != 4) Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, previousUnpackAlignment);
-		if (useMipMaps()) Gdx.gl.glGenerateMipmap(target);
+		if (previousUnpackAlignment != 4) GLContext.getGL20().glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, previousUnpackAlignment);
+		if (useMipMaps()) GLContext.getGL20().glGenerateMipmap(target);
 
 		// dispose data once transfered to GPU
 		disposePreparedData();

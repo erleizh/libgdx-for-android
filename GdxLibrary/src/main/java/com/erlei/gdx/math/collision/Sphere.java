@@ -16,11 +16,11 @@
 
 package com.erlei.gdx.math.collision;
 
-import java.io.Serializable;
-
 import com.erlei.gdx.math.MathUtils;
 import com.erlei.gdx.math.Vector3;
 import com.erlei.gdx.utils.NumberUtils;
+
+import java.io.Serializable;
 
 /** Encapsulates a 3D sphere with a center and a radius
  * 

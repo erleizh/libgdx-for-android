@@ -44,7 +44,6 @@ import com.erlei.gdx.utils.FloatArray;
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.IntIntMap;
 import com.erlei.gdx.utils.NumberUtils;
-import com.erlei.gdx.utils.Pool;
 import com.erlei.gdx.utils.ShortArray;
 
 /** Class to construct a mesh, optionally splitting it into one or more mesh parts. Before you can call any other method you must

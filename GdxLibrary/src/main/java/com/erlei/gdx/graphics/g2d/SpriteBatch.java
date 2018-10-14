@@ -85,24 +85,23 @@ public class SpriteBatch implements Batch {
      * The maximum number of sprites rendered in one batch so far.
      **/
     public int maxSpritesInBatch = 0;
-    private GLContext glContext;
 
     /**
      * Constructs a new SpriteBatch with a size of 1000, one buffer, and the default shader.
      *
-     * @see SpriteBatch#SpriteBatch(GLContext, int, ShaderProgram)
+     * @see SpriteBatch#SpriteBatch(int, ShaderProgram)
      */
-    public SpriteBatch(GLContext glContext) {
-        this(glContext, 1000, null);
+    public SpriteBatch() {
+        this(1000, null);
     }
 
     /**
      * Constructs a SpriteBatch with one buffer and the default shader.
      *
-     * @see SpriteBatch#SpriteBatch(GLContext, int, ShaderProgram)
+     * @see SpriteBatch#SpriteBatch(int, ShaderProgram)
      */
-    public SpriteBatch(GLContext glContext, int size) {
-        this(glContext, size, null);
+    public SpriteBatch(int size) {
+        this(size, null);
     }
 
     /**
@@ -116,19 +115,19 @@ public class SpriteBatch implements Batch {
      * @param size          The max number of sprites in a single batch. Max of 8191.
      * @param defaultShader The default shader to use. This is not owned by the SpriteBatch and must be disposed separately.
      */
-    public SpriteBatch(GLContext glContext, int size, ShaderProgram defaultShader) {
+    public SpriteBatch(int size, ShaderProgram defaultShader) {
         // 32767 is max vertex index, so 32767 / 4 vertices per sprite = 8191 sprites max.
         if (size > 8191)
             throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
-        this.glContext = glContext;
-        VertexDataType vertexDataType = (glContext.gl30 != null) ? VertexDataType.VertexBufferObjectWithVAO : defaultVertexDataType;
+
+        VertexDataType vertexDataType = (GLContext.getGL30() != null) ? VertexDataType.VertexBufferObjectWithVAO : defaultVertexDataType;
 
         mesh = new Mesh(vertexDataType, false, size * 4, size * 6,
                 new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
                 new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
                 new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
-        projectionMatrix.setToOrtho2D(0, 0, glContext.getWidth(), glContext.getHeight());
+        projectionMatrix.setToOrtho2D(0, 0, GLContext.getGLContext().getWidth(), GLContext.getGLContext().getHeight());
 
         vertices = new float[size * Sprite.SPRITE_SIZE];
 
@@ -196,7 +195,7 @@ public class SpriteBatch implements Batch {
             throw new IllegalStateException("SpriteBatch.end must be called before begin.");
         renderCalls = 0;
 
-        glContext.gl.glDepthMask(false);
+        GLContext.getGL20().glDepthMask(false);
         if (customShader != null)
             customShader.begin();
         else
@@ -214,7 +213,7 @@ public class SpriteBatch implements Batch {
         lastTexture = null;
         drawing = false;
 
-        GL20 gl = glContext.gl;
+        GL20 gl = GLContext.getGL20();
         gl.glDepthMask(true);
         if (isBlendingEnabled()) gl.glDisable(GL20.GL_BLEND);
 
@@ -1006,11 +1005,11 @@ public class SpriteBatch implements Batch {
         mesh.getIndicesBuffer().limit(count);
 
         if (blendingDisabled) {
-            glContext.gl.glDisable(GL20.GL_BLEND);
+            GLContext.getGL20().glDisable(GL20.GL_BLEND);
         } else {
-            glContext.gl.glEnable(GL20.GL_BLEND);
+            GLContext.getGL20().glEnable(GL20.GL_BLEND);
             if (blendSrcFunc != -1)
-                glContext.gl.glBlendFuncSeparate(blendSrcFunc, blendDstFunc, blendSrcFuncAlpha, blendDstFuncAlpha);
+                GLContext.getGL20().glBlendFuncSeparate(blendSrcFunc, blendDstFunc, blendSrcFuncAlpha, blendDstFuncAlpha);
         }
 
         mesh.render(customShader != null ? customShader : shader, GL20.GL_TRIANGLES, 0, count);

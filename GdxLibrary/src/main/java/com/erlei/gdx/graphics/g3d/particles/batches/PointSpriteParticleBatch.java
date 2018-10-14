@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.particles.batches;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.assets.AssetManager;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
@@ -57,7 +58,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 		CPU_SIZE_AND_ROTATION_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(sizeAndRotationUsage).offset / 4);
 
 	private static void enablePointSprites () {
-		Gdx.gl.glEnable(GL20.GL_VERTEX_PROGRAM_POINT_SIZE);
+		GLContext.getGL20().glEnable(GL20.GL_VERTEX_PROGRAM_POINT_SIZE);
 		pointSpritesEnabled = true;
 	}
 

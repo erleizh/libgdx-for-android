@@ -1,7 +1,6 @@
 
 package com.erlei.gdx.graphics;
 
-import com.erlei.gdx.graphics.Pixmap.Format;
 import com.erlei.gdx.graphics.glutils.KTXTextureData;
 
 /** Used by a {@link Cubemap} to load the pixel data. The Cubemap will request the CubemapData to prepare itself through
@@ -16,21 +15,21 @@ import com.erlei.gdx.graphics.glutils.KTXTextureData;
 public interface CubemapData {
 
 	/** @return whether the TextureData is prepared or not. */
-	public boolean isPrepared();
+    boolean isPrepared();
 
 	/** Prepares the TextureData for a call to {@link #consumeCubemapData()}. This method can be called from a non OpenGL thread and
 	 * should thus not interact with OpenGL. */
-	public void prepare();
+    void prepare();
 
 	/** Uploads the pixel data for the 6 faces of the cube to the OpenGL ES texture. The caller must bind an OpenGL ES texture. A
 	 * call to {@link #prepare()} must preceed a call to this method. Any internal data structures created in {@link #prepare()}
 	 * should be disposed of here. */
-	public void consumeCubemapData();
+    void consumeCubemapData();
 
 	/** @return the width of the pixel data */
-	public int getWidth();
+    int getWidth();
 
 	/** @return the height of the pixel data */
-	public int getHeight();
+    int getHeight();
 
 }

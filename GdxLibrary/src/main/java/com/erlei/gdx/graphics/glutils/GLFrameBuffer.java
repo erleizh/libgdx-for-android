@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics.glutils;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.GL30;
 import com.erlei.gdx.graphics.GLTexture;
@@ -126,7 +127,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
     protected abstract void attachFrameBufferColorTexture(T texture);
 
     protected void build() {
-        GL20 gl = Gdx.gl20;
+        GL20 gl = GLContext.getGL20();
 
         checkValidBuilder();
 
@@ -191,7 +192,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
                 buffer.put(GL30.GL_COLOR_ATTACHMENT0 + i);
             }
             buffer.position(0);
-            Gdx.gl30.glDrawBuffers(colorTextureCounter, buffer);
+            GLContext.getGL30().glDrawBuffers(colorTextureCounter, buffer);
         } else {
             attachFrameBufferColorTexture(textureAttachments.first());
         }
@@ -217,8 +218,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
         int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
         if (result == GL20.GL_FRAMEBUFFER_UNSUPPORTED && bufferBuilder.hasDepthRenderBuffer && bufferBuilder.hasStencilRenderBuffer
-                && (Gdx.app.supportsExtension("GL_OES_packed_depth_stencil")
-                || Gdx.app.supportsExtension("GL_EXT_packed_depth_stencil"))) {
+                && (GLContext.getGLContext().supportsExtension("GL_OES_packed_depth_stencil")
+                || GLContext.getGLContext().supportsExtension("GL_EXT_packed_depth_stencil"))) {
             if (bufferBuilder.hasDepthRenderBuffer) {
                 gl.glDeleteRenderbuffer(depthbufferHandle);
                 depthbufferHandle = 0;
@@ -275,7 +276,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
     }
 
     private void checkValidBuilder() {
-        boolean runningGL30 = Gdx.isGL30Available();
+        boolean runningGL30 = GLContext.getGLContext().isGL30Available();
 
         if (!runningGL30) {
             if (bufferBuilder.hasPackedStencilDepthRenderBuffer) {
@@ -290,7 +291,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
                 if (spec.isStencil)
                     throw new GdxRuntimeException("Stencil texture FrameBuffer Attachment not available on GLES 2.0");
                 if (spec.isFloat) {
-                    if (!Gdx.app.supportsExtension("OES_texture_float")) {
+                    if (!GLContext.getGLContext().supportsExtension("OES_texture_float")) {
                         throw new GdxRuntimeException("Float texture FrameBuffer Attachment not available on GLES 2.0");
                     }
                 }
@@ -303,7 +304,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
      */
     @Override
     public void dispose() {
-        GL20 gl = Gdx.gl20;
+        GL20 gl = GLContext.getGL20();
 
         for (T texture : textureAttachments) {
             disposeColorTexture(texture);
@@ -323,14 +324,14 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
      * Makes the frame buffer current so everything gets drawn to it.
      */
     public void bind() {
-        Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
+        GLContext.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
     }
 
     /**
      * Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on.
      */
     public static void unbind() {
-        Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
+        GLContext.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
     }
 
     /**
@@ -345,14 +346,14 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
      * Sets viewport to the dimensions of framebuffer. Called by {@link #begin()}.
      */
     protected void setFrameBufferViewport() {
-        Gdx.gl20.glViewport(0, 0, bufferBuilder.width, bufferBuilder.height);
+        GLContext.getGL20().glViewport(0, 0, bufferBuilder.width, bufferBuilder.height);
     }
 
     /**
      * Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on.
      */
     public void end() {
-        end(0, 0, Gdx.app.getBackBufferWidth(), Gdx.app.getBackBufferHeight());
+        end(0, 0, GLContext.getGLContext().getBackBufferWidth(), GLContext.getGLContext().getBackBufferHeight());
     }
 
     /**
@@ -365,7 +366,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
      */
     public void end(int x, int y, int width, int height) {
         unbind();
-        Gdx.gl20.glViewport(x, y, width, height);
+        GLContext.getGL20().glViewport(x, y, width, height);
     }
 
     /**

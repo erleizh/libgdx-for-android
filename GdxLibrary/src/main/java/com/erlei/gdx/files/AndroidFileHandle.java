@@ -20,6 +20,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 
 import com.erlei.gdx.Files.FileType;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.StreamUtils;
 
@@ -62,7 +63,7 @@ public class AndroidFileHandle extends FileHandle {
         name = name.replace('\\', '/');
         if (file.getPath().length() == 0)
             throw new GdxRuntimeException("Cannot get the sibling of the root.");
-        return AndroidFiles.getInstance().getFileHandle(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's inside the obb
+        return GLContext.getFiles().getFileHandle(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's inside the obb
     }
 
     public FileHandle parent() {
@@ -240,7 +241,6 @@ public class AndroidFileHandle extends FileHandle {
                         fileDescriptor.close();
                     } catch (IOException e) {
                     }
-                    ;
                 }
             }
         }
@@ -253,7 +253,7 @@ public class AndroidFileHandle extends FileHandle {
 
     public File file() {
         if (type == FileType.Local)
-            return new File(AndroidFiles.getInstance().getLocalStoragePath(), file.getPath());
+            return new File(GLContext.getFiles().getLocalStoragePath(), file.getPath());
         return super.file();
     }
 

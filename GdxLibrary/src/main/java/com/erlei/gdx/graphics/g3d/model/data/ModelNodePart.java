@@ -17,9 +17,7 @@
 package com.erlei.gdx.graphics.g3d.model.data;
 
 import com.erlei.gdx.math.Matrix4;
-import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.ArrayMap;
-import com.erlei.gdx.utils.IntArray;
 
 public class ModelNodePart {
 	public String materialId;

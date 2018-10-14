@@ -20,7 +20,7 @@ import javax.microedition.khronos.egl.EGL11;
  */
 class GLThread extends Thread {
     private Logger mLogger = new Logger("GLThread", Logger.INFO);
-    private static final GLThreadManager sGLThreadManager = new GLThreadManager();
+    private final GLThreadManager sGLThreadManager = new GLThreadManager();
 
     // Once the thread is started, all accesses to the following member
     // variables are protected by the sGLThreadManager monitor
@@ -81,7 +81,9 @@ class GLThread extends Thread {
             // fall thru and exit normally
         } finally {
             sGLThreadManager.threadExiting(this);
+            mEglHelper = null;
         }
+        mLogger.info("finish tid=" + getId());
     }
 
     /*

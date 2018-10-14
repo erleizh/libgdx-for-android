@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.utils.GdxRuntimeException;
 
@@ -45,9 +46,9 @@ public class TextureArray extends GLTexture {
     }
 
     public TextureArray(TextureArrayData data) {
-        super(GL30.GL_TEXTURE_2D_ARRAY, Gdx.gl.glGenTexture());
+        super(GL30.GL_TEXTURE_2D_ARRAY, GLContext.getGL20().glGenTexture());
 
-        if (Gdx.gl30 == null) {
+        if (GLContext.getGL30() == null) {
             throw new GdxRuntimeException("TextureArray requires a device running with GLES 3.0 compatibilty");
         }
 
@@ -57,7 +58,7 @@ public class TextureArray extends GLTexture {
     private static FileHandle[] getInternalHandles(String... internalPaths) {
         FileHandle[] handles = new FileHandle[internalPaths.length];
         for (int i = 0; i < internalPaths.length; i++) {
-            handles[i] = AndroidFiles.getInstance().internal(internalPaths[i]);
+            handles[i] = GLContext.getFiles().internal(internalPaths[i]);
         }
         return handles;
     }
@@ -66,7 +67,7 @@ public class TextureArray extends GLTexture {
         this.data = data;
 
         bind();
-        Gdx.gl30.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, data.getInternalFormat(), data.getWidth(), data.getHeight(), data.getDepth(), 0, data.getInternalFormat(), data.getGLType(), null);
+        GLContext.getGL30().glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, data.getInternalFormat(), data.getWidth(), data.getHeight(), data.getDepth(), 0, data.getInternalFormat(), data.getGLType(), null);
 
         if (!data.isPrepared()) data.prepare();
 
@@ -74,7 +75,7 @@ public class TextureArray extends GLTexture {
 
         setFilter(minFilter, magFilter);
         setWrap(uWrap, vWrap);
-        Gdx.gl.glBindTexture(glTarget, 0);
+        GLContext.getGL20().glBindTexture(glTarget, 0);
     }
 
     @Override
@@ -94,7 +95,7 @@ public class TextureArray extends GLTexture {
 
     @Override
     protected void reload() {
-        glHandle = Gdx.gl.glGenTexture();
+        glHandle = GLContext.getGL20().glGenTexture();
         load(data);
     }
 }

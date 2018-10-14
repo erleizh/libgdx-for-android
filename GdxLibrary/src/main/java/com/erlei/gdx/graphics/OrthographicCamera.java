@@ -16,6 +16,7 @@
 
 package com.erlei.gdx.graphics;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.math.Vector2;
 import com.erlei.gdx.math.Vector3;
@@ -66,10 +67,10 @@ public class OrthographicCamera extends Camera {
 	}
 
 	/** Sets this camera to an orthographic projection using a viewport fitting the screen resolution, centered at
-	 * (Gdx.app.getWidth()/2, Gdx.app.getHeight()/2), with the y-axis pointing up or down.
+	 * (GLContext.getGLContext().getWidth()/2, GLContext.getGLContext().getHeight()/2), with the y-axis pointing up or down.
 	 * @param yDown whether y should be pointing down */
 	public void setToOrtho (boolean yDown) {
-		setToOrtho(yDown, Gdx.app.getWidth(), Gdx.app.getHeight());
+		setToOrtho(yDown, GLContext.getGLContext().getWidth(), GLContext.getGLContext().getHeight());
 	}
 
 	/** Sets this camera to an orthographic projection, centered at (viewportWidth/2, viewportHeight/2), with the y-axis pointing up

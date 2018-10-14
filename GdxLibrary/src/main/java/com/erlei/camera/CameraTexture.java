@@ -3,6 +3,7 @@ package com.erlei.camera;
 
 import android.graphics.SurfaceTexture;
 
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.TextureData;
@@ -18,7 +19,7 @@ public class CameraTexture extends Texture {
     private SurfaceTexture mSurfaceTexture;
 
     public CameraTexture(int glTarget, CameraTextureData data) {
-        super(glTarget, Gdx.gl.glGenTexture(), data);
+        super(glTarget, GLContext.getGL20().glGenTexture(), data);
         mSurfaceTexture = new SurfaceTexture(getTextureObjectHandle());
     }
 
@@ -71,7 +72,7 @@ public class CameraTexture extends Texture {
 
         @Override
         public void consumeCustomData(int target) {
-            if (!Gdx.app.supportsExtension("OES_texture_float"))
+            if (!GLContext.getGLContext().supportsExtension("OES_texture_float"))
                 throw new GdxRuntimeException("Extension OES_texture_float not supported!");
         }
 

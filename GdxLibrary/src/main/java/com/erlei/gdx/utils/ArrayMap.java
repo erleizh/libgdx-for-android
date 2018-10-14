@@ -16,13 +16,13 @@
 
 package com.erlei.gdx.utils;
 
-import java.lang.StringBuilder;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
 import com.erlei.gdx.math.MathUtils;
 import com.erlei.gdx.utils.ObjectMap.Entry;
 import com.erlei.gdx.utils.reflect.ArrayReflection;
+
+import java.lang.StringBuilder;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /** An ordered or unordered map of objects. This implementation uses arrays to store the keys and values, which means
  * {@link #getKey(Object, boolean) gets} do a comparison for each key in the map. This is slower than a typical hash map

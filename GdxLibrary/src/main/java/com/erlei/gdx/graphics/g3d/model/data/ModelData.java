@@ -17,7 +17,6 @@
 package com.erlei.gdx.graphics.g3d.model.data;
 
 import com.erlei.gdx.assets.loaders.ModelLoader;
-import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.GdxRuntimeException;
 

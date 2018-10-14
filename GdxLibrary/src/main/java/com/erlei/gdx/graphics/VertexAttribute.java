@@ -19,7 +19,6 @@ package com.erlei.gdx.graphics;
 
 import com.erlei.gdx.graphics.VertexAttributes.Usage;
 import com.erlei.gdx.graphics.glutils.ShaderProgram;
-import com.erlei.gdx.graphics.glutils.VertexArray;
 
 /** A single vertex attribute defined by its {@link Usage}, its number of components and its shader alias. The Usage is used
  * for uniquely identifying the vertex attribute from among its {@linkplain VertexAttributes} siblings. The number of components 
