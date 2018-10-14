@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.g3d.particles.batches;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.assets.AssetManager;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;

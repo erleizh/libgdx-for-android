@@ -16,12 +16,12 @@
 
 package com.erlei.gdx.files;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Environment;
 
 import com.erlei.gdx.Files;
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.utils.GdxRuntimeException;
 
 import java.io.IOException;
@@ -31,23 +31,36 @@ import java.io.IOException;
  * @author Nathan Sweet
  */
 public class AndroidFiles implements Files {
+    private static AndroidFiles files;
     protected final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
     protected final String localpath;
 
-    protected final AssetManager assets;
+    protected AssetManager assets;
     private ZipResourceFile expansionFile = null;
+    private Context mApplication;
 
-    public AndroidFiles(AssetManager assets) {
-        this.assets = assets;
+    public static void init(Context context) {
+        if (files == null) {
+            files = new AndroidFiles(context, context.getFilesDir().getAbsolutePath());
+        }
+    }
+
+    public static Files getInstance() {
+        return files;
+    }
+
+    private AndroidFiles(Context application) {
+        mApplication = application;
+        this.assets = application.getAssets();
         localpath = sdcard;
     }
 
-    public AndroidFiles(AssetManager assets, String localpath) {
-        this.assets = assets;
+    private AndroidFiles(Context application, String localpath) {
+        mApplication = application;
+        this.assets = application.getAssets();
         this.localpath = localpath.endsWith("/") ? localpath : localpath + "/";
     }
 
-    @Override
     public FileHandle getFileHandle(String path, FileType type) {
         FileHandle handle = new AndroidFileHandle(type == Files.FileType.Internal ? assets : null, path, type);
         if (expansionFile != null && type == FileType.Internal)
@@ -126,10 +139,7 @@ public class AndroidFiles implements Files {
      */
     public boolean setAPKExpansion(int mainVersion, int patchVersion) {
         try {
-            Context context = Gdx.app.getContext();
-            expansionFile = APKExpansionSupport.getAPKExpansionZipFile(
-                    context,
-                    mainVersion, patchVersion);
+            expansionFile = APKExpansionSupport.getAPKExpansionZipFile(mApplication.getApplicationContext(), mainVersion, patchVersion);
         } catch (IOException ex) {
             throw new GdxRuntimeException("APK expansion main version " + mainVersion + " or patch version " + patchVersion + " couldn't be opened!");
         }

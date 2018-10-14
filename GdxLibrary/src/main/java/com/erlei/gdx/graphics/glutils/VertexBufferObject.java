@@ -20,7 +20,6 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.VertexAttribute;
 import com.erlei.gdx.graphics.VertexAttributes;

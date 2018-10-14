@@ -1,8 +1,7 @@
 package com.erlei.gdx.simple.renders;
 
-import com.erlei.gdx.Gdx;
-import com.erlei.gdx.android.EglCore;
-import com.erlei.gdx.android.EglSurfaceBase;
+import com.erlei.gdx.android.widget.EglHelper;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.android.widget.IRenderView;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
@@ -12,7 +11,7 @@ import com.erlei.gdx.graphics.VertexAttribute;
 import com.erlei.gdx.graphics.VertexAttributes;
 import com.erlei.gdx.graphics.glutils.ShaderProgram;
 
-public class ShaderMultiTextureTest extends Gdx {
+public class ShaderMultiTextureTest extends GLContext {
 
     ShaderProgram shader;
     Texture texture;
@@ -24,10 +23,8 @@ public class ShaderMultiTextureTest extends Gdx {
     }
 
     @Override
-    public void create(EglCore egl, EglSurfaceBase eglSurface) {
-        super.create(egl, eglSurface);
-
-
+    public void create(EglHelper egl, GL20 gl) {
+        super.create(egl, gl);
         shader = new ShaderProgram(
                 files.internal("shader/ShaderMultiTextureTest_vertex.glsl"),
                 files.internal("shader/ShaderMultiTextureTest_fragment.glsl"));
@@ -72,13 +69,13 @@ public class ShaderMultiTextureTest extends Gdx {
     @Override
     public void render() {
         super.render();
-        Gdx.gl20.glViewport(0, 0, getBackBufferWidth(), getBackBufferHeight());
-        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        gl.glViewport(0, 0, getBackBufferWidth(), getBackBufferHeight());
+        gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE0);
+        gl.glActiveTexture(GL20.GL_TEXTURE0);
         texture.bind();
 
-        Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE1);
+        gl.glActiveTexture(GL20.GL_TEXTURE1);
         texture2.bind();
 
         shader.begin();

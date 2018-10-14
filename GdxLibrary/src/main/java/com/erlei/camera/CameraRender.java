@@ -3,9 +3,8 @@ package com.erlei.camera;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 
-import com.erlei.gdx.Gdx;
-import com.erlei.gdx.android.EglCore;
-import com.erlei.gdx.android.EglSurfaceBase;
+import com.erlei.gdx.android.widget.EglHelper;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.android.widget.IRenderView;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
@@ -16,14 +15,12 @@ import com.erlei.gdx.graphics.glutils.ShaderProgram;
 import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.utils.Logger;
 
-import java.util.Locale;
-
 /**
  * Created by lll on 2018/10/8
  * Email : lllemail@foxmail.com
  * Describe : 使用相机的数据作为纹理渲染到renderView
  */
-public class CameraRender extends Gdx implements SurfaceTexture.OnFrameAvailableListener {
+public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAvailableListener {
     private Logger mLogger = new Logger("CameraRender", Logger.DEBUG);
     private final CameraControl mControl;
     private CameraTexture mCameraTexture;
@@ -40,47 +37,79 @@ public class CameraRender extends Gdx implements SurfaceTexture.OnFrameAvailable
     }
 
     @Override
-    public void create(EglCore egl, EglSurfaceBase eglSurface) {
-        super.create(egl, eglSurface);
+    public void create(EglHelper egl, GL20 gl) {
+        super.create(egl, gl);
         mLogger.debug("create");
-        initSurfaceTexture();
         initShaderProgram();
         initMesh();
+        openCamera();
+    }
+
+    protected void openCamera() {
+        initSurfaceTexture();
         mControl.open(mCameraTexture.getSurfaceTexture());
+        adjustTextureSize(new Size(getWidth(), getHeight()), mControl.getPreviewSize());
+    }
+
+
+    private void closeCamera() {
+        mControl.close();
+        destroySurfaceTexture();
     }
 
     @Override
     public void resume() {
         super.resume();
         mLogger.debug("resume");
+        openCamera();
     }
 
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
         mLogger.debug("resize " + width + "x" + height);
-        adjustTextureSize(width, height, mControl.getPreviewSize().width, mControl.getPreviewSize().height);
+
+        adjustTextureSize(new Size(width, height), mControl.getPreviewSize());
     }
 
     /**
      * 调整纹理大小比例
      *
-     * @param viewWidth    视图宽度
-     * @param viewHeight   视图高度
-     * @param cameraWidth  相机宽度
-     * @param cameraHeight 相机高度
+     * @param viewSize   视图大小
+     * @param cameraSize 相机大小
      */
-    protected void adjustTextureSize(float viewWidth, float viewHeight, float cameraWidth, float cameraHeight) {
-        mLogger.debug(String.format(Locale.getDefault(), "viewWidth=%s viewHeight=%s cameraWidth=%s cameraHeight=%s", viewWidth, viewHeight, cameraWidth, cameraHeight));
+    private void adjustTextureSize(Size viewSize, Size cameraSize) {
+        if (!isLandscape()) cameraSize = new Size(cameraSize.getHeight(), cameraSize.getWidth());
+        mProjectionViewMatrix.idt();
+        float cameraWidth = cameraSize.width;
+        float viewWidth = viewSize.width;
+        float cameraHeight = cameraSize.height;
+        float viewHeight = viewSize.height;
+
+        //1 . 恢复纹理比例
         mProjectionViewMatrix.scale(cameraWidth / viewWidth, cameraHeight / viewHeight, 0F);
-        mProjectionViewMatrix.scale(0.5F, 0.5F, 0F);
+
+        //2 . CENTER_CROP (see ImageView CENTER_CROP)
+        float scale;
+        float dx = 0, dy = 0;
+        if (cameraWidth * viewWidth > viewWidth * cameraHeight) {
+            scale = viewHeight / cameraHeight;
+            dx = (viewWidth - cameraWidth * scale) * 0.5f;
+        } else {
+            scale = viewWidth / cameraWidth;
+            dy = (viewHeight - cameraHeight * scale) * 0.5f;
+        }
+        mLogger.debug("viewSize = " + viewSize.toString() + "\t\t cameraSize = " + cameraSize.toString() + "\t\tscale = " + scale + "\t\t dx = " + (dx / cameraWidth) + "\t\t dy = " + (dy / cameraHeight));
+        mProjectionViewMatrix.scale(scale, scale, 0f);
     }
 
     @Override
     public void pause() {
         super.pause();
         mLogger.debug("pause");
+        closeCamera();
     }
+
 
     @Override
     public void render() {
@@ -100,21 +129,26 @@ public class CameraRender extends Gdx implements SurfaceTexture.OnFrameAvailable
 
     @Override
     public void dispose() {
-        super.dispose();
         mLogger.debug("dispose");
+        destroySurfaceTexture();
         mControl.close();
         mProgramOES.dispose();
         mMesh.dispose();
-        mCameraTexture.dispose();
         mProgram2d.dispose();
+        super.dispose();
     }
 
     protected void initSurfaceTexture() {
-        mLogger.debug("initSurfaceTexture");
+        destroySurfaceTexture();
         mCameraTexture = new CameraTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, new CameraTexture.CameraTextureData());
         mCameraTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         mCameraTexture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
         mCameraTexture.getSurfaceTexture().setOnFrameAvailableListener(this);
+    }
+
+    protected void destroySurfaceTexture() {
+        if (mCameraTexture != null) mCameraTexture.dispose();
+        mCameraTexture = null;
     }
 
     protected void initShaderProgram() {
@@ -143,7 +177,7 @@ public class CameraRender extends Gdx implements SurfaceTexture.OnFrameAvailable
 
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-        getRenderView().requestRender();
+        mRenderView.requestRender();
     }
 
     public interface CameraControl {

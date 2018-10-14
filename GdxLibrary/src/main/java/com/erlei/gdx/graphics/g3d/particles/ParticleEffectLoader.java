@@ -18,7 +18,6 @@ package com.erlei.gdx.graphics.g3d.particles;
 
 import java.io.IOException;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.assets.AssetDescriptor;
 import com.erlei.gdx.assets.AssetLoaderParameters;
 import com.erlei.gdx.assets.AssetManager;
@@ -69,7 +68,7 @@ public class ParticleEffectLoader extends
 
 			// If the asset doesn't exist try to load it from loading effect directory
 			if (!resolve(assetData.filename).exists()) {
-				assetData.filename = file.parent().child(Gdx.files.internal(assetData.filename).name()).path();
+				assetData.filename = file.parent().child(AndroidFiles.getInstance().internal(assetData.filename).name()).path();
 			}
 
 			if (assetData.type == ParticleEffect.class) {

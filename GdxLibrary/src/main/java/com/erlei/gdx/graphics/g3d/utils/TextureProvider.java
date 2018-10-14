@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.g3d.utils;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.assets.AssetManager;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.g3d.Model;
@@ -49,7 +48,7 @@ public interface TextureProvider {
 
 		@Override
 		public Texture load (String fileName) {
-			Texture result = new Texture(Gdx.files.internal(fileName), useMipMaps);
+			Texture result = new Texture(AndroidFiles.getInstance().internal(fileName), useMipMaps);
 			result.setFilter(minFilter, magFilter);
 			result.setWrap(uWrap, vWrap);
 			return result;

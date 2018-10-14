@@ -16,8 +16,6 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import com.erlei.gdx.Application;
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.GL30;
 import com.erlei.gdx.graphics.GLTexture;
@@ -28,8 +26,6 @@ import com.erlei.gdx.utils.Disposable;
 import com.erlei.gdx.utils.GdxRuntimeException;
 
 import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p>
@@ -38,22 +34,12 @@ import java.util.Map;
  * gltexture by {@link GLFrameBuffer#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
  * </p>
  * <p>
- * <p>
- * FrameBuffers are managed. In case of an OpenGL context loss, which only happens on Android when a user switches to another
- * application or receives an incoming call, the framebuffer will be automatically recreated.
- * </p>
- * <p>
- * <p>
  * A FrameBuffer must be disposed if it is no longer needed
  * </p>
  *
  * @author mzechner, realitix
  */
 public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
-    /**
-     * the frame buffers
-     **/
-    protected final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<Application, Array<GLFrameBuffer>>();
 
     protected final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
 
@@ -286,8 +272,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
                 throw new IllegalStateException("Frame buffer couldn't be constructed: unsupported combination of formats");
             throw new IllegalStateException("Frame buffer couldn't be constructed: unknown error " + result);
         }
-
-        addManagedFrameBuffer(Gdx.app, this);
     }
 
     private void checkValidBuilder() {
@@ -333,8 +317,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
         }
 
         gl.glDeleteFramebuffer(framebufferHandle);
-
-        if (buffers.get(Gdx.app) != null) buffers.get(Gdx.app).removeValue(this, true);
     }
 
     /**
@@ -428,45 +410,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
      */
     public int getWidth() {
         return bufferBuilder.width;
-    }
-
-    private static void addManagedFrameBuffer(Application app, GLFrameBuffer frameBuffer) {
-        Array<GLFrameBuffer> managedResources = buffers.get(app);
-        if (managedResources == null) managedResources = new Array<GLFrameBuffer>();
-        managedResources.add(frameBuffer);
-        buffers.put(app, managedResources);
-    }
-
-    /**
-     * Invalidates all frame buffers. This can be used when the OpenGL context is lost to rebuild all managed frame buffers. This
-     * assumes that the texture attached to this buffer has already been rebuild! Use with care.
-     */
-    public static void invalidateAllFrameBuffers(Application app) {
-        if (Gdx.gl20 == null) return;
-
-        Array<GLFrameBuffer> bufferArray = buffers.get(app);
-        if (bufferArray == null) return;
-        for (int i = 0; i < bufferArray.size; i++) {
-            bufferArray.get(i).build();
-        }
-    }
-
-    public static void clearAllFrameBuffers(Application app) {
-        buffers.remove(app);
-    }
-
-    public static StringBuilder getManagedStatus(final StringBuilder builder) {
-        builder.append("Managed buffers/app: { ");
-        for (Application app : buffers.keySet()) {
-            builder.append(buffers.get(app).size);
-            builder.append(" ");
-        }
-        builder.append("}");
-        return builder;
-    }
-
-    public static String getManagedStatus() {
-        return getManagedStatus(new StringBuilder()).toString();
     }
 
     protected static class FrameBufferTextureAttachmentSpec {

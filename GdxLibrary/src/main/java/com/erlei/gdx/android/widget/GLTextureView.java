@@ -5,6 +5,7 @@ import android.graphics.SurfaceTexture;
 import android.util.AttributeSet;
 import android.view.TextureView;
 
+import com.erlei.gdx.android.widget.IRenderView;
 import com.erlei.gdx.utils.Logger;
 
 import java.util.ArrayList;
@@ -12,12 +13,16 @@ import java.util.List;
 
 
 public class GLTextureView extends TextureView implements IRenderView, TextureView.SurfaceTextureListener {
-    private static final String TAG = "GLSurfaceViewI";
+    private static final String TAG = "GLSurfaceView";
     private boolean mPreserveEGLContextOnPause = true;
     private Renderer mRenderer;
     private GLThread mGLThread;
     private boolean mDetached;
     private List<SurfaceSizeChangeListener> mSizeChangeListeners = new ArrayList<>();
+    private GLWrapper mWrapper;
+    private EGLWindowSurfaceFactory mSurfaceFactory;
+    private EGLContextFactory mContextFactory;
+    private EGLConfigChooser mConfigChooser;
 
     public GLTextureView(Context context) {
         super(context);
@@ -64,7 +69,6 @@ public class GLTextureView extends TextureView implements IRenderView, TextureVi
 
     @Override
     public void onDestroy() {
-        if (mRenderer != null) mRenderer.release();
         mSizeChangeListeners.clear();
     }
 
@@ -147,6 +151,46 @@ public class GLTextureView extends TextureView implements IRenderView, TextureVi
     @Override
     public Object getSurface() {
         return getSurfaceTexture();
+    }
+
+    @Override
+    public void setGLWrapper(GLWrapper wrapper) {
+        mWrapper = wrapper;
+    }
+
+    @Override
+    public void setEGLContextFactory(EGLContextFactory factory) {
+        mContextFactory = factory;
+    }
+
+    @Override
+    public void setEGLWindowSurfaceFactory(EGLWindowSurfaceFactory factory) {
+        mSurfaceFactory = factory;
+    }
+
+    @Override
+    public void setEGLConfigChooser(EGLConfigChooser configChooser) {
+        mConfigChooser = configChooser;
+    }
+
+    @Override
+    public GLWrapper getGLWrapper() {
+        return mWrapper;
+    }
+
+    @Override
+    public EGLWindowSurfaceFactory getEGLWindowSurfaceFactory() {
+        return mSurfaceFactory;
+    }
+
+    @Override
+    public EGLContextFactory getEGLContextFactory() {
+        return mContextFactory;
+    }
+
+    @Override
+    public EGLConfigChooser getEGLConfigChooser() {
+        return mConfigChooser;
     }
 
 

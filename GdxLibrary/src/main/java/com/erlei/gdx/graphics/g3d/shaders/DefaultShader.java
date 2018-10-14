@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.shaders;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.files.AndroidFiles;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.VertexAttribute;
@@ -390,7 +390,7 @@ public class DefaultShader extends BaseShader {
 
 	public static String getDefaultVertexShader () {
 		if (defaultVertexShader == null)
-			defaultVertexShader = Gdx.files.classpath("com/erlei/gdx/graphics/g3d/shaders/default.vertex.glsl").readString();
+			defaultVertexShader = AndroidFiles.getInstance().classpath("com/erlei/gdx/graphics/g3d/shaders/default.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 
@@ -398,7 +398,7 @@ public class DefaultShader extends BaseShader {
 
 	public static String getDefaultFragmentShader () {
 		if (defaultFragmentShader == null)
-			defaultFragmentShader = Gdx.files.classpath("com/erlei/gdx/graphics/g3d/shaders/default.fragment.glsl").readString();
+			defaultFragmentShader = AndroidFiles.getInstance().classpath("com/erlei/gdx/graphics/g3d/shaders/default.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 

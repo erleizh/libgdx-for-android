@@ -18,11 +18,7 @@ package com.erlei.gdx.graphics;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.erlei.gdx.Application;
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.VertexAttributes.Usage;
 import com.erlei.gdx.graphics.glutils.IndexArray;
 import com.erlei.gdx.graphics.glutils.IndexBufferObject;
@@ -39,7 +35,6 @@ import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.math.Vector2;
 import com.erlei.gdx.math.Vector3;
 import com.erlei.gdx.math.collision.BoundingBox;
-import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.Disposable;
 import com.erlei.gdx.utils.GdxRuntimeException;
 
@@ -48,13 +43,6 @@ import com.erlei.gdx.utils.GdxRuntimeException;
  * VRAM in form of vertex buffer objects or in RAM in form of vertex arrays. The former variant is more performant and is
  * preferred over vertex arrays if hardware supports it.
  * </p>
- * 
- * <p>
- * Meshes are automatically managed. If the OpenGL context is lost all vertex buffer objects get invalidated and must be reloaded
- * when the context is recreated. This only happens on Android when a user switches to another application or receives an incoming
- * call. A managed Mesh will be reloaded automagically so you don't have to do this manually.
- * </p>
- * 
  * <p>
  * A Mesh consists of vertices and optionally indices which specify which vertices define a triangle. Each vertex is composed of
  * attributes such as position, normal, color or texture coordinate. Note that not all of this attributes must be given, except
@@ -69,9 +57,6 @@ public class Mesh implements Disposable {
 		VertexArray, VertexBufferObject, VertexBufferObjectSubData, VertexBufferObjectWithVAO
 	}
 
-	/** list of all meshes **/
-	static final Map<Application, Array<Mesh>> meshes = new HashMap<Application, Array<Mesh>>();
-
 	final VertexData vertices;
 	final IndexData indices;
 	boolean autoBind = true;
@@ -81,8 +66,6 @@ public class Mesh implements Disposable {
 		this.vertices = vertices;
 		this.indices = indices;
 		this.isVertexArray = isVertexArray;
-
-		addManagedMesh(Gdx.app, this);
 	}
 
 	/** Creates a new Mesh with the given attributes.
@@ -96,8 +79,6 @@ public class Mesh implements Disposable {
 		vertices = makeVertexBuffer(isStatic, maxVertices, new VertexAttributes(attributes));
 		indices = new IndexBufferObject(isStatic, maxIndices);
 		isVertexArray = false;
-
-		addManagedMesh(Gdx.app, this);
 	}
 
 	/** Creates a new Mesh with the given attributes.
@@ -111,8 +92,6 @@ public class Mesh implements Disposable {
 		vertices = makeVertexBuffer(isStatic, maxVertices, attributes);
 		indices = new IndexBufferObject(isStatic, maxIndices);
 		isVertexArray = false;
-
-		addManagedMesh(Gdx.app, this);
 	}
 
 	/** Creates a new Mesh with the given attributes. Adds extra optimizations for dynamic (frequently modified) meshes.
@@ -129,8 +108,6 @@ public class Mesh implements Disposable {
 		vertices = makeVertexBuffer(staticVertices, maxVertices, attributes);
 		indices = new IndexBufferObject(staticIndices, maxIndices);
 		isVertexArray = false;
-
-		addManagedMesh(Gdx.app, this);
 	}
 
 	private VertexData makeVertexBuffer (boolean isStatic, int maxVertices, VertexAttributes vertexAttributes) {
@@ -184,8 +161,6 @@ public class Mesh implements Disposable {
 			isVertexArray = true;
 			break;
 		}
-
-		addManagedMesh(Gdx.app, this);
 	}
 
 	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.
@@ -520,7 +495,6 @@ public class Mesh implements Disposable {
 
 	/** Frees all resources associated with this Mesh */
 	public void dispose () {
-		if (meshes.get(Gdx.app) != null) meshes.get(Gdx.app).removeValue(this, true);
 		vertices.dispose();
 		indices.dispose();
 	}
@@ -812,41 +786,6 @@ public class Mesh implements Disposable {
 	/** @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android! */
 	public ShortBuffer getIndicesBuffer () {
 		return indices.getBuffer();
-	}
-
-	private static void addManagedMesh (Application app, Mesh mesh) {
-		Array<Mesh> managedResources = meshes.get(app);
-		if (managedResources == null) managedResources = new Array<Mesh>();
-		managedResources.add(mesh);
-		meshes.put(app, managedResources);
-	}
-
-	/** Invalidates all meshes so the next time they are rendered new VBO handles are generated.
-	 * @param app */
-	public static void invalidateAllMeshes (Application app) {
-		Array<Mesh> meshesArray = meshes.get(app);
-		if (meshesArray == null) return;
-		for (int i = 0; i < meshesArray.size; i++) {
-			meshesArray.get(i).vertices.invalidate();
-			meshesArray.get(i).indices.invalidate();
-		}
-	}
-
-	/** Will clear the managed mesh cache. I wouldn't use this if i was you :) */
-	public static void clearAllMeshes (Application app) {
-		meshes.remove(app);
-	}
-
-	public static String getManagedStatus () {
-		StringBuilder builder = new StringBuilder();
-		int i = 0;
-		builder.append("Managed meshes/app: { ");
-		for (Application app : meshes.keySet()) {
-			builder.append(meshes.get(app).size);
-			builder.append(" ");
-		}
-		builder.append("}");
-		return builder.toString();
 	}
 
 	/** Method to scale the positions in the mesh. Normals will be kept as is. This is a potentially slow operation, use with care.

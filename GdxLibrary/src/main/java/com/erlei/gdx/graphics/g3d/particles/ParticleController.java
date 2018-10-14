@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.g3d.particles;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.assets.AssetManager;
 import com.erlei.gdx.graphics.g3d.particles.ParallelArray.FloatChannel;
 import com.erlei.gdx.graphics.g3d.particles.emitters.Emitter;

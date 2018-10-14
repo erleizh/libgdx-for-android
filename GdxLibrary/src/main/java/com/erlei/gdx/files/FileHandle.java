@@ -38,7 +38,6 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.Files;
 import com.erlei.gdx.Files.FileType;
 import com.erlei.gdx.utils.GdxRuntimeException;
@@ -86,7 +85,7 @@ public class FileHandle {
 		this.type = type;
 	}
 
-	/** @return the path of the file as specified on construction, e.g. Gdx.files.internal("dir/file.png") -> dir/file.png.
+	/** @return the path of the file as specified on construction, e.g. AndroidFiles.getInstance().internal("dir/file.png") -> dir/file.png.
 	 *         backward slashes will be replaced by forward slashes. */
 	public String path () {
 		return file.getPath().replace('\\', '/');
@@ -129,7 +128,7 @@ public class FileHandle {
 	/** Returns a java.io.File that represents this file handle. Note the returned file will only be usable for
 	 * {@link FileType#Absolute} and {@link FileType#External} file handles. */
 	public File file () {
-		if (type == FileType.External) return new File(Gdx.files.getExternalStoragePath(), file.getPath());
+		if (type == FileType.External) return new File(AndroidFiles.getInstance().getExternalStoragePath(), file.getPath());
 		return file;
 	}
 

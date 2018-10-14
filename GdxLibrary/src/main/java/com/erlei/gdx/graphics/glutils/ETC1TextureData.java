@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
@@ -118,10 +117,5 @@ public class ETC1TextureData implements TextureData {
 	@Override
 	public boolean useMipMaps () {
 		return useMipMaps;
-	}
-
-	@Override
-	public boolean isManaged () {
-		return true;
 	}
 }

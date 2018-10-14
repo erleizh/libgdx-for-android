@@ -19,8 +19,8 @@ package com.erlei.gdx.graphics.g2d;
 import static com.erlei.gdx.graphics.Texture.TextureWrap.ClampToEdge;
 import static com.erlei.gdx.graphics.Texture.TextureWrap.Repeat;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.Files.FileType;
+import com.erlei.gdx.files.AndroidFiles;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.Pixmap.Format;
 import com.erlei.gdx.graphics.Texture;
@@ -206,7 +206,7 @@ public class TextureAtlas implements Disposable {
 	/** Loads the specified pack file using {@link FileType#Internal}, using the parent directory of the pack file to find the page
 	 * images. */
 	public TextureAtlas (String internalPackFile) {
-		this(Gdx.files.internal(internalPackFile));
+		this(AndroidFiles.getInstance().internal(internalPackFile));
 	}
 
 	/** Loads the specified pack file, using the parent directory of the pack file to find the page images. */

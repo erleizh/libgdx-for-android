@@ -21,6 +21,11 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class AndroidGL20 implements GL20 {
+
+    static {
+        System.loadLibrary("gdx");
+    }
+
     public static native void init();
 
     public native void glActiveTexture(int texture);

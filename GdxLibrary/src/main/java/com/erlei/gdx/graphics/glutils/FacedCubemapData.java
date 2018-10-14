@@ -1,7 +1,6 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.Cubemap;
 import com.erlei.gdx.graphics.Cubemap.CubemapSide;
@@ -77,13 +76,6 @@ public class FacedCubemapData implements CubemapData {
 		data[3] = negativeY;
 		data[4] = positiveZ;
 		data[5] = negativeZ;
-	}
-
-	@Override
-	public boolean isManaged () {
-		for (TextureData data : this.data)
-			if (!data.isManaged()) return false;
-		return true;
 	}
 
 	/** Loads the texture specified using the {@link FileHandle} and sets it to specified side, overwriting any previous data set to

@@ -66,9 +66,4 @@ public class MipMapTextureData implements TextureData{
 	public boolean useMipMaps () {
 		return false;
 	}
-
-	@Override
-	public boolean isManaged () {
-		return true;
-	}
 }

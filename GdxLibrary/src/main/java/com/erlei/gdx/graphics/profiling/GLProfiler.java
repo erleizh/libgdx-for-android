@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.profiling;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.GL30;
 import com.erlei.gdx.math.FloatCounter;
 

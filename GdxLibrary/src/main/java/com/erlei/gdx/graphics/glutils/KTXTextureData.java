@@ -8,7 +8,6 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.zip.GZIPInputStream;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.Cubemap;
 import com.erlei.gdx.graphics.CubemapData;
@@ -349,11 +348,6 @@ public class KTXTextureData implements TextureData, CubemapData {
 	@Override
 	public boolean useMipMaps () {
 		return useMipMaps;
-	}
-
-	@Override
-	public boolean isManaged () {
-		return true;
 	}
 
 }

@@ -17,7 +17,6 @@
 package com.erlei.gdx.utils;
 
 import com.erlei.gdx.Application;
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.Files;
 import com.erlei.gdx.LifecycleListener;
 

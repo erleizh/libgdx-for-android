@@ -3,7 +3,6 @@ package com.erlei.camera;
 
 import android.graphics.SurfaceTexture;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.TextureData;
@@ -16,7 +15,7 @@ import com.erlei.gdx.utils.GdxRuntimeException;
  */
 public class CameraTexture extends Texture {
 
-    private final SurfaceTexture mSurfaceTexture;
+    private SurfaceTexture mSurfaceTexture;
 
     public CameraTexture(int glTarget, CameraTextureData data) {
         super(glTarget, Gdx.gl.glGenTexture(), data);
@@ -25,11 +24,6 @@ public class CameraTexture extends Texture {
 
     public SurfaceTexture getSurfaceTexture() {
         return mSurfaceTexture;
-    }
-
-    @Override
-    public boolean isManaged() {
-        return false;
     }
 
     @Override
@@ -42,6 +36,7 @@ public class CameraTexture extends Texture {
     public void dispose() {
         super.dispose();
         mSurfaceTexture.release();
+        mSurfaceTexture = null;
     }
 
     public static class CameraTextureData implements TextureData {
@@ -99,11 +94,6 @@ public class CameraTexture extends Texture {
         @Override
         public boolean useMipMaps() {
             return false;
-        }
-
-        @Override
-        public boolean isManaged() {
-            return true;
         }
     }
 }

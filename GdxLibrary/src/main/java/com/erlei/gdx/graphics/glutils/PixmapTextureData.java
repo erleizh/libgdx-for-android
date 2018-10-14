@@ -26,18 +26,13 @@ public class PixmapTextureData implements TextureData {
 	final Format format;
 	final boolean useMipMaps;
 	final boolean disposePixmap;
-	final boolean managed;
+
 
 	public PixmapTextureData (Pixmap pixmap, Format format, boolean useMipMaps, boolean disposePixmap) {
-		this(pixmap, format, useMipMaps, disposePixmap, false);
-	}
-
-	public PixmapTextureData (Pixmap pixmap, Format format, boolean useMipMaps, boolean disposePixmap, boolean managed) {
 		this.pixmap = pixmap;
 		this.format = format == null ? pixmap.getFormat() : format;
 		this.useMipMaps = useMipMaps;
 		this.disposePixmap = disposePixmap;
-		this.managed = managed;
 	}
 
 	@Override
@@ -69,12 +64,6 @@ public class PixmapTextureData implements TextureData {
 	public boolean useMipMaps () {
 		return useMipMaps;
 	}
-
-	@Override
-	public boolean isManaged () {
-		return managed;
-	}
-
 	@Override
 	public TextureDataType getType () {
 		return TextureDataType.Pixmap;

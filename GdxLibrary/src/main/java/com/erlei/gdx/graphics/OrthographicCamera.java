@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.math.Vector2;
 import com.erlei.gdx.math.Vector3;

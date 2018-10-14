@@ -18,7 +18,6 @@ package com.erlei.gdx.graphics.g3d.utils;
 
 import java.nio.IntBuffer;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.GLTexture;
 import com.erlei.gdx.utils.BufferUtils;

@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.GL30;
 import com.erlei.gdx.graphics.Pixmap;
@@ -114,15 +113,5 @@ public class FileTextureArrayData implements TextureArrayData {
 	@Override
 	public int getGLType () {
 		return Pixmap.Format.toGlType(format);
-	}
-
-	@Override
-	public boolean isManaged () {
-		for (TextureData data : textureDatas) {
-			if (!data.isManaged()) {
-				return false;
-			}
-		}
-		return true;
 	}
 }

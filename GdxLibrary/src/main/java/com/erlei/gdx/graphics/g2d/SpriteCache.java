@@ -16,7 +16,8 @@
 
 package com.erlei.gdx.graphics.g2d;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.android.widget.trash.IRenderView;
 import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
@@ -51,14 +52,11 @@ import static com.erlei.gdx.graphics.g2d.Sprite.VERTEX_SIZE;
  * <br>
  * By default, SpriteCache draws using screen coordinates and uses an x-axis pointing to the right, an y-axis pointing upwards and
  * the origin is the bottom left corner of the screen. The default transformation and projection matrices can be changed. If the
- * screen is {@link com.erlei.gdx.android.widget.IRenderView#(int, int) resized}, the SpriteCache's matrices must be updated. For example:<br>
+ * screen is {@link IRenderView#(int, int) resized}, the SpriteCache's matrices must be updated. For example:<br>
  * <code>cache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.app.getWidth(), Gdx.app.getHeight());</code><br>
  * <br>
  * Note that SpriteCache does not manage blending. You will need to enable blending (<i>Gdx.gl.glEnable(GL10.GL_BLEND);</i>) and
  * set the blend func as needed before or between calls to {@link #draw(int)}.<br>
- * <br>
- * SpriteCache is managed. If the OpenGL context is lost and the restored, all OpenGL resources a SpriteCache uses internally are
- * restored.<br>
  * <br>
  * SpriteCache is a reasonably heavyweight object. Typically only one instance should be used for an entire application.<br>
  * <br>
@@ -72,6 +70,7 @@ public class SpriteCache implements Disposable {
     static private final float[] tempVertices = new float[VERTEX_SIZE * 6];
 
     private final Mesh mesh;
+    private final GLContext glContext;
     private boolean drawing;
     private final Matrix4 transformMatrix = new Matrix4();
     private final Matrix4 projectionMatrix = new Matrix4();
@@ -102,8 +101,8 @@ public class SpriteCache implements Disposable {
     /**
      * Creates a cache that uses indexed geometry and can contain up to 1000 images.
      */
-    public SpriteCache() {
-        this(1000, false);
+    public SpriteCache(GLContext glContext) {
+        this(glContext,1000, false);
     }
 
     /**
@@ -113,8 +112,8 @@ public class SpriteCache implements Disposable {
      *                   Max of 8191 if indices are used.
      * @param useIndices If true, indexed geometry will be used.
      */
-    public SpriteCache(int size, boolean useIndices) {
-        this(size, createDefaultShader(), useIndices);
+    public SpriteCache(GLContext glContext,int size, boolean useIndices) {
+        this(glContext,size, createDefaultShader(), useIndices);
     }
 
     /**
@@ -124,9 +123,9 @@ public class SpriteCache implements Disposable {
      *                   Max of 8191 if indices are used.
      * @param useIndices If true, indexed geometry will be used.
      */
-    public SpriteCache(int size, ShaderProgram shader, boolean useIndices) {
+    public SpriteCache(GLContext glContext,int size, ShaderProgram shader, boolean useIndices) {
         this.shader = shader;
-
+        this.glContext = glContext;
         if (useIndices && size > 8191)
             throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
 
@@ -150,7 +149,7 @@ public class SpriteCache implements Disposable {
             mesh.setIndices(indices);
         }
 
-        projectionMatrix.setToOrtho2D(0, 0, Gdx.app.getWidth(), Gdx.app.getHeight());
+        projectionMatrix.setToOrtho2D(0, 0, glContext.getWidth(), glContext.getHeight());
     }
 
     /**
@@ -910,7 +909,7 @@ public class SpriteCache implements Disposable {
         renderCalls = 0;
         combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
-        Gdx.gl20.glDepthMask(false);
+        glContext.gl.glDepthMask(false);
 
         if (customShader != null) {
             customShader.begin();
@@ -936,7 +935,7 @@ public class SpriteCache implements Disposable {
         drawing = false;
 
         shader.end();
-        GL20 gl = Gdx.gl20;
+        GL20 gl = glContext.gl;
         gl.glDepthMask(true);
         if (customShader != null)
             mesh.unbind(customShader);

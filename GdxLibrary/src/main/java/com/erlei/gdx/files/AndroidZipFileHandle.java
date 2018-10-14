@@ -18,7 +18,6 @@ package com.erlei.gdx.files;
 
 import android.content.res.AssetFileDescriptor;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.Files;
 import com.erlei.gdx.Files.FileType;
 import com.erlei.gdx.utils.GdxRuntimeException;
@@ -49,7 +48,7 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
 
     private void initialize() {
         path = file.getPath().replace('\\', '/');
-        expansionFile = ((AndroidFiles) Gdx.files).getExpansionFile();
+        expansionFile = ((AndroidFiles) AndroidFiles.getInstance()).getExpansionFile();
         assetFd = expansionFile.getAssetFileDescriptor(getPath());
 
         // needed for listing entries and exists() of directories
@@ -89,7 +88,7 @@ public class AndroidZipFileHandle extends AndroidFileHandle {
     public FileHandle sibling(String name) {
         if (file.getPath().length() == 0)
             throw new GdxRuntimeException("Cannot get the sibling of the root.");
-        return Gdx.files.getFileHandle(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's not inside the obb
+        return AndroidFiles.getInstance().getFileHandle(new File(file.getParent(), name).getPath(), type); //this way we can find the sibling even if it's not inside the obb
     }
 
     @Override

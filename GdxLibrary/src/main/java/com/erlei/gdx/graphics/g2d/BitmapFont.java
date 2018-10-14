@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.files.AndroidFiles;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.Texture;
@@ -69,7 +69,7 @@ public class BitmapFont implements Disposable {
 	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily
 	 * display text without bothering without generating a bitmap font yourself. */
 	public BitmapFont () {
-		this(Gdx.files.classpath("com/erlei/gdx/utils/arial-15.fnt"), Gdx.files.classpath("com/erlei/gdx/utils/arial-15.png"),
+		this(AndroidFiles.getInstance().classpath("com/erlei/gdx/utils/arial-15.fnt"), AndroidFiles.getInstance().classpath("com/erlei/gdx/utils/arial-15.png"),
 			false, true);
 	}
 
@@ -77,7 +77,7 @@ public class BitmapFont implements Disposable {
 	 * display text without bothering without generating a bitmap font yourself.
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner. */
 	public BitmapFont (boolean flip) {
-		this(Gdx.files.classpath("com/erlei/gdx/utils/arial-15.fnt"), Gdx.files.classpath("com/erlei/gdx/utils/arial-15.png"),
+		this(AndroidFiles.getInstance().classpath("com/erlei/gdx/utils/arial-15.fnt"), AndroidFiles.getInstance().classpath("com/erlei/gdx/utils/arial-15.png"),
 			flip, true);
 	}
 
@@ -160,9 +160,9 @@ public class BitmapFont implements Disposable {
 			for (int i = 0; i < n; i++) {
 				FileHandle file;
 				if (data.fontFile == null)
-					file = Gdx.files.internal(data.imagePaths[i]);
+					file = AndroidFiles.getInstance().internal(data.imagePaths[i]);
 				else
-					file = Gdx.files.getFileHandle(data.imagePaths[i], data.fontFile.type());
+					file = AndroidFiles.getInstance().getFileHandle(data.imagePaths[i], data.fontFile.type());
 				regions.add(new TextureRegion(new Texture(file, false)));
 			}
 			ownsTexture = true;

@@ -33,7 +33,4 @@ public interface CubemapData {
 	/** @return the height of the pixel data */
 	public int getHeight();
 
-	/** @return whether this implementation can cope with a EGL context loss. */
-	public boolean isManaged();
-
 }

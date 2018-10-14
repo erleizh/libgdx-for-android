@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.Pixmap.Blending;
 import com.erlei.gdx.graphics.Texture.TextureFilter;
 import com.erlei.gdx.graphics.Texture.TextureWrap;
@@ -54,9 +53,6 @@ public abstract class GLTexture implements Disposable {
 		this.glTarget = glTarget;
 		this.glHandle = glHandle;
 	}
-
-	/** @return whether this texture is managed or not. */
-	public abstract boolean isManaged ();
 
 	protected abstract void reload ();
 

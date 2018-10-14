@@ -1,17 +1,17 @@
 package com.erlei.gdx.simple.renders;
 
 
-import com.erlei.gdx.Gdx;
-import com.erlei.gdx.android.EglCore;
-import com.erlei.gdx.android.EglSurfaceBase;
+import com.erlei.gdx.android.widget.EglHelper;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.android.widget.IRenderView;
+import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.g2d.SpriteBatch;
 import com.erlei.gdx.graphics.glutils.FrameBuffer;
 import com.erlei.gdx.utils.Logger;
 
-public class Renderer extends Gdx {
+public class Renderer extends GLContext {
 
     Logger mLogger = new Logger("Renderer", Logger.DEBUG);
     private SpriteBatch mBatch;
@@ -22,10 +22,9 @@ public class Renderer extends Gdx {
         super(renderView);
     }
 
-
     @Override
-    public void create(EglCore egl, EglSurfaceBase eglSurface) {
-        super.create(egl, eglSurface);
+    public void create(EglHelper egl, GL20 gl) {
+        super.create(egl, gl);
         mLogger.info("create");
         mFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, getWidth(), getHeight(), false);
         mBatch = new SpriteBatch();
@@ -79,7 +78,11 @@ public class Renderer extends Gdx {
         //before super.dispose();
         mLogger.info("dispose");
         mTexture.dispose();
+        mTexture = null;
+        mFrameBuffer.dispose();
+        mFrameBuffer = null;
         mBatch.dispose();
+        mBatch = null;
         super.dispose();
     }
 

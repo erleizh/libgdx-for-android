@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.g3d.utils;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.GL20;
 
 /** Manages OpenGL state and tries to reduce state changes. Uses a {@link TextureBinder} to reduce texture binds as well. Call

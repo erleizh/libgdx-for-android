@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.g3d.environment;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.OrthographicCamera;

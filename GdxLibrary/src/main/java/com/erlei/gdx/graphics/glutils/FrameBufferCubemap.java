@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import com.erlei.gdx.Gdx;
 import com.erlei.gdx.graphics.Cubemap;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
@@ -29,12 +28,6 @@ import com.erlei.gdx.utils.GdxRuntimeException;
  * automatically create a cubemap for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
  * cubemap by {@link FrameBufferCubemap#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
  * </p>
- *
- * <p>
- * FrameBuffers are managed. In case of an OpenGL context loss, which only happens on Android when a user switches to another
- * application or receives an incoming call, the framebuffer will be automatically recreated.
- * </p>
- *
  * <p>
  * A FrameBuffer must be disposed if it is no longer needed
  * </p>
