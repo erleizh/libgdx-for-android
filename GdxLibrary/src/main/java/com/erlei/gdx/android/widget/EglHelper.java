@@ -21,6 +21,19 @@ import javax.microedition.khronos.egl.EGLSurface;
  * An EGL helper class.
  */
 public class EglHelper {
+    /**
+     * Constructor flag: surface must be recordable.  This discourages EGL from using a
+     * pixel format that cannot be converted efficiently to something usable by the video
+     * encoder.
+     */
+    public static final int FLAG_RECORDABLE = 0x01;
+
+    /**
+     * Constructor flag: ask for GLES3, fall back to GLES2 if not available.  Without this
+     * flag, GLES2 is used.
+     */
+    public static final int FLAG_TRY_GLES3 = 0x02;
+
     private Logger mLogger = new Logger("EglHelper", Logger.INFO);
     private final WeakReference<IRenderView> mWeakReference;
     private IRenderView.EGLConfigChooser mEGLConfigChooser;
@@ -44,7 +57,7 @@ public class EglHelper {
         }
 
         if (mEGLConfigChooser == null)
-            mEGLConfigChooser = new SimpleEGLConfigChooser(false);
+            mEGLConfigChooser = new SimpleEGLConfigChooser(3, false);
         if (mEGLContextFactory == null)
             mEGLContextFactory = new DefaultContextFactory();
         if (mEGLWindowSurfaceFactory == null)
@@ -284,25 +297,24 @@ public class EglHelper {
     abstract class BaseConfigChooser
             implements IRenderView.EGLConfigChooser {
 
-        private final int mVersion;
+        private final int mFlags;
+        private static final int EGL_RECORDABLE_ANDROID = 0x3142;
 
-        public BaseConfigChooser(int version, int[] configSpec) {
-            mVersion = version;
+        public BaseConfigChooser(int flags, int[] configSpec) {
+            mFlags = flags;
             mConfigSpec = filterConfigSpec(configSpec);
         }
 
         public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
             int[] num_config = new int[1];
-            if (!egl.eglChooseConfig(display, mConfigSpec, null, 0,
-                    num_config)) {
+            if (!egl.eglChooseConfig(display, mConfigSpec, null, 0, num_config)) {
                 throw new IllegalArgumentException("eglChooseConfig failed");
             }
 
             int numConfigs = num_config[0];
 
             if (numConfigs <= 0) {
-                throw new IllegalArgumentException(
-                        "No configs match configSpec");
+                throw new IllegalArgumentException("No configs match configSpec");
             }
 
             EGLConfig[] configs = new EGLConfig[numConfigs];
@@ -312,6 +324,9 @@ public class EglHelper {
             }
             EGLConfig config = chooseConfig(egl, display, configs);
             if (config == null) {
+                mLogger.error("unable to find RGB8888 / " + mVersion + " EGLConfig");
+
+
                 throw new IllegalArgumentException("No config chosen");
             }
             return config;
@@ -323,22 +338,21 @@ public class EglHelper {
         protected int[] mConfigSpec;
 
         private int[] filterConfigSpec(int[] configSpec) {
-            if (mVersion != 2 && mVersion != 3) {
-                return configSpec;
-            }
+
+            (mFlags & FLAG_TRY_GLES3) != 0
             /* We know none of the subclasses define EGL_RENDERABLE_TYPE.
              * And we know the configSpec is well formed.
              */
-            int len = configSpec.length;
-            int[] newConfigSpec = new int[len + 2];
-            System.arraycopy(configSpec, 0, newConfigSpec, 0, len - 1);
-            newConfigSpec[len - 1] = EGL10.EGL_RENDERABLE_TYPE;
-            if (mVersion == 2) {
-                newConfigSpec[len] = EGL14.EGL_OPENGL_ES2_BIT;  /* EGL_OPENGL_ES2_BIT */
-            } else {
-                newConfigSpec[len] = EGLExt.EGL_OPENGL_ES3_BIT_KHR; /* EGL_OPENGL_ES3_BIT_KHR */
-            }
-            newConfigSpec[len + 1] = EGL10.EGL_NONE;
+            int[] attr = {
+                    EGL10.EGL_RENDERABLE_TYPE, mVersion == 2 ? EGL14.EGL_OPENGL_ES2_BIT : EGLExt.EGL_OPENGL_ES3_BIT_KHR,
+                    EGL_RECORDABLE_ANDROID, 1,
+                    EGL14.EGL_NONE
+            };
+
+            int[] newConfigSpec = new int[configSpec.length + attr.length - 1];
+
+            System.arraycopy(configSpec, 0, newConfigSpec, 0, configSpec.length - 1);
+            System.arraycopy(attr, 0, newConfigSpec, configSpec.length - 1, attr.length);
             return newConfigSpec;
         }
     }
@@ -417,8 +431,8 @@ public class EglHelper {
      * or without a depth buffer.
      */
     class SimpleEGLConfigChooser extends ComponentSizeChooser {
-        public SimpleEGLConfigChooser(boolean withDepthBuffer) {
-            super(3, 8, 8, 8, 0, withDepthBuffer ? 16 : 0, 0);
+        public SimpleEGLConfigChooser(int glVersion, boolean withDepthBuffer) {
+            super(glVersion, 8, 8, 8, 8, withDepthBuffer ? 16 : 0, 0);
         }
     }
 
@@ -451,8 +465,8 @@ public class EglHelper {
     class DefaultContextFactory implements IRenderView.EGLContextFactory {
         private int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
 
-        public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig config) {
-            int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, 3, EGL10.EGL_NONE};
+        public EGLContext createContext(int glVersion, EGL10 egl, EGLDisplay display, EGLConfig config) {
+            int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, glVersion, EGL10.EGL_NONE};
 
             return egl.eglCreateContext(display, config, EGL10.EGL_NO_CONTEXT, attrib_list);
         }

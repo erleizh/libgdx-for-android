@@ -290,7 +290,7 @@ public interface IRenderView {
      * {@link IRenderView#setEGLContextFactory(IRenderView.EGLContextFactory)}
      */
     interface EGLContextFactory {
-        EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig);
+        EGLContext createContext(int glVersion ,EGL10 egl, EGLDisplay display, EGLConfig eglConfig);
 
         void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context);
     }

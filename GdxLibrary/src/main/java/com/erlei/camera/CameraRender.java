@@ -34,8 +34,6 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
     public CameraRender(IRenderView renderView, CameraControl cameraControl) {
         super(renderView);
         mControl = cameraControl;
-        renderView.setRenderer(this);
-        renderView.setRenderMode(IRenderView.RenderMode.WHEN_DIRTY);
     }
 
     @Override

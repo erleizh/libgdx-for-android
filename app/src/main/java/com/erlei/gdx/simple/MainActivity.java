@@ -1,73 +1,58 @@
 package com.erlei.gdx.simple;
 
-import android.graphics.SurfaceTexture;
+import android.Manifest;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
-import com.erlei.camera.Camera;
-import com.erlei.camera.CameraRender;
-import com.erlei.camera.Size;
-import com.erlei.gdx.android.widget.IRenderView;
-import com.erlei.gdx.utils.Logger;
+import static android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
 
 public class MainActivity extends AppCompatActivity {
 
-    private IRenderView mRenderView;
+    private static final int REQUEST_CAMERA = 1;
+    private String[] mPermissions = {
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
-        mRenderView = findViewById(R.id.renderView);
-//        mRenderView.setRenderer(new Renderer(mRenderView));
-//        mRenderView.setRenderer(new ShaderMultiTextureTest(mRenderView));
-        mRenderView.setRenderer(new CameraRender(mRenderView, new CameraRender.CameraControl() {
 
-            private Camera mCamera;
+        if (!checkSelfPermissions(mPermissions)) {
+            ActivityCompat.requestPermissions(MainActivity.this, mPermissions, REQUEST_CAMERA);
+        } else {
+            setContent();
+        }
 
-            @Override
-            public Size getPreviewSize() {
-                return mCamera.getPreviewSize();
-            }
-
-            @Override
-            public void open(SurfaceTexture surfaceTexture) {
-                if (mCamera == null || !mCamera.isOpen()) {
-                    mCamera = new Camera.CameraBuilder(getApplicationContext()).useDefaultConfig().setSurfaceTexture(surfaceTexture).build().open();
-                }
-            }
-
-            @Override
-            public void close() {
-                if (mCamera != null && mCamera.isOpen()) {
-                    mCamera.close();
-                    mCamera = null;
-                }
-            }
-        }));
-        mRenderView.setRenderMode(IRenderView.RenderMode.WHEN_DIRTY);
     }
 
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Logger.debug("Activity", "onPause");
-        mRenderView.onPause();
+    public boolean checkSelfPermissions(String... permission) {
+        for (String s : permission) {
+            if (ActivityCompat.checkSelfPermission(this, s) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        Logger.debug("Activity", "onResume");
-        mRenderView.onResume();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (REQUEST_CAMERA == requestCode && grantResults.length == mPermissions.length) {
+            setContent();
+        }
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Logger.debug("Activity", "onDestroy");
-        mRenderView.onDestroy();
+    private void setContent() {
+        Fragment fragment = CameraFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment).commitAllowingStateLoss();
     }
+
 }
