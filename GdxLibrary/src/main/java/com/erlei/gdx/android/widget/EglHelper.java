@@ -2,13 +2,17 @@ package com.erlei.gdx.android.widget;
 
 import android.opengl.EGL14;
 import android.opengl.EGLExt;
+import android.support.annotation.IntDef;
 
 import com.erlei.gdx.graphics.AndroidGL20;
 import com.erlei.gdx.graphics.AndroidGL30;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.utils.Logger;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGL11;
@@ -34,6 +38,14 @@ public class EglHelper {
      */
     public static final int FLAG_TRY_GLES3 = 0x02;
 
+    @IntDef({
+            FLAG_RECORDABLE,
+            FLAG_TRY_GLES3})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Flag {
+    }
+
+
     private Logger mLogger = new Logger("EglHelper", Logger.INFO);
     private final WeakReference<IRenderView> mWeakReference;
     private IRenderView.EGLConfigChooser mEGLConfigChooser;
@@ -45,6 +57,7 @@ public class EglHelper {
     private EGLSurface mEglSurface;
     private EGLConfig mEglConfig;
     private EGLContext mEglContext;
+    private static int GL_VERSION = -1;
 
     public EglHelper(WeakReference<IRenderView> weakReference) {
         mWeakReference = weakReference;
@@ -57,11 +70,15 @@ public class EglHelper {
         }
 
         if (mEGLConfigChooser == null)
-            mEGLConfigChooser = new SimpleEGLConfigChooser(3, false);
+            mEGLConfigChooser = new SimpleEGLConfigChooser(FLAG_TRY_GLES3 | FLAG_RECORDABLE, false);
         if (mEGLContextFactory == null)
             mEGLContextFactory = new DefaultContextFactory();
         if (mEGLWindowSurfaceFactory == null)
             mEGLWindowSurfaceFactory = new DefaultWindowSurfaceFactory();
+    }
+
+    public static int getGlVersion() {
+        return GL_VERSION;
     }
 
     /**
@@ -96,7 +113,7 @@ public class EglHelper {
          * Create an EGL context. We want to do this as rarely as we can, because an
          * EGL context is a somewhat heavy object.
          */
-        mEglContext = mEGLContextFactory.createContext(mEgl, mEglDisplay, mEglConfig);
+        mEglContext = mEGLContextFactory.createContext(GL_VERSION, mEgl, mEglDisplay, mEglConfig);
         if (mEglContext == null || mEglContext == EGL10.EGL_NO_CONTEXT) {
             mEglContext = null;
             throwEglException("createContext");
@@ -175,9 +192,9 @@ public class EglHelper {
      * @return GL20
      * @see GL20
      */
-    GL20 createGL() {
+    public GL20 createGL() {
         AndroidGL20.init();
-        GL20 gl = new AndroidGL30();
+        GL20 gl = GL_VERSION >= 3 ? new AndroidGL30() : new AndroidGL20();
         if (mGLWrapper != null) {
             gl = mGLWrapper.wrap(gl);
         }
@@ -298,16 +315,44 @@ public class EglHelper {
             implements IRenderView.EGLConfigChooser {
 
         private final int mFlags;
+        protected int[] mConfigSpec;
         private static final int EGL_RECORDABLE_ANDROID = 0x3142;
 
-        public BaseConfigChooser(int flags, int[] configSpec) {
+        /**
+         * @param flags
+         * @param configSpec
+         * @see #FLAG_RECORDABLE
+         * @see #FLAG_TRY_GLES3
+         */
+        public BaseConfigChooser(@Flag int flags, int[] configSpec) {
             mFlags = flags;
-            mConfigSpec = filterConfigSpec(configSpec);
+            mConfigSpec = configSpec;
         }
 
+        @Override
         public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
+            EGLConfig eglConfig = null;
+            // Try to get a GLES3 context, if requested.
+            if ((mFlags & FLAG_TRY_GLES3) != 0) {
+                eglConfig = chooseConfig(3, egl, display);
+                if (eglConfig != null) GL_VERSION = 3;
+            }
+
+            if (eglConfig == null) {
+                eglConfig = chooseConfig(2, egl, display);
+                if (eglConfig != null) GL_VERSION = 2;
+            }
+
+            if (eglConfig == null) {
+                throw new RuntimeException("Unable to find a suitable EGLConfig");
+            }
+            return eglConfig;
+        }
+
+        private EGLConfig chooseConfig(int glVersion, EGL10 egl, EGLDisplay display) {
+            int[] configSpec = filterConfigSpec(glVersion, mConfigSpec);
             int[] num_config = new int[1];
-            if (!egl.eglChooseConfig(display, mConfigSpec, null, 0, num_config)) {
+            if (!egl.eglChooseConfig(display, configSpec, null, 0, num_config)) {
                 throw new IllegalArgumentException("eglChooseConfig failed");
             }
 
@@ -318,16 +363,14 @@ public class EglHelper {
             }
 
             EGLConfig[] configs = new EGLConfig[numConfigs];
-            if (!egl.eglChooseConfig(display, mConfigSpec, configs, numConfigs,
+            if (!egl.eglChooseConfig(display, configSpec, configs, numConfigs,
                     num_config)) {
                 throw new IllegalArgumentException("eglChooseConfig#2 failed");
             }
             EGLConfig config = chooseConfig(egl, display, configs);
             if (config == null) {
-                mLogger.error("unable to find RGB8888 / " + mVersion + " EGLConfig");
-
-
-                throw new IllegalArgumentException("No config chosen");
+                mLogger.warn("unable to find configSpec / " + glVersion + " EGLConfig  " + Arrays.toString(configSpec));
+                return null;
             }
             return config;
         }
@@ -335,19 +378,24 @@ public class EglHelper {
         abstract EGLConfig chooseConfig(EGL10 egl, EGLDisplay display,
                                         EGLConfig[] configs);
 
-        protected int[] mConfigSpec;
 
-        private int[] filterConfigSpec(int[] configSpec) {
+        private int[] filterConfigSpec(int version, int[] configSpec) {
 
-            (mFlags & FLAG_TRY_GLES3) != 0
-            /* We know none of the subclasses define EGL_RENDERABLE_TYPE.
-             * And we know the configSpec is well formed.
-             */
-            int[] attr = {
-                    EGL10.EGL_RENDERABLE_TYPE, mVersion == 2 ? EGL14.EGL_OPENGL_ES2_BIT : EGLExt.EGL_OPENGL_ES3_BIT_KHR,
-                    EGL_RECORDABLE_ANDROID, 1,
-                    EGL14.EGL_NONE
-            };
+
+            int[] attr;
+            if ((mFlags & FLAG_RECORDABLE) != 0) {
+                attr = new int[]{
+                        EGL10.EGL_RENDERABLE_TYPE, version == 2 ? EGL14.EGL_OPENGL_ES2_BIT : EGLExt.EGL_OPENGL_ES3_BIT_KHR,
+                        EGL_RECORDABLE_ANDROID, 1,
+                        EGL14.EGL_NONE
+                };
+
+            } else {
+                attr = new int[]{
+                        EGL10.EGL_RENDERABLE_TYPE, version == 2 ? EGL14.EGL_OPENGL_ES2_BIT : EGLExt.EGL_OPENGL_ES3_BIT_KHR,
+                        EGL14.EGL_NONE
+                };
+            }
 
             int[] newConfigSpec = new int[configSpec.length + attr.length - 1];
 
@@ -362,9 +410,15 @@ public class EglHelper {
      * and at least the specified depth and stencil sizes.
      */
     class ComponentSizeChooser extends BaseConfigChooser {
-        public ComponentSizeChooser(int version, int redSize, int greenSize, int blueSize,
+
+
+        /**
+         * @see #FLAG_RECORDABLE
+         * @see #FLAG_TRY_GLES3
+         */
+        public ComponentSizeChooser(int flags, int redSize, int greenSize, int blueSize,
                                     int alphaSize, int depthSize, int stencilSize) {
-            super(version, new int[]{
+            super(flags, new int[]{
                     EGL10.EGL_RED_SIZE, redSize,
                     EGL10.EGL_GREEN_SIZE, greenSize,
                     EGL10.EGL_BLUE_SIZE, blueSize,
@@ -427,12 +481,16 @@ public class EglHelper {
     }
 
     /**
-     * This class will choose a RGB_888 surface with
+     * This class will choose a RGBA_8888 surface with
      * or without a depth buffer.
      */
     class SimpleEGLConfigChooser extends ComponentSizeChooser {
-        public SimpleEGLConfigChooser(int glVersion, boolean withDepthBuffer) {
-            super(glVersion, 8, 8, 8, 8, withDepthBuffer ? 16 : 0, 0);
+        /**
+         * @see #FLAG_RECORDABLE
+         * @see #FLAG_TRY_GLES3
+         */
+        public SimpleEGLConfigChooser(int flags, boolean withDepthBuffer) {
+            super(flags, 8, 8, 8, 8, withDepthBuffer ? 16 : 0, 0);
         }
     }
 
