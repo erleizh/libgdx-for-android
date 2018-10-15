@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.profiling;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.GL30;
 import com.erlei.gdx.math.FloatCounter;
 
@@ -32,24 +32,23 @@ import com.erlei.gdx.math.FloatCounter;
  */
 public class GLProfiler {
 
-    private Gdx mGdx;
+    private final GLContext glContext;
     private GLInterceptor glInterceptor;
     private GLErrorListener listener;
     private boolean enabled = false;
 
     /**
-     * Create a new instance of GLProfiler to monitor a {@link com.erlei.gdx.Gdx} instance's gl calls
+     * Create a new instance of GLProfiler to monitor a {@link com.erlei.gdx.android.widget.GLContext} instance's gl calls
      *
-     * @param gdx instance to monitor with this instance, With Lwjgl 2.x you can pass in Gdx.graphics, with Lwjgl3 use
-     *                 Lwjgl3Window.getGraphics()
+     * @param glContext
      */
-    public GLProfiler(Gdx gdx) {
-        this.mGdx = gdx;
-        GL30 gl30 = gdx.getGL30();
+    public GLProfiler(GLContext glContext) {
+        this.glContext = glContext;
+        GL30 gl30 = glContext.gl30;
         if (gl30 != null) {
-            glInterceptor = new GL30Interceptor(this, gdx.getGL30());
+            glInterceptor = new GL30Interceptor(this, glContext.gl30);
         } else {
-            glInterceptor = new GL20Interceptor(this, gdx.getGL20());
+            glInterceptor = new GL20Interceptor(this, glContext.gl);
         }
         listener = GLErrorListener.LOGGING_LISTENER;
     }
@@ -60,11 +59,11 @@ public class GLProfiler {
     public void enable() {
         if (enabled) return;
 
-        GL30 gl30 = mGdx.getGL30();
+        GL30 gl30 = glContext.gl30;
         if (gl30 != null) {
-            mGdx.setGL30((GL30) glInterceptor);
+            glContext.setGL30((GL30) glInterceptor);
         } else {
-            mGdx.setGL20(glInterceptor);
+            glContext.setGL20(glInterceptor);
         }
 
         enabled = true;
@@ -76,9 +75,9 @@ public class GLProfiler {
     public void disable() {
         if (!enabled) return;
 
-        GL30 gl30 = mGdx.getGL30();
-        if (gl30 != null) mGdx.setGL30(((GL30Interceptor) mGdx.getGL30()).gl30);
-        else mGdx.setGL20(((GL20Interceptor) mGdx.getGL20()).gl20);
+        GL30 gl30 = glContext.gl30;
+        if (gl30 != null) glContext.setGL30(((GL30Interceptor) glContext.gl30).gl30);
+        else glContext.setGL20(((GL20Interceptor) glContext.gl).gl20);
 
         enabled = false;
     }

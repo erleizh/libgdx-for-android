@@ -16,13 +16,13 @@
 
 package com.erlei.gdx.graphics.profiling;
 
+import com.erlei.gdx.graphics.GL20;
+import com.erlei.gdx.graphics.GL30;
+
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
-
-import com.erlei.gdx.graphics.GL20;
-import com.erlei.gdx.graphics.GL30;
 
 /** @author Daniel Holderbaum
  * @author Jan Polák */

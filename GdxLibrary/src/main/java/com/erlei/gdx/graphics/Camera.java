@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.g2d.Batch;
 import com.erlei.gdx.math.Frustum;
 import com.erlei.gdx.math.Matrix4;
@@ -252,7 +252,7 @@ public abstract class Camera {
     public Vector3 unproject(Vector3 screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
         float x = screenCoords.x, y = screenCoords.y;
         x = x - viewportX;
-        y = Gdx.app.getHeight() - y - 1;
+        y = GLContext.getGLContext().getHeight() - y - 1;
         y = y - viewportY;
         screenCoords.x = (2 * x) / viewportWidth - 1;
         screenCoords.y = (2 * y) / viewportHeight - 1;
@@ -263,8 +263,8 @@ public abstract class Camera {
 
     /**
      * Function to translate a point given in screen coordinates to world space. It's the same as GLU gluUnProject but does not
-     * rely on OpenGL. The viewport is assumed to span the whole screen and is fetched from {@link Gdx#getWidth()} and
-     * {@link Gdx#getHeight()}. The x- and y-coordinate of vec are assumed to be in screen coordinates (origin is the top left
+     * rely on OpenGL. The viewport is assumed to span the whole screen and is fetched from {@link GLContext#getWidth()} and
+     * {@link GLContext#getHeight()}. The x- and y-coordinate of vec are assumed to be in screen coordinates (origin is the top left
      * corner, y pointing down, x pointing to the right) . A z-coordinate of 0
      * will return a point on the near plane, a z-coordinate of 1 will return a point on the far plane.
      *
@@ -272,7 +272,7 @@ public abstract class Camera {
      * @return the mutated and unprojected screenCoords {@link Vector3}
      */
     public Vector3 unproject(Vector3 screenCoords) {
-        unproject(screenCoords, 0, 0, Gdx.app.getWidth(), Gdx.app.getHeight());
+        unproject(screenCoords, 0, 0, GLContext.getGLContext().getWidth(), GLContext.getGLContext().getHeight());
         return screenCoords;
     }
 
@@ -285,7 +285,7 @@ public abstract class Camera {
      * @return the mutated and projected worldCoords {@link Vector3}
      */
     public Vector3 project(Vector3 worldCoords) {
-        project(worldCoords, 0, 0, Gdx.app.getWidth(), Gdx.app.getHeight());
+        project(worldCoords, 0, 0, GLContext.getGLContext().getWidth(), GLContext.getGLContext().getHeight());
         return worldCoords;
     }
 
@@ -338,6 +338,6 @@ public abstract class Camera {
      * @return the picking Ray.
      */
     public Ray getPickRay(float screenX, float screenY) {
-        return getPickRay(screenX, screenY, 0, 0, Gdx.app.getWidth(), Gdx.app.getHeight());
+        return getPickRay(screenX, screenY, 0, 0, GLContext.getGLContext().getWidth(), GLContext.getGLContext().getHeight());
     }
 }

@@ -214,9 +214,9 @@ public abstract class Interpolation {
 			if (a <= 0.5f) return ((float)Math.pow(value, power * (a * 2 - 1)) - min) * scale / 2;
 			return (2 - ((float)Math.pow(value, -power * (a * 2 - 1)) - min) * scale) / 2;
 		}
-	};
+	}
 
-	static public class ExpIn extends Exp {
+    static public class ExpIn extends Exp {
 		public ExpIn (float value, float power) {
 			super(value, power);
 		}

@@ -16,8 +16,7 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import com.erlei.gdx.Application;
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.GL30;
 import com.erlei.gdx.graphics.GLTexture;
@@ -28,8 +27,6 @@ import com.erlei.gdx.utils.Disposable;
 import com.erlei.gdx.utils.GdxRuntimeException;
 
 import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p>
@@ -38,22 +35,12 @@ import java.util.Map;
  * gltexture by {@link GLFrameBuffer#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
  * </p>
  * <p>
- * <p>
- * FrameBuffers are managed. In case of an OpenGL context loss, which only happens on Android when a user switches to another
- * application or receives an incoming call, the framebuffer will be automatically recreated.
- * </p>
- * <p>
- * <p>
  * A FrameBuffer must be disposed if it is no longer needed
  * </p>
  *
  * @author mzechner, realitix
  */
 public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
-    /**
-     * the frame buffers
-     **/
-    protected final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<Application, Array<GLFrameBuffer>>();
 
     protected final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
 
@@ -140,7 +127,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
     protected abstract void attachFrameBufferColorTexture(T texture);
 
     protected void build() {
-        GL20 gl = Gdx.gl20;
+        GL20 gl = GLContext.getGL20();
 
         checkValidBuilder();
 
@@ -205,7 +192,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
                 buffer.put(GL30.GL_COLOR_ATTACHMENT0 + i);
             }
             buffer.position(0);
-            Gdx.gl30.glDrawBuffers(colorTextureCounter, buffer);
+            GLContext.getGL30().glDrawBuffers(colorTextureCounter, buffer);
         } else {
             attachFrameBufferColorTexture(textureAttachments.first());
         }
@@ -231,8 +218,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
         int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
         if (result == GL20.GL_FRAMEBUFFER_UNSUPPORTED && bufferBuilder.hasDepthRenderBuffer && bufferBuilder.hasStencilRenderBuffer
-                && (Gdx.app.supportsExtension("GL_OES_packed_depth_stencil")
-                || Gdx.app.supportsExtension("GL_EXT_packed_depth_stencil"))) {
+                && (GLContext.getGLContext().supportsExtension("GL_OES_packed_depth_stencil")
+                || GLContext.getGLContext().supportsExtension("GL_EXT_packed_depth_stencil"))) {
             if (bufferBuilder.hasDepthRenderBuffer) {
                 gl.glDeleteRenderbuffer(depthbufferHandle);
                 depthbufferHandle = 0;
@@ -286,12 +273,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
                 throw new IllegalStateException("Frame buffer couldn't be constructed: unsupported combination of formats");
             throw new IllegalStateException("Frame buffer couldn't be constructed: unknown error " + result);
         }
-
-        addManagedFrameBuffer(Gdx.app, this);
     }
 
     private void checkValidBuilder() {
-        boolean runningGL30 = Gdx.isGL30Available();
+        boolean runningGL30 = GLContext.getGLContext().isGL30Available();
 
         if (!runningGL30) {
             if (bufferBuilder.hasPackedStencilDepthRenderBuffer) {
@@ -306,7 +291,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
                 if (spec.isStencil)
                     throw new GdxRuntimeException("Stencil texture FrameBuffer Attachment not available on GLES 2.0");
                 if (spec.isFloat) {
-                    if (!Gdx.app.supportsExtension("OES_texture_float")) {
+                    if (!GLContext.getGLContext().supportsExtension("OES_texture_float")) {
                         throw new GdxRuntimeException("Float texture FrameBuffer Attachment not available on GLES 2.0");
                     }
                 }
@@ -319,7 +304,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
      */
     @Override
     public void dispose() {
-        GL20 gl = Gdx.gl20;
+        GL20 gl = GLContext.getGL20();
 
         for (T texture : textureAttachments) {
             disposeColorTexture(texture);
@@ -333,22 +318,20 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
         }
 
         gl.glDeleteFramebuffer(framebufferHandle);
-
-        if (buffers.get(Gdx.app) != null) buffers.get(Gdx.app).removeValue(this, true);
     }
 
     /**
      * Makes the frame buffer current so everything gets drawn to it.
      */
     public void bind() {
-        Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
+        GLContext.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
     }
 
     /**
      * Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on.
      */
     public static void unbind() {
-        Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
+        GLContext.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
     }
 
     /**
@@ -363,14 +346,14 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
      * Sets viewport to the dimensions of framebuffer. Called by {@link #begin()}.
      */
     protected void setFrameBufferViewport() {
-        Gdx.gl20.glViewport(0, 0, bufferBuilder.width, bufferBuilder.height);
+        GLContext.getGL20().glViewport(0, 0, bufferBuilder.width, bufferBuilder.height);
     }
 
     /**
      * Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on.
      */
     public void end() {
-        end(0, 0, Gdx.app.getBackBufferWidth(), Gdx.app.getBackBufferHeight());
+        end(0, 0, GLContext.getGLContext().getBackBufferWidth(), GLContext.getGLContext().getBackBufferHeight());
     }
 
     /**
@@ -383,7 +366,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
      */
     public void end(int x, int y, int width, int height) {
         unbind();
-        Gdx.gl20.glViewport(x, y, width, height);
+        GLContext.getGL20().glViewport(x, y, width, height);
     }
 
     /**
@@ -428,45 +411,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
      */
     public int getWidth() {
         return bufferBuilder.width;
-    }
-
-    private static void addManagedFrameBuffer(Application app, GLFrameBuffer frameBuffer) {
-        Array<GLFrameBuffer> managedResources = buffers.get(app);
-        if (managedResources == null) managedResources = new Array<GLFrameBuffer>();
-        managedResources.add(frameBuffer);
-        buffers.put(app, managedResources);
-    }
-
-    /**
-     * Invalidates all frame buffers. This can be used when the OpenGL context is lost to rebuild all managed frame buffers. This
-     * assumes that the texture attached to this buffer has already been rebuild! Use with care.
-     */
-    public static void invalidateAllFrameBuffers(Application app) {
-        if (Gdx.gl20 == null) return;
-
-        Array<GLFrameBuffer> bufferArray = buffers.get(app);
-        if (bufferArray == null) return;
-        for (int i = 0; i < bufferArray.size; i++) {
-            bufferArray.get(i).build();
-        }
-    }
-
-    public static void clearAllFrameBuffers(Application app) {
-        buffers.remove(app);
-    }
-
-    public static StringBuilder getManagedStatus(final StringBuilder builder) {
-        builder.append("Managed buffers/app: { ");
-        for (Application app : buffers.keySet()) {
-            builder.append(buffers.get(app).size);
-            builder.append(" ");
-        }
-        builder.append("}");
-        return builder;
-    }
-
-    public static String getManagedStatus() {
-        return getManagedStatus(new StringBuilder()).toString();
     }
 
     protected static class FrameBufferTextureAttachmentSpec {

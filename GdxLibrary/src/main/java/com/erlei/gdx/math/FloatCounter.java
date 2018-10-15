@@ -16,8 +16,6 @@
 
 package com.erlei.gdx.math;
 
-import com.erlei.gdx.utils.StringBuilder;
-
 /** Track properties of a stream of float values. The properties (total value, minimum, etc) are updated as values are
  * {@link #put(float)} into the stream.
  * 

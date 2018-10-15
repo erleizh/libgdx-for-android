@@ -16,11 +16,11 @@
 
 package com.erlei.gdx.utils;
 
+import com.erlei.gdx.math.MathUtils;
+
 import java.lang.StringBuilder;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import com.erlei.gdx.math.MathUtils;
 
 /** An unordered set where the keys are objects. This implementation uses cuckoo hashing using 3 hashes, random walking, and a
  * small stash for problematic keys. Null keys are not allowed. No allocation is done except when growing the table size. <br>
@@ -143,7 +143,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	public void addAll (Array<? extends T> array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		addAll((T[])array.items, offset, length);
+		addAll(array.items, offset, length);
 	}
 
 	public void addAll (T... array) {

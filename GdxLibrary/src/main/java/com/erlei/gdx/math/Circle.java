@@ -13,9 +13,9 @@
 
 package com.erlei.gdx.math;
 
-import java.io.Serializable;
-
 import com.erlei.gdx.utils.NumberUtils;
+
+import java.io.Serializable;
 
 /** A convenient 2D circle class.
  * @author mzechner */

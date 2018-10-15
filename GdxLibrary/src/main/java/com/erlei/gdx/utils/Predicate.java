@@ -18,8 +18,6 @@ package com.erlei.gdx.utils;
 
 import java.util.Iterator;
 
-import com.erlei.gdx.utils.Array.ArrayIterator;
-
 /** Interface used to select items within an iterator against a predicate.
  * @author Xoppa */
 public interface Predicate<T> {
@@ -27,7 +25,7 @@ public interface Predicate<T> {
 	/** @return true if the item matches the criteria and should be included in the iterator's items */
 	boolean evaluate(T arg0);
 
-	public class PredicateIterator<T> implements Iterator<T> {
+	class PredicateIterator<T> implements Iterator<T> {
 		public Iterator<T> iterator;
 		public Predicate<T> predicate;
 		public boolean end = false;
@@ -85,7 +83,7 @@ public interface Predicate<T> {
 		}
 	}
 
-	public static class PredicateIterable<T> implements Iterable<T> {
+	class PredicateIterable<T> implements Iterable<T> {
 		public Iterable<T> iterable;
 		public Predicate<T> predicate;
 		public PredicateIterator<T> iterator = null;

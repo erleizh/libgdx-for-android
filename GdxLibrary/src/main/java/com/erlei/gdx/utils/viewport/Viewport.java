@@ -16,8 +16,8 @@
 
 package com.erlei.gdx.utils.viewport;
 
-import com.erlei.gdx.Gdx;
-import com.erlei.gdx.android.widget.IRenderView;
+import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.android.widget.trash.IRenderView;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.glutils.HdpiUtils;
 import com.erlei.gdx.math.Matrix4;
@@ -139,7 +139,7 @@ public abstract class Viewport {
         tmp.set(worldCoords.x, worldCoords.y, 0);
         tmp.mul(transformMatrix);
         camera.project(tmp);
-        tmp.y = Gdx.app.getHeight() - tmp.y;
+        tmp.y = GLContext.getGLContext().getHeight() - tmp.y;
         worldCoords.x = tmp.x;
         worldCoords.y = tmp.y;
         return worldCoords;
@@ -268,7 +268,7 @@ public abstract class Viewport {
      * Returns the right gutter (black bar) width in screen coordinates.
      */
     public int getRightGutterWidth() {
-        return Gdx.app.getWidth() - (screenX + screenWidth);
+        return GLContext.getGLContext().getWidth() - (screenX + screenWidth);
     }
 
     /**
@@ -289,6 +289,6 @@ public abstract class Viewport {
      * Returns the top gutter (black bar) height in screen coordinates.
      */
     public int getTopGutterHeight() {
-        return Gdx.app.getHeight() - (screenY + screenHeight);
+        return GLContext.getGLContext().getHeight() - (screenY + screenHeight);
     }
 }

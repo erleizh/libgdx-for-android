@@ -16,16 +16,16 @@
 
 package com.erlei.gdx.graphics.g2d;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Arrays;
-
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.math.MathUtils;
 import com.erlei.gdx.math.Rectangle;
 import com.erlei.gdx.math.collision.BoundingBox;
 import com.erlei.gdx.utils.Array;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Arrays;
 
 public class ParticleEmitter {
 	static private final int UPDATE_SCALE = 1 << 0;
@@ -216,7 +216,7 @@ public class ParticleEmitter {
 
 			if (!done) {
 				emissionDelta += deltaMillis;
-				float emissionTime = emission + emissionDiff * emissionValue.getScale(durationTimer / (float)duration);
+				float emissionTime = emission + emissionDiff * emissionValue.getScale(durationTimer / duration);
 				if (emissionTime > 0) {
 					emissionTime = 1000 / emissionTime;
 					if (emissionDelta >= emissionTime) {
@@ -319,7 +319,7 @@ public class ParticleEmitter {
 		}
 
 		emissionDelta += deltaMillis;
-		float emissionTime = emission + emissionDiff * emissionValue.getScale(durationTimer / (float)duration);
+		float emissionTime = emission + emissionDiff * emissionValue.getScale(durationTimer / duration);
 		if (emissionTime > 0) {
 			emissionTime = 1000 / emissionTime;
 			if (emissionDelta >= emissionTime) {
@@ -412,7 +412,7 @@ public class ParticleEmitter {
 			particle.set(sprite);
 		}
 
-		float percent = durationTimer / (float)duration;
+		float percent = durationTimer / duration;
 		int updateFlags = this.updateFlags;
 
 		if (lifeValue.independent) generateLifeValues();
@@ -505,7 +505,7 @@ public class ParticleEmitter {
 			float radiusX = width / 2;
 			float radiusY = height / 2;
 			if (radiusX == 0 || radiusY == 0) break;
-			float scaleY = radiusX / (float)radiusY;
+			float scaleY = radiusX / radiusY;
 			if (spawnShapeValue.edges) {
 				float spawnAngle;
 				switch (spawnShapeValue.side) {
@@ -548,7 +548,7 @@ public class ParticleEmitter {
 			if (width != 0) {
 				float lineX = width * MathUtils.random();
 				x += lineX;
-				y += lineX * (height / (float)width);
+				y += lineX * (height / width);
 			} else
 				y += height * MathUtils.random();
 			break;
@@ -886,7 +886,7 @@ public class ParticleEmitter {
 
 	public float getPercentComplete () {
 		if (delayTimer < delay) return 0;
-		return Math.min(1, durationTimer / (float)duration);
+		return Math.min(1, durationTimer / duration);
 	}
 
 	public float getX () {
@@ -1175,7 +1175,7 @@ public class ParticleEmitter {
 		}
 	}
 
-	static String readString (String line) throws IOException {
+	static String readString (String line) {
 		return line.substring(line.indexOf(":") + 1).trim();
 	}
 
@@ -1701,15 +1701,15 @@ public class ParticleEmitter {
 		}
 	}
 
-	static public enum SpawnShape {
+	public enum SpawnShape {
 		point, line, square, ellipse
 	}
 
-	static public enum SpawnEllipseSide {
+	public enum SpawnEllipseSide {
 		both, top, bottom
 	}
 
-	static public enum SpriteMode {
+	public enum SpriteMode {
 		single, random, animated
 	}
 }

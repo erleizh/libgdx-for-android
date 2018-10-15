@@ -16,10 +16,9 @@
 
 package com.erlei.gdx.math.collision;
 
-import java.io.Serializable;
-
 import com.erlei.gdx.math.Vector3;
-import com.erlei.gdx.utils.NumberUtils;
+
+import java.io.Serializable;
 
 /** A Segment is a line in 3-space having a staring and an ending position.
  * 

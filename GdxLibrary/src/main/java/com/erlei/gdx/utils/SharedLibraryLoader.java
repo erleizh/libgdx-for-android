@@ -225,9 +225,8 @@ public class SharedLibraryLoader {
 		}
 		try {
 			new FileOutputStream(testFile).close();
-			if (!canExecute(testFile)) return false;
-			return true;
-		} catch (Throwable ex) {
+            return canExecute(testFile);
+        } catch (Throwable ex) {
 			return false;
 		} finally {
 			testFile.delete();
@@ -248,7 +247,7 @@ public class SharedLibraryLoader {
 		return false;
 	}
 
-	private File extractFile (String sourcePath, String sourceCrc, File extractedFile) throws IOException {
+	private File extractFile (String sourcePath, String sourceCrc, File extractedFile) {
 		String extractedCrc = null;
 		if (extractedFile.exists()) {
 			try {

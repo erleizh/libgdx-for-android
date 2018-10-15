@@ -58,7 +58,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 
 	/** Loads parts of the asset asynchronously if the loader is an {@link AsynchronousAssetLoader}. */
 	@Override
-	public Void call () throws Exception {
+	public Void call () {
 		AsynchronousAssetLoader asyncLoader = (AsynchronousAssetLoader)loader;
 		if (!dependenciesLoaded) {
 			dependencies = asyncLoader.getDependencies(assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);

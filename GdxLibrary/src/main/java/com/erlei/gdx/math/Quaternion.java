@@ -16,9 +16,9 @@
 
 package com.erlei.gdx.math;
 
-import java.io.Serializable;
-
 import com.erlei.gdx.utils.NumberUtils;
+
+import java.io.Serializable;
 
 /** A simple quaternion class.
  * @see <a href="http://en.wikipedia.org/wiki/Quaternion">http://en.wikipedia.org/wiki/Quaternion</a>

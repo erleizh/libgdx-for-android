@@ -17,9 +17,11 @@
 package com.erlei.gdx.graphics.g2d;
 
 import com.erlei.gdx.graphics.Color;
-import com.erlei.gdx.graphics.g2d.PolygonSpriteBatch;
-import com.erlei.gdx.graphics.g2d.TextureRegion;
-import com.erlei.gdx.math.*;
+import com.erlei.gdx.math.EarClippingTriangulator;
+import com.erlei.gdx.math.Intersector;
+import com.erlei.gdx.math.Polygon;
+import com.erlei.gdx.math.Rectangle;
+import com.erlei.gdx.math.Vector2;
 import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.ShortArray;
 

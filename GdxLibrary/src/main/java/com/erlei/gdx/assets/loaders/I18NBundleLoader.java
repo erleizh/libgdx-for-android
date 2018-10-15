@@ -16,14 +16,14 @@
 
 package com.erlei.gdx.assets.loaders;
 
-import java.util.Locale;
-
 import com.erlei.gdx.assets.AssetDescriptor;
 import com.erlei.gdx.assets.AssetLoaderParameters;
 import com.erlei.gdx.assets.AssetManager;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.I18NBundle;
+
+import java.util.Locale;
 
 /** {@link AssetLoader} for {@link I18NBundle} instances. The I18NBundle is loaded asynchronously.
  * <p>

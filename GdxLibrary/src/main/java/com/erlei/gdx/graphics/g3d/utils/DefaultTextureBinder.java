@@ -16,13 +16,13 @@
 
 package com.erlei.gdx.graphics.g3d.utils;
 
-import java.nio.IntBuffer;
-
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.GLTexture;
 import com.erlei.gdx.utils.BufferUtils;
 import com.erlei.gdx.utils.GdxRuntimeException;
+
+import java.nio.IntBuffer;
 
 /** Class that you assign a range of texture units and binds textures for you within that range. It does some basic usage tracking
  * to avoid unnecessary bind calls.
@@ -80,7 +80,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 
 	private static int getMaxTextureUnits () {
 		IntBuffer buffer = BufferUtils.newIntBuffer(16);
-		Gdx.gl.glGetIntegerv(GL20.GL_MAX_TEXTURE_IMAGE_UNITS, buffer);
+		GLContext.getGL20().glGetIntegerv(GL20.GL_MAX_TEXTURE_IMAGE_UNITS, buffer);
 		return buffer.get(0);
 	}
 
@@ -96,10 +96,10 @@ public final class DefaultTextureBinder implements TextureBinder {
 	public void end () {
 		/*
 		 * No need to unbind and textures are set to null in begin() for(int i = 0; i < count; i++) { if (textures[i] != null) {
-		 * Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + offset + i); Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0); textures[i] = null; }
+		 * GLContext.getGL20().glActiveTexture(GL20.GL_TEXTURE0 + offset + i); GLContext.getGL20().glBindTexture(GL20.GL_TEXTURE_2D, 0); textures[i] = null; }
 		 * }
 		 */
-		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+		GLContext.getGL20().glActiveTexture(GL20.GL_TEXTURE0);
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 			if (rebind)
 				texture.bind(result);
 			else
-				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + result);
+				GLContext.getGL20().glActiveTexture(GL20.GL_TEXTURE0 + result);
 		} else
 			bindCount++;
 		texture.unsafeSetWrap(textureDesc.uWrap, textureDesc.vWrap);

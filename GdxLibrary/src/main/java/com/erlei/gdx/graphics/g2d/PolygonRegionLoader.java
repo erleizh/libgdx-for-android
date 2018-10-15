@@ -16,9 +16,6 @@
 
 package com.erlei.gdx.graphics.g2d;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
 import com.erlei.gdx.assets.AssetDescriptor;
 import com.erlei.gdx.assets.AssetLoaderParameters;
 import com.erlei.gdx.assets.AssetManager;
@@ -32,6 +29,9 @@ import com.erlei.gdx.math.EarClippingTriangulator;
 import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.StreamUtils;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 
 /** loads {@link PolygonRegion PolygonRegions} using a {@link com.erlei.gdx.graphics.g2d.PolygonRegionLoader}
  * @author dermetfan */

@@ -16,10 +16,10 @@
 
 package com.erlei.gdx.graphics;
 
+import com.erlei.gdx.utils.GdxRuntimeException;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import com.erlei.gdx.utils.GdxRuntimeException;
 
 /** Instances of this class specify the vertex attributes of a mesh. VertexAttributes are used by {@link Mesh} instances to define
  * its vertex structure. Vertex attributes have an order. The order is specified by the order they are added to this class.

@@ -16,9 +16,9 @@
 
 package com.erlei.gdx.math;
 
-import java.io.Serializable;
-
 import com.erlei.gdx.utils.GdxRuntimeException;
+
+import java.io.Serializable;
 
 /** A specialized 3x3 matrix that can represent sequences of 2D translations, scales, flips, rotations, and shears. <a
  * href="http://en.wikipedia.org/wiki/Affine_transformation">Affine transformations</a> preserve straight lines, and

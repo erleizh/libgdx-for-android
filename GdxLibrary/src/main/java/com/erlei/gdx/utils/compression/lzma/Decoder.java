@@ -16,10 +16,10 @@
 
 package com.erlei.gdx.utils.compression.lzma;
 
-import java.io.IOException;
-
 import com.erlei.gdx.utils.compression.lz.OutWindow;
 import com.erlei.gdx.utils.compression.rangecoder.BitTreeDecoder;
+
+import java.io.IOException;
 
 public class Decoder {
 	class LenDecoder {

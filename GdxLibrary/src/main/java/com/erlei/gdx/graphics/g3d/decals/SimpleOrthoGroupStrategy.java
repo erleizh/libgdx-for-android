@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.decals;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.glutils.ShaderProgram;
 import com.erlei.gdx.utils.Array;
@@ -80,10 +80,10 @@ public class SimpleOrthoGroupStrategy implements GroupStrategy {
 	public void beforeGroup (int group, Array<Decal> contents) {
 		if (group == GROUP_BLEND) {
 			Sort.instance().sort(contents, comparator);
-			Gdx.gl.glEnable(GL20.GL_BLEND);
+			GLContext.getGL20().glEnable(GL20.GL_BLEND);
 			// no need for writing into the z buffer if transparent decals are the last thing to be rendered
 			// and they are rendered back to front
-			Gdx.gl.glDepthMask(false);
+			GLContext.getGL20().glDepthMask(false);
 		} else {
 			// FIXME sort by material
 		}
@@ -92,19 +92,19 @@ public class SimpleOrthoGroupStrategy implements GroupStrategy {
 	@Override
 	public void afterGroup (int group) {
 		if (group == GROUP_BLEND) {
-			Gdx.gl.glDepthMask(true);
-			Gdx.gl.glDisable(GL20.GL_BLEND);
+			GLContext.getGL20().glDepthMask(true);
+			GLContext.getGL20().glDisable(GL20.GL_BLEND);
 		}
 	}
 
 	@Override
 	public void beforeGroups () {
-		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
+		GLContext.getGL20().glEnable(GL20.GL_TEXTURE_2D);
 	}
 
 	@Override
 	public void afterGroups () {
-		Gdx.gl.glDisable(GL20.GL_TEXTURE_2D);
+		GLContext.getGL20().glDisable(GL20.GL_TEXTURE_2D);
 	}
 
 	class Comparator implements java.util.Comparator<Decal> {

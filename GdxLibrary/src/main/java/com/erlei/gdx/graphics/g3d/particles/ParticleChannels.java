@@ -16,12 +16,12 @@
 
 package com.erlei.gdx.graphics.g3d.particles;
 
-import java.util.Arrays;
-
 import com.erlei.gdx.graphics.g3d.ModelInstance;
 import com.erlei.gdx.graphics.g3d.particles.ParallelArray.ChannelDescriptor;
 import com.erlei.gdx.graphics.g3d.particles.ParallelArray.ChannelInitializer;
 import com.erlei.gdx.graphics.g3d.particles.ParallelArray.FloatChannel;
+
+import java.util.Arrays;
 
 /** This contains all the definitions of particle related channels and channel initializers. It is also used by the
  * {@link ParticleController} to handle temporary channels allocated by influencers.

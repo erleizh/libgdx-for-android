@@ -16,10 +16,10 @@
 
 package com.erlei.gdx.graphics.glutils;
 
+import com.erlei.gdx.utils.BufferUtils;
+
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
-
-import com.erlei.gdx.utils.BufferUtils;
 
 public class IndexArray implements IndexData {
 	final ShortBuffer buffer;

@@ -22,7 +22,6 @@ import com.erlei.gdx.assets.AssetManager;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.glutils.ShaderProgram;
 import com.erlei.gdx.utils.Array;
-import com.erlei.gdx.utils.GdxRuntimeException;
 
 /** {@link AssetLoader} for {@link ShaderProgram} instances loaded from text files. If the file suffix is ".vert", it is assumed
  * to be a vertex shader, and a fragment shader is found using the same file name with a ".frag" suffix. And vice versa if the

@@ -38,29 +38,29 @@ public abstract class ParticleControllerComponent implements Disposable, Json.Se
 
 	/** Called to initialize new emitted particles. */
 	public void activateParticles (int startIndex, int count) {
-	};
+	}
 
-	/** Called to notify which particles have been killed. */
+    /** Called to notify which particles have been killed. */
 	public void killParticles (int startIndex, int count) {
-	};
+	}
 
-	/** Called to execute the component behavior. */
+    /** Called to execute the component behavior. */
 	public void update () {
-	};
+	}
 
-	/** Called once during intialization */
+    /** Called once during intialization */
 	public void init () {
-	};
+	}
 
-	/** Called at the start of the simulation. */
+    /** Called at the start of the simulation. */
 	public void start () {
-	};
+	}
 
-	/** Called at the end of the simulation. */
+    /** Called at the end of the simulation. */
 	public void end () {
-	};
+	}
 
-	public void dispose () {
+    public void dispose () {
 	}
 
 	public abstract ParticleControllerComponent copy ();

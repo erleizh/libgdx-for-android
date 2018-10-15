@@ -20,27 +20,27 @@ import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.math.Matrix4;
 
 public interface ImmediateModeRenderer {
-	public void begin(Matrix4 projModelView, int primitiveType);
+	void begin(Matrix4 projModelView, int primitiveType);
 
-	public void flush();
+	void flush();
 
-	public void color(Color color);
+	void color(Color color);
 
-	public void color(float r, float g, float b, float a);
+	void color(float r, float g, float b, float a);
 
-	public void color(float colorBits);
+	void color(float colorBits);
 
-	public void texCoord(float u, float v);
+	void texCoord(float u, float v);
 
-	public void normal(float x, float y, float z);
+	void normal(float x, float y, float z);
 
-	public void vertex(float x, float y, float z);
+	void vertex(float x, float y, float z);
 
-	public void end();
+	void end();
 
-	public int getNumVertices();
+	int getNumVertices();
 
-	public int getMaxVertices();
+	int getMaxVertices();
 
-	public void dispose();
+	void dispose();
 }

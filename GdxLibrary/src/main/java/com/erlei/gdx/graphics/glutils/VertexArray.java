@@ -16,13 +16,13 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.VertexAttribute;
 import com.erlei.gdx.graphics.VertexAttributes;
 import com.erlei.gdx.utils.BufferUtils;
+
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 /** <p>
  * Convenience class for working with OpenGL vertex arrays. It interleaves all data in the order you specified in the constructor

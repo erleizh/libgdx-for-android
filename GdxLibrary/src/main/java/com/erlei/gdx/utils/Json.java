@@ -16,6 +16,17 @@
 
 package com.erlei.gdx.utils;
 
+import com.erlei.gdx.files.FileHandle;
+import com.erlei.gdx.utils.JsonValue.PrettyPrintSettings;
+import com.erlei.gdx.utils.JsonWriter.OutputType;
+import com.erlei.gdx.utils.ObjectMap.Entry;
+import com.erlei.gdx.utils.OrderedMap.OrderedMapValues;
+import com.erlei.gdx.utils.reflect.ArrayReflection;
+import com.erlei.gdx.utils.reflect.ClassReflection;
+import com.erlei.gdx.utils.reflect.Constructor;
+import com.erlei.gdx.utils.reflect.Field;
+import com.erlei.gdx.utils.reflect.ReflectionException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -28,17 +39,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.erlei.gdx.files.FileHandle;
-import com.erlei.gdx.utils.JsonValue.PrettyPrintSettings;
-import com.erlei.gdx.utils.JsonWriter.OutputType;
-import com.erlei.gdx.utils.ObjectMap.Entry;
-import com.erlei.gdx.utils.OrderedMap.OrderedMapValues;
-import com.erlei.gdx.utils.reflect.ArrayReflection;
-import com.erlei.gdx.utils.reflect.ClassReflection;
-import com.erlei.gdx.utils.reflect.Constructor;
-import com.erlei.gdx.utils.reflect.Field;
-import com.erlei.gdx.utils.reflect.ReflectionException;
 
 /** Reads/writes Java objects to/from JSON, automatically. See the wiki for usage:
  * https://github.com/libgdx/libgdx/wiki/Reading-%26-writing-JSON
@@ -683,34 +683,34 @@ public class Json {
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, Reader reader) {
-		return (T)readValue(type, null, new JsonReader().parse(reader));
+		return readValue(type, null, new JsonReader().parse(reader));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, Class elementType, Reader reader) {
-		return (T)readValue(type, elementType, new JsonReader().parse(reader));
+		return readValue(type, elementType, new JsonReader().parse(reader));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, InputStream input) {
-		return (T)readValue(type, null, new JsonReader().parse(input));
+		return readValue(type, null, new JsonReader().parse(input));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, Class elementType, InputStream input) {
-		return (T)readValue(type, elementType, new JsonReader().parse(input));
+		return readValue(type, elementType, new JsonReader().parse(input));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, FileHandle file) {
 		try {
-			return (T)readValue(type, null, new JsonReader().parse(file));
+			return readValue(type, null, new JsonReader().parse(file));
 		} catch (Exception ex) {
 			throw new SerializationException("Error reading file: " + file, ex);
 		}
@@ -721,7 +721,7 @@ public class Json {
 	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, Class elementType, FileHandle file) {
 		try {
-			return (T)readValue(type, elementType, new JsonReader().parse(file));
+			return readValue(type, elementType, new JsonReader().parse(file));
 		} catch (Exception ex) {
 			throw new SerializationException("Error reading file: " + file, ex);
 		}
@@ -730,26 +730,26 @@ public class Json {
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, char[] data, int offset, int length) {
-		return (T)readValue(type, null, new JsonReader().parse(data, offset, length));
+		return readValue(type, null, new JsonReader().parse(data, offset, length));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, Class elementType, char[] data, int offset, int length) {
-		return (T)readValue(type, elementType, new JsonReader().parse(data, offset, length));
+		return readValue(type, elementType, new JsonReader().parse(data, offset, length));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, String json) {
-		return (T)readValue(type, null, new JsonReader().parse(json));
+		return readValue(type, null, new JsonReader().parse(json));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T fromJson (Class<T> type, Class elementType, String json) {
-		return (T)readValue(type, elementType, new JsonReader().parse(json));
+		return readValue(type, elementType, new JsonReader().parse(json));
 	}
 
 	public void readField (Object object, String name, JsonValue jsonData) {
@@ -843,7 +843,7 @@ public class Json {
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T readValue (String name, Class<T> type, JsonValue jsonMap) {
-		return (T)readValue(type, null, jsonMap.get(name));
+		return readValue(type, null, jsonMap.get(name));
 	}
 
 	/** @param type May be null if the type is unknown.
@@ -851,14 +851,14 @@ public class Json {
 	public <T> T readValue (String name, Class<T> type, T defaultValue, JsonValue jsonMap) {
 		JsonValue jsonValue = jsonMap.get(name);
 		if (jsonValue == null) return defaultValue;
-		return (T)readValue(type, null, jsonValue);
+		return readValue(type, null, jsonValue);
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T readValue (String name, Class<T> type, Class elementType, JsonValue jsonMap) {
-		return (T)readValue(type, elementType, jsonMap.get(name));
+		return readValue(type, elementType, jsonMap.get(name));
 	}
 
 	/** @param type May be null if the type is unknown.
@@ -866,7 +866,7 @@ public class Json {
 	 * @return May be null. */
 	public <T> T readValue (String name, Class<T> type, Class elementType, T defaultValue, JsonValue jsonMap) {
 		JsonValue jsonValue = jsonMap.get(name);
-		return (T)readValue(type, elementType, defaultValue, jsonValue);
+		return readValue(type, elementType, defaultValue, jsonValue);
 	}
 
 	/** @param type May be null if the type is unknown.
@@ -874,13 +874,13 @@ public class Json {
 	 * @return May be null. */
 	public <T> T readValue (Class<T> type, Class elementType, T defaultValue, JsonValue jsonData) {
 		if (jsonData == null) return defaultValue;
-		return (T)readValue(type, elementType, jsonData);
+		return readValue(type, elementType, jsonData);
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public <T> T readValue (Class<T> type, JsonValue jsonData) {
-		return (T)readValue(type, null, jsonData);
+		return readValue(type, null, jsonData);
 	}
 
 	/** @param type May be null if the type is unknown.
@@ -1146,10 +1146,10 @@ public class Json {
 		}
 	}
 
-	static public interface Serializer<T> {
-		public void write(Json json, T object, Class knownType);
+	public interface Serializer<T> {
+		void write(Json json, T object, Class knownType);
 
-		public T read(Json json, JsonValue jsonData, Class type);
+		T read(Json json, JsonValue jsonData, Class type);
 	}
 
 	static abstract public class ReadOnlySerializer<T> implements Serializer<T> {
@@ -1159,9 +1159,9 @@ public class Json {
 		abstract public T read (Json json, JsonValue jsonData, Class type);
 	}
 
-	static public interface Serializable {
-		public void write(Json json);
+	public interface Serializable {
+		void write(Json json);
 
-		public void read(Json json, JsonValue jsonData);
+		void read(Json json, JsonValue jsonData);
 	}
 }

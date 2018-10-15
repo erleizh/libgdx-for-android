@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.environment;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.OrthographicCamera;
@@ -79,15 +79,15 @@ public class DirectionalShadowLight extends DirectionalLight implements ShadowMa
 		final int w = fbo.getWidth();
 		final int h = fbo.getHeight();
 		fbo.begin();
-		Gdx.gl.glViewport(0, 0, w, h);
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
-		Gdx.gl.glScissor(1, 1, w - 2, h - 2);
+		GLContext.getGL20().glViewport(0, 0, w, h);
+		GLContext.getGL20().glClearColor(1, 1, 1, 1);
+		GLContext.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		GLContext.getGL20().glEnable(GL20.GL_SCISSOR_TEST);
+		GLContext.getGL20().glScissor(1, 1, w - 2, h - 2);
 	}
 
 	public void end () {
-		Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
+		GLContext.getGL20().glDisable(GL20.GL_SCISSOR_TEST);
 		fbo.end();
 	}
 

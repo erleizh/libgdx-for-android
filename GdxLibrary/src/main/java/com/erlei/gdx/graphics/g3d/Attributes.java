@@ -16,10 +16,10 @@
 
 package com.erlei.gdx.graphics.g3d;
 
+import com.erlei.gdx.utils.Array;
+
 import java.util.Comparator;
 import java.util.Iterator;
-
-import com.erlei.gdx.utils.Array;
 
 public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, Comparable<Attributes> {
 	protected long mask;

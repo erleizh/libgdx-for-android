@@ -16,14 +16,14 @@
 
 package com.erlei.gdx.utils.async;
 
+import com.erlei.gdx.utils.Disposable;
+import com.erlei.gdx.utils.GdxRuntimeException;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
-import com.erlei.gdx.utils.Disposable;
-import com.erlei.gdx.utils.GdxRuntimeException;
 
 /** Allows asnynchronous execution of {@link AsyncTask} instances on a separate thread. Needs to be disposed via a call to
  * {@link #dispose()} when no longer used, in which case the executor waits for running tasks to finish. Scheduled but not yet

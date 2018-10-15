@@ -13,11 +13,11 @@
 
 package com.erlei.gdx.math;
 
-import java.io.Serializable;
-
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.NumberUtils;
 import com.erlei.gdx.utils.Scaling;
+
+import java.io.Serializable;
 
 /** Encapsulates a 2D rectangle defined by its corner point in the bottom left and its extents in x (width) and y (height).
  * @author badlogicgames@gmail.com */
@@ -423,8 +423,7 @@ public class Rectangle implements Serializable, Shape2D {
 		if (NumberUtils.floatToRawIntBits(height) != NumberUtils.floatToRawIntBits(other.height)) return false;
 		if (NumberUtils.floatToRawIntBits(width) != NumberUtils.floatToRawIntBits(other.width)) return false;
 		if (NumberUtils.floatToRawIntBits(x) != NumberUtils.floatToRawIntBits(other.x)) return false;
-		if (NumberUtils.floatToRawIntBits(y) != NumberUtils.floatToRawIntBits(other.y)) return false;
-		return true;
-	}
+        return NumberUtils.floatToRawIntBits(y) == NumberUtils.floatToRawIntBits(other.y);
+    }
 
 }

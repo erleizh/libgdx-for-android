@@ -16,10 +16,9 @@
 
 package com.erlei.gdx.math;
 
-import java.io.Serializable;
-
-import com.erlei.gdx.math.Vector2;
 import com.erlei.gdx.utils.NumberUtils;
+
+import java.io.Serializable;
 
 /** A convenient 2D ellipse class, based on the circle class
  * @author tonyp7 */

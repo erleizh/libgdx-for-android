@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.g2d;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
@@ -150,7 +150,8 @@ public class SpriteCache implements Disposable {
             mesh.setIndices(indices);
         }
 
-        projectionMatrix.setToOrtho2D(0, 0, Gdx.app.getWidth(), Gdx.app.getHeight());
+        GLContext glContext = GLContext.getGLContext();
+        projectionMatrix.setToOrtho2D(0, 0, glContext.getWidth(), glContext.getHeight());
     }
 
     /**
@@ -910,7 +911,7 @@ public class SpriteCache implements Disposable {
         renderCalls = 0;
         combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
-        Gdx.gl20.glDepthMask(false);
+        GLContext.getGL20().glDepthMask(false);
 
         if (customShader != null) {
             customShader.begin();
@@ -936,7 +937,7 @@ public class SpriteCache implements Disposable {
         drawing = false;
 
         shader.end();
-        GL20 gl = Gdx.gl20;
+        GL20 gl = GLContext.getGL20();
         gl.glDepthMask(true);
         if (customShader != null)
             mesh.unbind(customShader);

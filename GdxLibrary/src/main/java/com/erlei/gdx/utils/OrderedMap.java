@@ -229,7 +229,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		public V next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
-			V value = (V)map.get(keys.get(nextIndex));
+			V value = map.get(keys.get(nextIndex));
 			currentIndex = nextIndex;
 			nextIndex++;
 			hasNext = nextIndex < map.size;

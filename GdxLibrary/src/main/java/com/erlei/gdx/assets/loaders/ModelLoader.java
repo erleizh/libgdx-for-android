@@ -16,8 +16,6 @@
 
 package com.erlei.gdx.assets.loaders;
 
-import java.util.Iterator;
-
 import com.erlei.gdx.assets.AssetDescriptor;
 import com.erlei.gdx.assets.AssetLoaderParameters;
 import com.erlei.gdx.assets.AssetManager;
@@ -31,6 +29,8 @@ import com.erlei.gdx.graphics.g3d.utils.TextureProvider;
 import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.Disposable;
 import com.erlei.gdx.utils.ObjectMap;
+
+import java.util.Iterator;
 
 public abstract class ModelLoader<P extends ModelLoader.ModelParameters> extends AsynchronousAssetLoader<Model, P> {
 	public ModelLoader (FileHandleResolver resolver) {

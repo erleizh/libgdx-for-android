@@ -209,7 +209,7 @@ public abstract class RegionInfluencer extends Influencer {
 		this(regionInfluencer.regions.size);
 		regions.ensureCapacity(regionInfluencer.regions.size);
 		for (int i = 0; i < regionInfluencer.regions.size; ++i) {
-			regions.add(new AspectTextureRegion((AspectTextureRegion)regionInfluencer.regions.get(i)));
+			regions.add(new AspectTextureRegion(regionInfluencer.regions.get(i)));
 		}
 	}
 

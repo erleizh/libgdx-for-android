@@ -21,7 +21,6 @@ import com.erlei.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.erlei.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.erlei.gdx.graphics.g3d.particles.ParticleChannels;
 import com.erlei.gdx.graphics.g3d.particles.ParticleControllerComponent;
-import com.erlei.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 import com.erlei.gdx.graphics.g3d.particles.batches.ModelInstanceParticleBatch;
 import com.erlei.gdx.graphics.g3d.particles.batches.ParticleBatch;
 

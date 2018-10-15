@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Pixmap.Blending;
@@ -58,16 +58,16 @@ public class MipMapGenerator {
     }
 
     private static void generateMipMapGLES20(int target, Pixmap pixmap) {
-        Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+        GLContext.getGL20().glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
                 pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-        Gdx.gl20.glGenerateMipmap(target);
+        GLContext.getGL20().glGenerateMipmap(target);
     }
 
 
     private static void generateMipMapCPU(int target, Pixmap pixmap, int textureWidth, int textureHeight) {
-        Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+        GLContext.getGL20().glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
                 pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-        if ((Gdx.gl20 == null) && textureWidth != textureHeight)
+        if ((GLContext.getGL20() == null) && textureWidth != textureHeight)
             throw new GdxRuntimeException("texture width and height must be square when using mipmapping.");
         int width = pixmap.getWidth() / 2;
         int height = pixmap.getHeight() / 2;
@@ -79,7 +79,7 @@ public class MipMapGenerator {
             if (level > 1) pixmap.dispose();
             pixmap = tmp;
 
-            Gdx.gl.glTexImage2D(target, level, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+            GLContext.getGL20().glTexImage2D(target, level, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
                     pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 
             width = pixmap.getWidth() / 2;

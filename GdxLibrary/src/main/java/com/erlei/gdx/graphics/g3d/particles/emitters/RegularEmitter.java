@@ -81,7 +81,7 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 		durationTimer = 0f;
 
 		duration = durationValue.newLowValue();
-		percent = durationTimer / (float)duration;
+		percent = durationTimer / duration;
 
 		emission = (int)emissionValue.newLowValue();
 		emissionDiff = (int)emissionValue.newHighValue();
@@ -128,7 +128,7 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 			// End check
 			if (durationTimer < duration) {
 				durationTimer += deltaMillis;
-				percent = durationTimer / (float)duration;
+				percent = durationTimer / duration;
 			} else {
 				if (continuous && emit && emissionMode == EmissionMode.Enabled)
 					controller.start();
@@ -229,7 +229,7 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 
 	public float getPercentComplete () {
 		if (delayTimer < delay) return 0;
-		return Math.min(1, durationTimer / (float)duration);
+		return Math.min(1, durationTimer / duration);
 	}
 
 	public void set (RegularEmitter emitter) {

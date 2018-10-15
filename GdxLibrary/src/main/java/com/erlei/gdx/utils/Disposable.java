@@ -20,5 +20,5 @@ package com.erlei.gdx.utils;
  * @author mzechner */
 public interface Disposable {
 	/** Releases all resources of this object. */
-	public void dispose();
+	void dispose();
 }

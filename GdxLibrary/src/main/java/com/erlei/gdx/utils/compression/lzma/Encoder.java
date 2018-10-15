@@ -16,10 +16,10 @@
 
 package com.erlei.gdx.utils.compression.lzma;
 
-import java.io.IOException;
-
 import com.erlei.gdx.utils.compression.ICodeProgress;
 import com.erlei.gdx.utils.compression.rangecoder.BitTreeEncoder;
+
+import java.io.IOException;
 
 public class Encoder {
 	public static final int EMatchFinderTypeBT2 = 0;
@@ -212,9 +212,9 @@ public class Encoder {
 			for (; i < numSymbols; i++)
 				prices[st + i] = b1 + _highCoder.GetPrice(i - Base.kNumLowLenSymbols - Base.kNumMidLenSymbols);
 		}
-	};
+	}
 
-	public static final int kNumLenSpecSymbols = Base.kNumLowLenSymbols + Base.kNumMidLenSymbols;
+    public static final int kNumLenSpecSymbols = Base.kNumLowLenSymbols + Base.kNumMidLenSymbols;
 
 	class LenPriceTableEncoder extends LenEncoder {
 		int[] _prices = new int[Base.kNumLenSymbols << Base.kNumPosStatesBitsEncodingMax];
@@ -273,16 +273,15 @@ public class Encoder {
 
 		public void MakeAsShortRep () {
 			BackPrev = 0;
-			;
-			Prev1IsChar = false;
+            Prev1IsChar = false;
 		}
 
 		public boolean IsShortRep () {
 			return (BackPrev == 0);
 		}
-	};
+	}
 
-	Optimal[] _optimum = new Optimal[kNumOpts];
+    Optimal[] _optimum = new Optimal[kNumOpts];
 	com.erlei.gdx.utils.compression.lz.BinTree _matchFinder = null;
 	com.erlei.gdx.utils.compression.rangecoder.Encoder _rangeEncoder = new com.erlei.gdx.utils.compression.rangecoder.Encoder();
 
@@ -401,7 +400,7 @@ public class Encoder {
 		if (_numDistancePairs > 0) {
 			lenRes = _matchDistances[_numDistancePairs - 2];
 			if (lenRes == _numFastBytes)
-				lenRes += _matchFinder.GetMatchLen((int)lenRes - 1, _matchDistances[_numDistancePairs - 1], Base.kMatchMaxLen
+				lenRes += _matchFinder.GetMatchLen(lenRes - 1, _matchDistances[_numDistancePairs - 1], Base.kMatchMaxLen
 					- lenRes);
 		}
 		_additionalOffset++;
@@ -986,10 +985,10 @@ public class Encoder {
 			int complexState = (_state << Base.kNumPosStatesBitsMax) + posState;
 			if (len == 1 && pos == -1) {
 				_rangeEncoder.Encode(_isMatch, complexState, 0);
-				byte curByte = _matchFinder.GetIndexByte((int)(0 - _additionalOffset));
+				byte curByte = _matchFinder.GetIndexByte(0 - _additionalOffset);
 				LiteralEncoder.Encoder2 subCoder = _literalEncoder.GetSubCoder((int)nowPos64, _previousByte);
 				if (!Base.StateIsCharState(_state)) {
-					byte matchByte = _matchFinder.GetIndexByte((int)(0 - _repDistances[0] - 1 - _additionalOffset));
+					byte matchByte = _matchFinder.GetIndexByte(0 - _repDistances[0] - 1 - _additionalOffset);
 					subCoder.EncodeMatched(_rangeEncoder, matchByte, curByte);
 				} else
 					subCoder.Encode(_rangeEncoder, curByte);
@@ -1036,7 +1035,7 @@ public class Encoder {
 					_posSlotEncoder[lenToPosState].Encode(_rangeEncoder, posSlot);
 
 					if (posSlot >= Base.kStartPosModelIndex) {
-						int footerBits = (int)((posSlot >> 1) - 1);
+						int footerBits = (posSlot >> 1) - 1;
 						int baseVal = ((2 | (posSlot & 1)) << footerBits);
 						int posReduced = pos - baseVal;
 
@@ -1157,7 +1156,7 @@ public class Encoder {
 	void FillDistancesPrices () {
 		for (int i = Base.kStartPosModelIndex; i < Base.kNumFullDistances; i++) {
 			int posSlot = GetPosSlot(i);
-			int footerBits = (int)((posSlot >> 1) - 1);
+			int footerBits = (posSlot >> 1) - 1;
 			int baseVal = ((2 | (posSlot & 1)) << footerBits);
 			tempPrices[i] = BitTreeEncoder.ReverseGetPrice(_posEncoders, baseVal - posSlot - 1, footerBits, i - baseVal);
 		}

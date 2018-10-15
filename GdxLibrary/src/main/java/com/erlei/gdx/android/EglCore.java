@@ -26,6 +26,8 @@ import android.opengl.EGLSurface;
 import android.util.Log;
 import android.view.Surface;
 
+import com.erlei.gdx.utils.Logger;
+
 
 /**
  * Core EGL state (display, context, config).
@@ -229,7 +231,8 @@ public final class EglCore {
      * still current in a context.
      */
     public void releaseSurface(EGLSurface eglSurface) {
-        EGL14.eglDestroySurface(mEGLDisplay, eglSurface);
+        boolean b = EGL14.eglDestroySurface(mEGLDisplay, eglSurface);
+        Logger.debug("releaseSurface", String.valueOf(b));
     }
 
     /**
@@ -292,7 +295,7 @@ public final class EglCore {
     public void makeCurrent(EGLSurface drawSurface, EGLSurface readSurface) {
         if (mEGLDisplay == EGL14.EGL_NO_DISPLAY) {
             // called makeCurrent() before create?
-            Log.d(TAG, "NOTE: makeCurrent w/o display");
+            Log.d(TAG, "NOTE: makeCurrent   display");
         }
         if (!EGL14.eglMakeCurrent(mEGLDisplay, drawSurface, readSurface, mEGLContext)) {
             throw new RuntimeException("eglMakeCurrent(draw,read) failed");

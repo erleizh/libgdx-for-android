@@ -16,10 +16,10 @@
 
 package com.erlei.gdx.math;
 
-import java.io.Serializable;
-
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.NumberUtils;
+
+import java.io.Serializable;
 
 /** Encapsulates a 3D vector. Allows chaining operations by returning a reference to itself in all modification methods.
  * @author badlogicgames@gmail.com */
@@ -669,27 +669,24 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		Vector3 other = (Vector3)obj;
 		if (NumberUtils.floatToIntBits(x) != NumberUtils.floatToIntBits(other.x)) return false;
 		if (NumberUtils.floatToIntBits(y) != NumberUtils.floatToIntBits(other.y)) return false;
-		if (NumberUtils.floatToIntBits(z) != NumberUtils.floatToIntBits(other.z)) return false;
-		return true;
-	}
+        return NumberUtils.floatToIntBits(z) == NumberUtils.floatToIntBits(other.z);
+    }
 
 	@Override
 	public boolean epsilonEquals (final Vector3 other, float epsilon) {
 		if (other == null) return false;
 		if (Math.abs(other.x - x) > epsilon) return false;
 		if (Math.abs(other.y - y) > epsilon) return false;
-		if (Math.abs(other.z - z) > epsilon) return false;
-		return true;
-	}
+        return !(Math.abs(other.z - z) > epsilon);
+    }
 
 	/** Compares this vector with the other vector, using the supplied epsilon for fuzzy equality testing.
 	 * @return whether the vectors are the same. */
 	public boolean epsilonEquals (float x, float y, float z, float epsilon) {
 		if (Math.abs(x - this.x) > epsilon) return false;
 		if (Math.abs(y - this.y) > epsilon) return false;
-		if (Math.abs(z - this.z) > epsilon) return false;
-		return true;
-	}
+        return !(Math.abs(z - this.z) > epsilon);
+    }
 
 	/**
 	 * Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing

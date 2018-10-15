@@ -16,7 +16,6 @@
 
 package com.erlei.gdx.graphics.g3d.loader;
 
-import com.erlei.gdx.utils.Logger;
 import com.erlei.gdx.assets.AssetManager;
 import com.erlei.gdx.assets.loaders.FileHandleResolver;
 import com.erlei.gdx.assets.loaders.ModelLoader;
@@ -40,6 +39,7 @@ import com.erlei.gdx.math.Quaternion;
 import com.erlei.gdx.math.Vector3;
 import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.FloatArray;
+import com.erlei.gdx.utils.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;

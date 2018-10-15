@@ -21,7 +21,7 @@ import android.content.res.AssetManager;
 import android.os.Environment;
 
 import com.erlei.gdx.Files;
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.utils.GdxRuntimeException;
 
 import java.io.IOException;
@@ -126,7 +126,7 @@ public class AndroidFiles implements Files {
      */
     public boolean setAPKExpansion(int mainVersion, int patchVersion) {
         try {
-            Context context = Gdx.app.getContext();
+            Context context = GLContext.getGLContext().getContext();
             expansionFile = APKExpansionSupport.getAPKExpansionZipFile(
                     context,
                     mainVersion, patchVersion);

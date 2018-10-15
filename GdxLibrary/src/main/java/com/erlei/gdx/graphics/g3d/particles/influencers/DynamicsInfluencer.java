@@ -16,8 +16,6 @@
 
 package com.erlei.gdx.graphics.g3d.particles.influencers;
 
-import java.util.Arrays;
-
 import com.erlei.gdx.graphics.g3d.particles.ParallelArray.FloatChannel;
 import com.erlei.gdx.graphics.g3d.particles.ParticleChannels;
 import com.erlei.gdx.graphics.g3d.particles.ParticleController;
@@ -25,6 +23,8 @@ import com.erlei.gdx.math.MathUtils;
 import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.Json;
 import com.erlei.gdx.utils.JsonValue;
+
+import java.util.Arrays;
 
 /** It's an {@link Influencer} which controls the particles dynamics (movement, rotations).
  * @author Inferno */

@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.decals;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.g2d.TextureRegion;
 
 /** Material used by the {@link Decal} class */
@@ -30,7 +30,7 @@ public class DecalMaterial {
 	public void set () {
 		textureRegion.getTexture().bind(0);
 		if (!isOpaque()) {
-			Gdx.gl.glBlendFunc(srcBlendFactor, dstBlendFactor);
+			GLContext.getGL20().glBlendFunc(srcBlendFactor, dstBlendFactor);
 		}
 	}
 

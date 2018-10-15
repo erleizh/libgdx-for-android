@@ -17,7 +17,6 @@
 package com.erlei.gdx.graphics.g3d.utils.shapebuilders;
 
 import com.erlei.gdx.graphics.g3d.utils.MeshPartBuilder;
-
 import com.erlei.gdx.utils.GdxRuntimeException;
 
 /** Helper class with static methods to build capsule shapes using {@link MeshPartBuilder}.

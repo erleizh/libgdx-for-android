@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.particles;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.g3d.Attribute;
@@ -47,7 +47,7 @@ public class ParticleShader extends BaseShader {
         Billboard, Point
     }
 
-    public static enum AlignMode {
+    public enum AlignMode {
         Screen, ViewPoint// , ParticleDirection
     }
 
@@ -98,7 +98,7 @@ public class ParticleShader extends BaseShader {
 
     public static String getDefaultVertexShader() {
         if (defaultVertexShader == null)
-            defaultVertexShader = Gdx.files.classpath("com/erlei/gdx/graphics/g3d/particles/particles.vertex.glsl").readString();
+            defaultVertexShader = GLContext.getFiles().classpath("com/erlei/gdx/graphics/g3d/particles/particles.vertex.glsl").readString();
         return defaultVertexShader;
     }
 
@@ -106,7 +106,7 @@ public class ParticleShader extends BaseShader {
 
     public static String getDefaultFragmentShader() {
         if (defaultFragmentShader == null)
-            defaultFragmentShader = Gdx.files.classpath("com/erlei/gdx/graphics/g3d/particles/particles.fragment.glsl")
+            defaultFragmentShader = GLContext.getFiles().classpath("com/erlei/gdx/graphics/g3d/particles/particles.fragment.glsl")
                     .readString();
         return defaultFragmentShader;
     }
@@ -178,7 +178,7 @@ public class ParticleShader extends BaseShader {
 
             @Override
             public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-                shader.set(inputID, (float) Gdx.app.getWidth());
+                shader.set(inputID, (float) GLContext.getGLContext().getWidth());
             }
         };
         public final static Setter worldViewTrans = new Setter() {

@@ -16,14 +16,14 @@
 
 package com.erlei.gdx.graphics.g3d.utils;
 
-import java.util.Comparator;
-
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.g3d.Renderable;
 import com.erlei.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.math.Vector3;
 import com.erlei.gdx.utils.Array;
+
+import java.util.Comparator;
 
 public class DefaultRenderableSorter implements RenderableSorter, Comparator<Renderable> {
 	private Camera camera;

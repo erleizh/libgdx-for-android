@@ -25,7 +25,7 @@ import com.erlei.gdx.utils.JsonValue;
 public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 	protected static final Vector3 TMP_V1 = new Vector3();
 
-	static public enum SpawnSide {
+	public enum SpawnSide {
 		both, top, bottom
 	}
 

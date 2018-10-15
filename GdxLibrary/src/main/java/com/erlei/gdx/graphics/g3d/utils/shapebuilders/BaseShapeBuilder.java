@@ -17,14 +17,10 @@
 package com.erlei.gdx.graphics.g3d.utils.shapebuilders;
 
 import com.erlei.gdx.graphics.Color;
-import com.erlei.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.erlei.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.math.Vector3;
-import com.erlei.gdx.utils.Array;
 import com.erlei.gdx.utils.FlushablePool;
-import com.erlei.gdx.utils.Pool;
-import com.erlei.gdx.utils.ShortArray;
 
 /** This class allows to reduce the static allocation needed for shape builders. It contains all the objects used internally by
  * shape builders.

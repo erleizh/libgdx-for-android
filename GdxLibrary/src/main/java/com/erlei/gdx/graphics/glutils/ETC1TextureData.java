@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.glutils;
 
-import com.erlei.gdx.Gdx;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.files.FileHandle;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
@@ -73,17 +73,17 @@ public class ETC1TextureData implements TextureData {
 	public void consumeCustomData (int target) {
 		if (!isPrepared) throw new GdxRuntimeException("Call prepare() before calling consumeCompressedData()");
 
-		if (!Gdx.app.supportsExtension("GL_OES_compressed_ETC1_RGB8_texture")) {
+		if (!GLContext.getGLContext().supportsExtension("GL_OES_compressed_ETC1_RGB8_texture")) {
 			Pixmap pixmap = ETC1.decodeImage(data, Format.RGB565);
-			Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+			GLContext.getGL20().glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
 				pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 			if (useMipMaps) MipMapGenerator.generateMipMap(target, pixmap, pixmap.getWidth(), pixmap.getHeight());
 			pixmap.dispose();
 			useMipMaps = false;
 		} else {
-			Gdx.gl.glCompressedTexImage2D(target, 0, ETC1.ETC1_RGB8_OES, width, height, 0, data.compressedData.capacity()
+			GLContext.getGL20().glCompressedTexImage2D(target, 0, ETC1.ETC1_RGB8_OES, width, height, 0, data.compressedData.capacity()
 				- data.dataOffset, data.compressedData);
-			if (useMipMaps()) Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
+			if (useMipMaps()) GLContext.getGL20().glGenerateMipmap(GL20.GL_TEXTURE_2D);
 		}
 		data.dispose();
 		data = null;
@@ -118,10 +118,5 @@ public class ETC1TextureData implements TextureData {
 	@Override
 	public boolean useMipMaps () {
 		return useMipMaps;
-	}
-
-	@Override
-	public boolean isManaged () {
-		return true;
 	}
 }

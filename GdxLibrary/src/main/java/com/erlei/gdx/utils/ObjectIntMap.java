@@ -16,10 +16,10 @@
 
 package com.erlei.gdx.utils;
 
+import com.erlei.gdx.math.MathUtils;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import com.erlei.gdx.math.MathUtils;
 
 /** An unordered map where the values are ints. This implementation is a cuckoo hash map using 3 hashes, random walking, and a
  * small stash for problematic keys. Null keys are not allowed. No allocation is done except when growing the table size. <br>
@@ -733,7 +733,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 
 	static public class Keys<K> extends MapIterator<K> implements Iterable<K>, Iterator<K> {
 		public Keys (ObjectIntMap<K> map) {
-			super((ObjectIntMap<K>)map);
+			super(map);
 		}
 
 		public boolean hasNext () {

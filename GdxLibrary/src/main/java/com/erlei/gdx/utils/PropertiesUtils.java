@@ -17,14 +17,14 @@
 
 package com.erlei.gdx.utils;
 
+import com.erlei.gdx.utils.ObjectMap.Entry;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.StringBuilder;
 import java.util.Date;
-
-import com.erlei.gdx.utils.ObjectMap.Entry;
 
 /** {@code PropertiesUtils} is a helper class that allows you to load and store key/value pairs of an
  * {@code ObjectMap<String,String>} with the same line-oriented syntax supported by {@code java.util.Properties}. */

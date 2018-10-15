@@ -16,8 +16,6 @@
 
 package com.erlei.gdx.graphics.g3d;
 
-import java.util.Comparator;
-
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.Mesh;
 import com.erlei.gdx.graphics.VertexAttributes;
@@ -29,6 +27,8 @@ import com.erlei.gdx.utils.Disposable;
 import com.erlei.gdx.utils.FlushablePool;
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.Pool;
+
+import java.util.Comparator;
 
 /** ModelCache tries to combine multiple render calls into a single render call by merging them where possible. Can be used for
  * multiple type of models (e.g. varying vertex attributes or materials), the ModelCache will combine where possible. Can be used

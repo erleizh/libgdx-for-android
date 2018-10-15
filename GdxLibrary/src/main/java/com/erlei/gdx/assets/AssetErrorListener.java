@@ -17,5 +17,5 @@
 package com.erlei.gdx.assets;
 
 public interface AssetErrorListener {
-	public void error(AssetDescriptor asset, Throwable throwable);
+	void error(AssetDescriptor asset, Throwable throwable);
 }

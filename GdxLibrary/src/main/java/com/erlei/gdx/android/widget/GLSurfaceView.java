@@ -12,11 +12,15 @@ import java.util.List;
 
 
 public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHolder.Callback2 {
-    private static final String TAG = "GLSurfaceViewI";
+    private static final String TAG = "GLSurfaceView";
     private boolean mPreserveEGLContextOnPause = true;
     private Renderer mRenderer;
     private GLThread mGLThread;
     private boolean mDetached;
+    private GLWrapper mWrapper;
+    private EGLWindowSurfaceFactory mSurfaceFactory;
+    private EGLContextFactory mContextFactory;
+    private EGLConfigChooser mConfigChooser;
     private List<SurfaceSizeChangeListener> mSizeChangeListeners = new ArrayList<>();
 
     public GLSurfaceView(Context context) {
@@ -63,7 +67,6 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
 
     @Override
     public void onDestroy() {
-        if (mRenderer != null) mRenderer.release();
         mSizeChangeListeners.clear();
     }
 
@@ -217,7 +220,7 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
 
     /**
      * This method is used as part of the View class and is not normally
-     * called or subclassed by clients of GLSurfaceViewI.
+     * called or subclassed by clients of GLSurfaceView.
      */
     @Override
     protected void onAttachedToWindow() {
@@ -245,6 +248,45 @@ public class GLSurfaceView extends SurfaceView implements IRenderView, SurfaceHo
         }
         mDetached = true;
         super.onDetachedFromWindow();
+    }
+    @Override
+    public void setGLWrapper(GLWrapper wrapper) {
+        mWrapper = wrapper;
+    }
+
+    @Override
+    public void setEGLContextFactory(EGLContextFactory factory) {
+        mContextFactory = factory;
+    }
+
+    @Override
+    public void setEGLWindowSurfaceFactory(EGLWindowSurfaceFactory factory) {
+        mSurfaceFactory = factory;
+    }
+
+    @Override
+    public void setEGLConfigChooser(EGLConfigChooser configChooser) {
+        mConfigChooser = configChooser;
+    }
+
+    @Override
+    public GLWrapper getGLWrapper() {
+        return mWrapper;
+    }
+
+    @Override
+    public EGLWindowSurfaceFactory getEGLWindowSurfaceFactory() {
+        return mSurfaceFactory;
+    }
+
+    @Override
+    public EGLContextFactory getEGLContextFactory() {
+        return mContextFactory;
+    }
+
+    @Override
+    public EGLConfigChooser getEGLConfigChooser() {
+        return mConfigChooser;
     }
 
 

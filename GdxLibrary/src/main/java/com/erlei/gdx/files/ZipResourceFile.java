@@ -116,8 +116,7 @@ public class ZipResourceFile {
 
 		public long mOffset = -1;
 
-		public void setOffsetFromFile(RandomAccessFile f, ByteBuffer buf)
-				throws IOException {
+		public void setOffsetFromFile(RandomAccessFile f, ByteBuffer buf) {
 			long localHdrOffset = mLocalHdrOffset;
 			try {
 				f.seek(localHdrOffset);
@@ -261,8 +260,8 @@ public class ZipResourceFile {
 
 	ByteBuffer mLEByteBuffer = ByteBuffer.allocate(4);
 
-	static private int read4LE(RandomAccessFile f) throws EOFException,
-			IOException {
+	static private int read4LE(RandomAccessFile f) throws
+            IOException {
 		return swapEndian(f.readInt());
 	}
 

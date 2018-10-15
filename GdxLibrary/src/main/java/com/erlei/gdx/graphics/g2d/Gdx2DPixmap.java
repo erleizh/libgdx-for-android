@@ -16,14 +16,14 @@
 
 package com.erlei.gdx.graphics.g2d;
 
+import com.erlei.gdx.graphics.GL20;
+import com.erlei.gdx.utils.Disposable;
+import com.erlei.gdx.utils.GdxRuntimeException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-
-import com.erlei.gdx.graphics.GL20;
-import com.erlei.gdx.utils.Disposable;
-import com.erlei.gdx.utils.GdxRuntimeException;
 
 /** @author mzechner */
 public class Gdx2DPixmap implements Disposable {
