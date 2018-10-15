@@ -42,6 +42,8 @@ public class CameraTexture extends Texture {
 
     public static class CameraTextureData implements TextureData {
 
+        private Size mSize;
+
         public CameraTextureData() {
         }
 
@@ -79,12 +81,12 @@ public class CameraTexture extends Texture {
 
         @Override
         public int getWidth() {
-            throw new GdxRuntimeException("This CameraTextureData implementation does not support getWidth");
+            return mSize == null ? 0 : mSize.getWidth();
         }
 
         @Override
         public int getHeight() {
-            throw new GdxRuntimeException("This CameraTextureData implementation does not support getHeight");
+            return mSize == null ? 0 : mSize.getHeight();
         }
 
         @Override
@@ -95,6 +97,10 @@ public class CameraTexture extends Texture {
         @Override
         public boolean useMipMaps() {
             return false;
+        }
+
+        protected void setTextureSize(Size cameraSize) {
+            mSize = cameraSize;
         }
     }
 }

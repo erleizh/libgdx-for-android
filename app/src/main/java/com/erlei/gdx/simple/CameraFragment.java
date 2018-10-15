@@ -12,8 +12,15 @@ import android.view.ViewGroup;
 import com.erlei.camera.Camera;
 import com.erlei.camera.CameraRender;
 import com.erlei.camera.Size;
+import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.android.widget.GLSurfaceView;
 import com.erlei.gdx.android.widget.IRenderView;
+import com.erlei.gdx.graphics.Color;
+import com.erlei.gdx.graphics.GL20;
+import com.erlei.gdx.graphics.Pixmap;
+import com.erlei.gdx.graphics.Texture;
+import com.erlei.gdx.graphics.g2d.SpriteBatch;
+import com.erlei.gdx.graphics.glutils.FrameBuffer;
 import com.erlei.gdx.utils.Logger;
 
 public class CameraFragment extends Fragment {
@@ -53,6 +60,51 @@ public class CameraFragment extends Fragment {
                     mCamera.close();
                     mCamera = null;
                 }
+            }
+        }, new CameraRender.Renderer() {
+
+            private Texture mTexture;
+            private Size mViewSize;
+            private SpriteBatch mSpriteBatch;
+
+            @Override
+            public void create(GL20 gl) {
+                mSpriteBatch = new SpriteBatch(10);
+            }
+
+            @Override
+            public void resize(Size viewSize, Size cameraSize) {
+                mViewSize = viewSize;
+                Pixmap pixmap = new Pixmap(cameraSize.getWidth(), cameraSize.getHeight(), Pixmap.Format.RGBA8888);
+                pixmap.setColor(Color.RED);
+                pixmap.drawCircle(pixmap.getWidth() / 2, pixmap.getHeight() / 2, pixmap.getWidth() / 4);
+                mTexture = new Texture(pixmap);
+            }
+
+            @Override
+            public void render(FrameBuffer frameBuffer) {
+                mSpriteBatch.begin();
+                mSpriteBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, mViewSize.getWidth(), mViewSize.getHeight(), 0, 0,
+                        frameBuffer.getColorBufferTexture().getWidth(),
+                        frameBuffer.getColorBufferTexture().getHeight(), false, true);
+                mSpriteBatch.draw(mTexture, 0, 0, mViewSize.getWidth(), mViewSize.getHeight(), 0, 0,
+                        mTexture.getWidth(), mTexture.getHeight(), false, false);
+                mSpriteBatch.end();
+            }
+
+            @Override
+            public void pause() {
+
+            }
+
+            @Override
+            public void resume() {
+
+            }
+
+            @Override
+            public void dispose() {
+
             }
         }));
         mRenderView.setRenderMode(IRenderView.RenderMode.WHEN_DIRTY);

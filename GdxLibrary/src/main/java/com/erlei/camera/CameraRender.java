@@ -7,10 +7,14 @@ import com.erlei.gdx.android.widget.EglHelper;
 import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.android.widget.IRenderView;
 import com.erlei.gdx.graphics.GL20;
+import com.erlei.gdx.graphics.GLTexture;
 import com.erlei.gdx.graphics.Mesh;
+import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.VertexAttribute;
 import com.erlei.gdx.graphics.VertexAttributes;
+import com.erlei.gdx.graphics.glutils.FrameBuffer;
+import com.erlei.gdx.graphics.glutils.GLFrameBuffer;
 import com.erlei.gdx.graphics.glutils.ShaderProgram;
 import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.utils.Logger;
@@ -24,17 +28,33 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
     private Logger mLogger = new Logger("CameraRender", Logger.DEBUG);
     private final CameraControl mControl;
     private CameraTexture mCameraTexture;
-    private ShaderProgram mProgram2d;
-    private ShaderProgram mProgramOES;
-    private float[] mTexMatrixOES = new float[16];
+    private ShaderProgram mProgram;
+    private float[] mTexMatrix = new float[16];
     private Matrix4 mMatrix4 = new Matrix4();
     private Matrix4 mProjectionViewMatrix = new Matrix4();
     private Mesh mMesh;
+    private Renderer mRenderer;
+    private CameraTexture.CameraTextureData mCameraTextureData;
+    private FrameBuffer mFrameBuffer;
 
     public CameraRender(IRenderView renderView, CameraControl cameraControl) {
         super(renderView);
         mControl = cameraControl;
     }
+
+    public CameraRender(IRenderView renderView, CameraControl cameraControl, Renderer renderer) {
+        this(renderView, cameraControl);
+        mRenderer = renderer;
+    }
+
+    public void setRenderer(Renderer renderer) {
+        mRenderer = renderer;
+    }
+
+    public Renderer getRenderer() {
+        return mRenderer;
+    }
+
 
     @Override
     public void create(EglHelper egl, GL20 gl) {
@@ -43,12 +63,21 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         initShaderProgram();
         initMesh();
         openCamera();
+        if (mRenderer != null)initFrameBuffer();
+        if (mRenderer != null) mRenderer.create(gl);
+    }
+
+    protected void initFrameBuffer() {
+        Size previewSize = mControl.getPreviewSize();
+        mFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, previewSize.width, previewSize.height, false);
     }
 
     protected void openCamera() {
         initSurfaceTexture();
         mControl.open(mCameraTexture.getSurfaceTexture());
-        adjustTextureSize(new Size(getWidth(), getHeight()), mControl.getPreviewSize());
+        Size cameraSize = mControl.getPreviewSize();
+        adjustTextureSize(new Size(getWidth(), getHeight()), cameraSize);
+        mCameraTextureData.setTextureSize(cameraSize);
     }
 
 
@@ -62,6 +91,7 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         super.resume();
         mLogger.debug("resume");
         openCamera();
+        if (mRenderer != null) mRenderer.resume();
     }
 
     @Override
@@ -69,7 +99,10 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         super.resize(width, height);
         mLogger.debug("resize " + width + "x" + height);
 
-        adjustTextureSize(new Size(width, height), mControl.getPreviewSize());
+        Size viewSize = new Size(width, height);
+        Size cameraSize = mControl.getPreviewSize();
+        adjustTextureSize(viewSize, cameraSize);
+        if (mRenderer != null) mRenderer.resize(viewSize, cameraSize);
     }
 
     /**
@@ -108,6 +141,7 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         super.pause();
         mLogger.debug("pause");
         closeCamera();
+        if (mRenderer != null) mRenderer.pause();
     }
 
 
@@ -116,31 +150,37 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         super.render();
         clear();
         mCameraTexture.getSurfaceTexture().updateTexImage();
-        mCameraTexture.getSurfaceTexture().getTransformMatrix(mTexMatrixOES);
+        mCameraTexture.getSurfaceTexture().getTransformMatrix(mTexMatrix);
 
+        if (mRenderer != null) mFrameBuffer.begin();
         mCameraTexture.bind();
-        mProgramOES.begin();
-        mProgramOES.setUniformMatrix("u_texMatrix", mMatrix4.set(mTexMatrixOES));
-        mProgramOES.setUniformMatrix("u_projectionViewMatrix", mProjectionViewMatrix);
-        mProgramOES.setUniformi("u_texture", 0);
-        mMesh.render(mProgramOES, GL20.GL_TRIANGLE_FAN);
-        mProgramOES.end();
+        mProgram.begin();
+        mProgram.setUniformMatrix("u_texMatrix", mMatrix4.set(mTexMatrix));
+        mProgram.setUniformMatrix("u_projectionViewMatrix", mProjectionViewMatrix);
+        mProgram.setUniformi("u_texture", 0);
+        mMesh.render(mProgram, GL20.GL_TRIANGLE_FAN);
+        mProgram.end();
+        if (mRenderer != null) mFrameBuffer.end();
+
+        if (mRenderer != null) mRenderer.render(mFrameBuffer);
     }
 
     @Override
     public void dispose() {
+        if (mRenderer != null) mRenderer.dispose();
         mLogger.debug("dispose");
         destroySurfaceTexture();
         mControl.close();
-        mProgramOES.dispose();
+        mProgram.dispose();
         mMesh.dispose();
-        mProgram2d.dispose();
+        if (mRenderer != null)mFrameBuffer.dispose();
         super.dispose();
     }
 
     protected void initSurfaceTexture() {
         destroySurfaceTexture();
-        mCameraTexture = new CameraTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, new CameraTexture.CameraTextureData());
+        mCameraTextureData = new CameraTexture.CameraTextureData();
+        mCameraTexture = new CameraTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, mCameraTextureData);
         mCameraTexture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         mCameraTexture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
         mCameraTexture.getSurfaceTexture().setOnFrameAvailableListener(this);
@@ -152,8 +192,7 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
     }
 
     protected void initShaderProgram() {
-        mProgram2d = new ShaderProgram(files.internal("shader/vertex_shader.glsl"), files.internal("shader/fragment_shader_2d.glsl"));
-        mProgramOES = new ShaderProgram(files.internal("shader/vertex_shader.glsl"), files.internal("shader/fragment_shader_oes.glsl"));
+        mProgram = new ShaderProgram(files.internal("shader/vertex_shader.glsl"), files.internal("shader/fragment_shader_oes.glsl"));
     }
 
     protected void initMesh() {
@@ -188,5 +227,20 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
 
         void close();
 
+    }
+
+    public interface Renderer {
+
+        void create(GL20 gl);
+
+        void resize(Size viewSize, Size cameraSize);
+
+        void  render(FrameBuffer frameBuffer);
+
+        void pause();
+
+        void resume();
+
+        void dispose();
     }
 }
