@@ -390,7 +390,7 @@ public class DefaultShader extends BaseShader {
 
 	public static String getDefaultVertexShader () {
 		if (defaultVertexShader == null)
-			defaultVertexShader = GLContext.getFiles().classpath("com/erlei/gdx/graphics/g3d/shaders/default.vertex.glsl").readString();
+			defaultVertexShader = GLContext.getFiles().internal("shaders/default.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 
@@ -398,7 +398,7 @@ public class DefaultShader extends BaseShader {
 
 	public static String getDefaultFragmentShader () {
 		if (defaultFragmentShader == null)
-			defaultFragmentShader = GLContext.getFiles().classpath("com/erlei/gdx/graphics/g3d/shaders/default.fragment.glsl").readString();
+			defaultFragmentShader = GLContext.getFiles().internal("shaders/default.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 

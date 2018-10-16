@@ -48,7 +48,7 @@ public class DepthShader extends DefaultShader {
 
 	public final static String getDefaultVertexShader () {
 		if (defaultVertexShader == null)
-			defaultVertexShader = GLContext.getFiles().classpath("com/erlei/gdx/graphics/g3d/shaders/depth.vertex.glsl").readString();
+			defaultVertexShader = GLContext.getFiles().internal("shaders/depth.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 
@@ -56,7 +56,7 @@ public class DepthShader extends DefaultShader {
 
 	public final static String getDefaultFragmentShader () {
 		if (defaultFragmentShader == null)
-			defaultFragmentShader = GLContext.getFiles().classpath("com/erlei/gdx/graphics/g3d/shaders/depth.fragment.glsl").readString();
+			defaultFragmentShader = GLContext.getFiles().internal("shaders/depth.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 

@@ -98,7 +98,7 @@ public class ParticleShader extends BaseShader {
 
     public static String getDefaultVertexShader() {
         if (defaultVertexShader == null)
-            defaultVertexShader = GLContext.getFiles().classpath("com/erlei/gdx/graphics/g3d/particles/particles.vertex.glsl").readString();
+            defaultVertexShader = GLContext.getFiles().internal("shaders/particles.vertex.glsl").readString();
         return defaultVertexShader;
     }
 
@@ -106,7 +106,7 @@ public class ParticleShader extends BaseShader {
 
     public static String getDefaultFragmentShader() {
         if (defaultFragmentShader == null)
-            defaultFragmentShader = GLContext.getFiles().classpath("com/erlei/gdx/graphics/g3d/particles/particles.fragment.glsl")
+            defaultFragmentShader = GLContext.getFiles().internal("shaders/particles.fragment.glsl")
                     .readString();
         return defaultFragmentShader;
     }

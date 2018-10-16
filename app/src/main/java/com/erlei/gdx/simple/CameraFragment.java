@@ -19,8 +19,10 @@ import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Texture;
+import com.erlei.gdx.graphics.g2d.BitmapFont;
 import com.erlei.gdx.graphics.g2d.SpriteBatch;
 import com.erlei.gdx.graphics.glutils.FrameBuffer;
+import com.erlei.gdx.utils.Align;
 import com.erlei.gdx.utils.Logger;
 
 public class CameraFragment extends Fragment {
@@ -50,7 +52,7 @@ public class CameraFragment extends Fragment {
             @Override
             public void open(SurfaceTexture surfaceTexture) {
                 if (mCamera == null || !mCamera.isOpen()) {
-                    mCamera = new Camera.CameraBuilder(getContext()).useDefaultConfig().setSurfaceTexture(surfaceTexture).build().open();
+                    mCamera = new Camera.CameraBuilder(getContext()).useDefaultConfig().setPreviewSize(new Size(2048,1536)).setSurfaceTexture(surfaceTexture).build().open();
                 }
             }
 
@@ -63,6 +65,7 @@ public class CameraFragment extends Fragment {
             }
         }, new CameraRender.Renderer() {
 
+            private BitmapFont mBitmapFont;
             private Texture mTexture;
             private Size mViewSize;
             private SpriteBatch mSpriteBatch;
@@ -70,6 +73,8 @@ public class CameraFragment extends Fragment {
             @Override
             public void create(GL20 gl) {
                 mSpriteBatch = new SpriteBatch(10);
+                mBitmapFont = new BitmapFont();
+                mBitmapFont.setColor(Color.WHITE);
             }
 
             @Override
@@ -87,6 +92,9 @@ public class CameraFragment extends Fragment {
                 mSpriteBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, mViewSize.getWidth(), mViewSize.getHeight(), 0, 0,
                         frameBuffer.getColorBufferTexture().getWidth(),
                         frameBuffer.getColorBufferTexture().getHeight(), false, true);
+                mBitmapFont.draw(mSpriteBatch, "fps : " + GLContext.getGLContext().getDeltaTime(), mViewSize.getWidth() / 2, mViewSize.getHeight() / 2,
+                        0f, Align.left, true
+                );
                 mSpriteBatch.draw(mTexture, 0, 0, mViewSize.getWidth(), mViewSize.getHeight(), 0, 0,
                         mTexture.getWidth(), mTexture.getHeight(), false, false);
                 mSpriteBatch.end();
@@ -104,7 +112,9 @@ public class CameraFragment extends Fragment {
 
             @Override
             public void dispose() {
-
+                mBitmapFont.dispose();
+                mSpriteBatch.dispose();
+                mTexture.dispose();
             }
         }));
         mRenderView.setRenderMode(IRenderView.RenderMode.WHEN_DIRTY);
