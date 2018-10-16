@@ -32,8 +32,8 @@ public class Renderer extends GLContext {
     }
 
     @Override
-    public void render() {
-        super.render();
+    public void render(GL20 gl) {
+        super.render(gl);
         mLogger.info("render");
 
         clear();

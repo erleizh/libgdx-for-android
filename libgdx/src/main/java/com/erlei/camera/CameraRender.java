@@ -7,14 +7,12 @@ import com.erlei.gdx.android.widget.EglHelper;
 import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.android.widget.IRenderView;
 import com.erlei.gdx.graphics.GL20;
-import com.erlei.gdx.graphics.GLTexture;
 import com.erlei.gdx.graphics.Mesh;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.VertexAttribute;
 import com.erlei.gdx.graphics.VertexAttributes;
 import com.erlei.gdx.graphics.glutils.FrameBuffer;
-import com.erlei.gdx.graphics.glutils.GLFrameBuffer;
 import com.erlei.gdx.graphics.glutils.ShaderProgram;
 import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.utils.Logger;
@@ -63,7 +61,7 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         initShaderProgram();
         initMesh();
         openCamera();
-        if (mRenderer != null)initFrameBuffer();
+        if (mRenderer != null) initFrameBuffer();
         if (mRenderer != null) mRenderer.create(gl);
     }
 
@@ -146,8 +144,8 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
 
 
     @Override
-    public void render() {
-        super.render();
+    public void render(GL20 gl) {
+        super.render(gl);
         clear();
         mCameraTexture.getSurfaceTexture().updateTexImage();
         mCameraTexture.getSurfaceTexture().getTransformMatrix(mTexMatrix);
@@ -162,7 +160,7 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         mProgram.end();
         if (mRenderer != null) mFrameBuffer.end();
 
-        if (mRenderer != null) mRenderer.render(mFrameBuffer);
+        if (mRenderer != null) mRenderer.render(gl,mFrameBuffer);
     }
 
     @Override
@@ -173,7 +171,7 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         mControl.close();
         mProgram.dispose();
         mMesh.dispose();
-        if (mRenderer != null)mFrameBuffer.dispose();
+        if (mRenderer != null) mFrameBuffer.dispose();
         super.dispose();
     }
 
@@ -235,7 +233,7 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
 
         void resize(Size viewSize, Size cameraSize);
 
-        void  render(FrameBuffer frameBuffer);
+        void render(GL20 gl, FrameBuffer frameBuffer);
 
         void pause();
 

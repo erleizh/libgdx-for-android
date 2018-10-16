@@ -54,7 +54,7 @@ public class GLContext implements IRenderView.Renderer {
     }
 
     @Override
-    public void render() {
+    public void render(GL20 gl) {
         mFPSCounter.update();
     }
 

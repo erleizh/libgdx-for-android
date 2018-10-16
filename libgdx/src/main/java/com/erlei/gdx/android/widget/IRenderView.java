@@ -226,7 +226,7 @@ public interface IRenderView {
 
         void resize(int width, int height);
 
-        void render();
+        void render(GL20 gl);
 
         void pause();
 

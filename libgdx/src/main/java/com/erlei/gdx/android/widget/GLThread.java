@@ -339,7 +339,7 @@ class GLThread extends Thread {
                     IRenderView view = mWeakReference.get();
                     if (view != null) {
                         try {
-                            view.getRenderer().render();
+                            view.getRenderer().render(gl);
                             if (finishDrawingRunnable != null) {
                                 finishDrawingRunnable.run();
                                 finishDrawingRunnable = null;

@@ -67,8 +67,8 @@ public class ShaderMultiTextureTest extends GLContext {
     }
 
     @Override
-    public void render() {
-        super.render();
+    public void render(GL20 gl) {
+        super.render(gl);
         gl.glViewport(0, 0, getBackBufferWidth(), getBackBufferHeight());
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

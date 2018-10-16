@@ -52,7 +52,7 @@ public class CameraFragment extends Fragment {
             @Override
             public void open(SurfaceTexture surfaceTexture) {
                 if (mCamera == null || !mCamera.isOpen()) {
-                    mCamera = new Camera.CameraBuilder(getContext()).useDefaultConfig().setPreviewSize(new Size(2048,1536)).setSurfaceTexture(surfaceTexture).build().open();
+                    mCamera = new Camera.CameraBuilder(getContext()).useDefaultConfig().setPreviewSize(new Size(2048, 1536)).setSurfaceTexture(surfaceTexture).build().open();
                 }
             }
 
@@ -87,7 +87,7 @@ public class CameraFragment extends Fragment {
             }
 
             @Override
-            public void render(FrameBuffer frameBuffer) {
+            public void render(GL20 gl, FrameBuffer frameBuffer) {
                 mSpriteBatch.begin();
                 mSpriteBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, mViewSize.getWidth(), mViewSize.getHeight(), 0, 0,
                         frameBuffer.getColorBufferTexture().getWidth(),
