@@ -47,7 +47,7 @@ class GLThread extends Thread {
 
     // End of member variables protected by the sGLThreadManager monitor.
 
-    private EglHelper mEglHelper;
+    private EGLCore mEGLCore;
 
     /**
      * Set once at thread construction time, nulled out when the parent view is garbage
@@ -57,7 +57,7 @@ class GLThread extends Thread {
     private WeakReference<IRenderView> mWeakReference;
 
     public int getGLESVersion() {
-        return mEglHelper.getGLESVersion();
+        return mEGLCore.getGLESVersion();
     }
 
     GLThread(IRenderView iRenderView) {
@@ -81,7 +81,7 @@ class GLThread extends Thread {
             // fall thru and exit normally
         } finally {
             sGLThreadManager.threadExiting(this);
-            mEglHelper = null;
+            mEGLCore = null;
         }
         mLogger.info("finish tid=" + getId());
     }
@@ -93,7 +93,7 @@ class GLThread extends Thread {
     private void stopEglSurfaceLocked() {
         if (mHaveEglSurface) {
             mHaveEglSurface = false;
-            mEglHelper.destroySurface();
+            mEGLCore.destroySurface();
         }
     }
 
@@ -103,14 +103,14 @@ class GLThread extends Thread {
      */
     private void stopEglContextLocked() {
         if (mHaveEglContext) {
-            mEglHelper.finish();
+            mEGLCore.finish();
             mHaveEglContext = false;
             sGLThreadManager.releaseEglContextLocked(this);
         }
     }
 
     private void guardedRun() throws InterruptedException {
-        mEglHelper = new EglHelper(mWeakReference);
+        mEGLCore = new EGLCore(mWeakReference);
         mHaveEglContext = false;
         mHaveEglSurface = false;
         mWantRenderNotification = false;
@@ -228,7 +228,7 @@ class GLThread extends Thread {
                                     askedToReleaseEglContext = false;
                                 } else {
                                     try {
-                                        mEglHelper.start();
+                                        mEGLCore.start();
                                     } catch (RuntimeException t) {
                                         sGLThreadManager.releaseEglContextLocked(this);
                                         throw t;
@@ -287,7 +287,7 @@ class GLThread extends Thread {
 
                 if (createEglSurface) {
                     mLogger.info("egl createSurface");
-                    if (mEglHelper.createSurface()) {
+                    if (mEGLCore.createSurface()) {
                         synchronized (sGLThreadManager) {
                             mFinishedCreatingEglSurface = true;
                             sGLThreadManager.notifyAll();
@@ -304,7 +304,7 @@ class GLThread extends Thread {
                 }
 
                 if (createGlInterface) {
-                    gl = mEglHelper.createGL();
+                    gl = mEGLCore.createGL();
 
                     createGlInterface = false;
                 }
@@ -314,7 +314,7 @@ class GLThread extends Thread {
                     IRenderView view = mWeakReference.get();
                     if (view != null) {
                         try {
-                            view.getRenderer().create(mEglHelper, gl);
+                            view.getRenderer().create(mEGLCore, gl);
                         } catch (Exception e) {
                             mLogger.error("render create error ", e);
                         }
@@ -349,7 +349,7 @@ class GLThread extends Thread {
                         }
                     }
                 }
-                int swapError = mEglHelper.swap();
+                int swapError = mEGLCore.swap();
                 switch (swapError) {
                     case EGL10.EGL_SUCCESS:
                         break;
@@ -362,7 +362,7 @@ class GLThread extends Thread {
                         // probably because the SurfaceView surface has been destroyed,
                         // but we haven't been notified yet.
                         // Log the error to help developers understand why rendering stopped.
-                        EglHelper.logEglErrorAsWarning("GLThread", "eglSwapBuffers", swapError);
+                        EGLCore.logEglErrorAsWarning("GLThread", "eglSwapBuffers", swapError);
 
                         synchronized (sGLThreadManager) {
                             mSurfaceIsBad = true;

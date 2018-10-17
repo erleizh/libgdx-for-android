@@ -43,7 +43,7 @@ public class GLContext implements IRenderView.Renderer {
 
 
     @Override
-    public void create(EglHelper egl, GL20 gl) {
+    public void create(EGLCore egl, GL20 gl) {
         setGL20(gl);
         sThreadLocal.set(this);
     }

@@ -3,7 +3,7 @@ package com.erlei.camera;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 
-import com.erlei.gdx.android.widget.EglHelper;
+import com.erlei.gdx.android.widget.EGLCore;
 import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.android.widget.IRenderView;
 import com.erlei.gdx.graphics.GL20;
@@ -55,14 +55,14 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
 
 
     @Override
-    public void create(EglHelper egl, GL20 gl) {
+    public void create(EGLCore egl, GL20 gl) {
         super.create(egl, gl);
         mLogger.debug("create");
         initShaderProgram();
         initMesh();
         openCamera();
         if (mRenderer != null) initFrameBuffer();
-        if (mRenderer != null) mRenderer.create(gl);
+        if (mRenderer != null) mRenderer.create(egl,gl);
     }
 
     protected void initFrameBuffer() {
@@ -123,7 +123,7 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         //2 . CENTER_CROP (see ImageView CENTER_CROP)
         float scale;
         float dx = 0, dy = 0;
-        if (cameraWidth * viewWidth > viewWidth * cameraHeight) {
+        if (cameraWidth * viewHeight > viewWidth * cameraHeight) {
             scale = viewHeight / cameraHeight;
             dx = (viewWidth - cameraWidth * scale) * 0.5f;
         } else {
@@ -229,7 +229,7 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
 
     public interface Renderer {
 
-        void create(GL20 gl);
+        void create(EGLCore egl, GL20 gl);
 
         void resize(Size viewSize, Size cameraSize);
 

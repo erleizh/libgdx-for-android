@@ -17,7 +17,7 @@
 package com.erlei.gdx.utils.viewport;
 
 import com.erlei.gdx.android.widget.GLContext;
-import com.erlei.gdx.android.widget.trash.IRenderView;
+import com.erlei.gdx.android.widget.IRenderView;
 import com.erlei.gdx.graphics.Camera;
 import com.erlei.gdx.graphics.glutils.HdpiUtils;
 import com.erlei.gdx.math.Matrix4;

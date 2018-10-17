@@ -2,16 +2,14 @@ package com.erlei.gdx.android.widget;
 
 
 import android.content.Context;
+import android.opengl.EGLConfig;
+import android.opengl.EGLContext;
+import android.opengl.EGLDisplay;
+import android.opengl.EGLSurface;
 import android.text.TextUtils;
 
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.utils.Logger;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-import javax.microedition.khronos.egl.EGLSurface;
 
 public interface IRenderView {
 
@@ -222,7 +220,7 @@ public interface IRenderView {
 
     interface Renderer {
 
-        void create(EglHelper egl, GL20 gl);
+        void create(EGLCore egl, GL20 gl);
 
         void resize(int width, int height);
 
@@ -290,9 +288,9 @@ public interface IRenderView {
      * {@link IRenderView#setEGLContextFactory(IRenderView.EGLContextFactory)}
      */
     interface EGLContextFactory {
-        EGLContext createContext(int glVersion, EGL10 egl, EGLDisplay display, EGLConfig eglConfig);
+        EGLContext createContext(int glVersion, EGLDisplay display, EGLConfig eglConfig);
 
-        void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context);
+        void destroyContext(EGLDisplay display, EGLContext context);
     }
 
     /**
@@ -316,10 +314,10 @@ public interface IRenderView {
         /**
          * @return null if the surface cannot be constructed.
          */
-        EGLSurface createWindowSurface(EGL10 egl, EGLDisplay display, EGLConfig config,
+        EGLSurface createWindowSurface(EGLDisplay display, EGLConfig config,
                                        Object nativeWindow);
 
-        void destroySurface(EGL10 egl, EGLDisplay display, EGLSurface surface);
+        void destroySurface(EGLDisplay display, EGLSurface surface);
     }
 
 
@@ -349,14 +347,13 @@ public interface IRenderView {
         /**
          * Choose a configuration from the list. Implementors typically
          * implement this method by calling
-         * {@link EGL10#eglChooseConfig} and iterating through the results. Please consult the
+         * {@link android.opengl.EGL14#eglChooseConfig(android.opengl.EGLDisplay, int[], int, android.opengl.EGLConfig[], int, int, int[], int)} and iterating through the results. Please consult the
          * EGL specification available from The Khronos Group to learn how to call eglChooseConfig.
          *
-         * @param egl     the EGL10 for the current display.
          * @param display the current display.
          * @return the chosen configuration.
          */
-        EGLConfig chooseConfig(EGL10 egl, EGLDisplay display);
+        EGLConfig chooseConfig(EGLDisplay display);
     }
 
 

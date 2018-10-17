@@ -1,1 +1,1 @@
-include ':app', ':libgdx'
+include ':app', ':libgdx', ':videorecorder'

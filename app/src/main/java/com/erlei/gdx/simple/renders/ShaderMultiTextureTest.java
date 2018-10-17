@@ -1,6 +1,6 @@
 package com.erlei.gdx.simple.renders;
 
-import com.erlei.gdx.android.widget.EglHelper;
+import com.erlei.gdx.android.widget.EGLCore;
 import com.erlei.gdx.android.widget.GLContext;
 import com.erlei.gdx.android.widget.IRenderView;
 import com.erlei.gdx.graphics.GL20;
@@ -23,7 +23,7 @@ public class ShaderMultiTextureTest extends GLContext {
     }
 
     @Override
-    public void create(EglHelper egl, GL20 gl) {
+    public void create(EGLCore egl, GL20 gl) {
         super.create(egl, gl);
         shader = new ShaderProgram(
                 files.internal("shader/ShaderMultiTextureTest_vertex.glsl"),
