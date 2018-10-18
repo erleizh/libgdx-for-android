@@ -20,7 +20,7 @@ import android.content.res.AssetFileDescriptor;
 
 import com.erlei.gdx.Files;
 import com.erlei.gdx.Files.FileType;
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.utils.GdxRuntimeException;
 
 import java.io.File;

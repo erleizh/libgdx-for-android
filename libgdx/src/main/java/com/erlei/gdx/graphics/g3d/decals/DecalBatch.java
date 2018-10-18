@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.decals;
 
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
 import com.erlei.gdx.graphics.VertexAttribute;

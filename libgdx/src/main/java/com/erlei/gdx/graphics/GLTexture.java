@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics;
 
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.graphics.Pixmap.Blending;
 import com.erlei.gdx.graphics.Texture.TextureFilter;
 import com.erlei.gdx.graphics.Texture.TextureWrap;

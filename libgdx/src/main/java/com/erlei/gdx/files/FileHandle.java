@@ -18,7 +18,7 @@ package com.erlei.gdx.files;
 
 import com.erlei.gdx.Files;
 import com.erlei.gdx.Files.FileType;
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.utils.GdxRuntimeException;
 import com.erlei.gdx.utils.StreamUtils;
 

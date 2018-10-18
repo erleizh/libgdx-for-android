@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.g3d.utils;
 
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.assets.AssetManager;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.g3d.Model;

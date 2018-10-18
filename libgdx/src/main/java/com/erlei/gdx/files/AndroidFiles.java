@@ -21,7 +21,7 @@ import android.content.res.AssetManager;
 import android.os.Environment;
 
 import com.erlei.gdx.Files;
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.utils.GdxRuntimeException;
 
 import java.io.IOException;

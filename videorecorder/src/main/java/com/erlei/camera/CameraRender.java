@@ -3,9 +3,9 @@ package com.erlei.camera;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 
-import com.erlei.gdx.android.widget.EGLCore;
-import com.erlei.gdx.android.widget.GLContext;
-import com.erlei.gdx.android.widget.IRenderView;
+import com.erlei.gdx.widget.EGLCore;
+import com.erlei.gdx.widget.GLContext;
+import com.erlei.gdx.widget.IRenderView;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
 import com.erlei.gdx.graphics.Pixmap;
@@ -131,6 +131,7 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
             dy = (viewHeight - cameraHeight * scale) * 0.5f;
         }
         mLogger.debug("viewSize = " + viewSize.toString() + "\t\t cameraSize = " + cameraSize.toString() + "\t\tscale = " + scale + "\t\t dx = " + (dx / cameraWidth) + "\t\t dy = " + (dy / cameraHeight));
+        //mProjectionViewMatrix.translate(dx,dy,0);
         mProjectionViewMatrix.scale(scale, scale, 0f);
     }
 

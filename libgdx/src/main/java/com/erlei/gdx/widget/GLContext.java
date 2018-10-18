@@ -1,4 +1,4 @@
-package com.erlei.gdx.android.widget;
+package com.erlei.gdx.widget;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -10,7 +10,7 @@ import android.view.WindowManager;
 import com.erlei.gdx.Files;
 import com.erlei.gdx.LifecycleListener;
 import com.erlei.gdx.Preferences;
-import com.erlei.gdx.android.AndroidPreferences;
+import com.erlei.gdx.AndroidPreferences;
 import com.erlei.gdx.files.AndroidFiles;
 import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.GL20;

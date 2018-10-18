@@ -1,4 +1,4 @@
-package com.erlei.gdx.android.widget;
+package com.erlei.gdx.widget;
 
 import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
@@ -7,8 +7,6 @@ import android.opengl.EGLContext;
 import android.opengl.EGLDisplay;
 import android.opengl.EGLExt;
 import android.opengl.EGLSurface;
-import android.support.annotation.IntDef;
-import android.util.Log;
 import android.view.Surface;
 
 import com.erlei.gdx.graphics.AndroidGL20;
@@ -41,12 +39,6 @@ public class EGLCore {
      */
     public static final int FLAG_TRY_GLES3 = 0x02;
 
-    @IntDef({
-            FLAG_RECORDABLE,
-            FLAG_TRY_GLES3})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface Flag {
-    }
 
 
     private Logger mLogger = new Logger("EGLCore", Logger.INFO);
@@ -468,7 +460,7 @@ public class EGLCore {
          * @see #FLAG_RECORDABLE
          * @see #FLAG_TRY_GLES3
          */
-        public BaseConfigChooser(@Flag int flags, int[] configSpec) {
+        public BaseConfigChooser(int flags, int[] configSpec) {
             mFlags = flags;
             mConfigSpec = configSpec;
         }

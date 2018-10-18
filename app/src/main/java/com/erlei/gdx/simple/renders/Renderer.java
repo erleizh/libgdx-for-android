@@ -1,9 +1,9 @@
 package com.erlei.gdx.simple.renders;
 
 
-import com.erlei.gdx.android.widget.EGLCore;
-import com.erlei.gdx.android.widget.GLContext;
-import com.erlei.gdx.android.widget.IRenderView;
+import com.erlei.gdx.widget.EGLCore;
+import com.erlei.gdx.widget.GLContext;
+import com.erlei.gdx.widget.IRenderView;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Texture;

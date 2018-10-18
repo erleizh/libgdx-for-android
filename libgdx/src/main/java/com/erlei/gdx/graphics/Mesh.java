@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics;
 
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.graphics.VertexAttributes.Usage;
 import com.erlei.gdx.graphics.glutils.IndexArray;
 import com.erlei.gdx.graphics.glutils.IndexBufferObject;

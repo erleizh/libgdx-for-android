@@ -3,7 +3,7 @@ package com.erlei.camera;
 
 import android.graphics.SurfaceTexture;
 
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.TextureData;

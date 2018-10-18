@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.g2d;
 
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
@@ -51,7 +51,7 @@ import static com.erlei.gdx.graphics.g2d.Sprite.VERTEX_SIZE;
  * <br>
  * By default, SpriteCache draws using screen coordinates and uses an x-axis pointing to the right, an y-axis pointing upwards and
  * the origin is the bottom left corner of the screen. The default transformation and projection matrices can be changed. If the
- * screen is {@link com.erlei.gdx.android.widget.IRenderView#(int, int) resized}, the SpriteCache's matrices must be updated. For example:<br>
+ * screen is {@link com.erlei.gdx.widget.IRenderView#(int, int) resized}, the SpriteCache's matrices must be updated. For example:<br>
  * <code>cache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.app.getWidth(), Gdx.app.getHeight());</code><br>
  * <br>
  * Note that SpriteCache does not manage blending. You will need to enable blending (<i>Gdx.gl.glEnable(GL10.GL_BLEND);</i>) and

@@ -18,7 +18,7 @@ package com.erlei.gdx.utils;
 
 import com.erlei.gdx.Files;
 import com.erlei.gdx.LifecycleListener;
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 
 /**
  * Executes tasks in the future on the main loop thread.

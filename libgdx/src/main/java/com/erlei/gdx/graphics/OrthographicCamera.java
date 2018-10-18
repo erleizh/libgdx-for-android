@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics;
 
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.math.Vector2;
 import com.erlei.gdx.math.Vector3;

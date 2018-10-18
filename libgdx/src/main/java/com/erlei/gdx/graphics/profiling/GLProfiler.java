@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.profiling;
 
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.graphics.GL30;
 import com.erlei.gdx.math.FloatCounter;
 
@@ -38,7 +38,7 @@ public class GLProfiler {
     private boolean enabled = false;
 
     /**
-     * Create a new instance of GLProfiler to monitor a {@link com.erlei.gdx.android.widget.GLContext} instance's gl calls
+     * Create a new instance of GLProfiler to monitor a {@link com.erlei.gdx.widget.GLContext} instance's gl calls
      *
      * @param glContext
      */

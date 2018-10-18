@@ -1,4 +1,4 @@
-package com.erlei.gdx.android.widget;
+package com.erlei.gdx.widget;
 
 import android.content.Context;
 import android.graphics.SurfaceTexture;

@@ -1,4 +1,4 @@
-package com.erlei.gdx.android.widget;
+package com.erlei.gdx.widget;
 
 
 import com.erlei.gdx.graphics.GL20;

@@ -10,14 +10,11 @@ import android.view.ViewGroup;
 
 import com.erlei.camera.CameraRender;
 import com.erlei.camera.DefaultCameraControl;
-import com.erlei.camera.Size;
 import com.erlei.camera.PreviewEffectsManager;
-import com.erlei.gdx.android.widget.EGLCore;
-import com.erlei.gdx.android.widget.GLSurfaceView;
-import com.erlei.gdx.android.widget.IRenderView;
-import com.erlei.gdx.graphics.GL20;
-import com.erlei.gdx.graphics.glutils.FrameBuffer;
+import com.erlei.gdx.widget.GLSurfaceView;
+import com.erlei.gdx.widget.IRenderView;
 import com.erlei.gdx.utils.Logger;
+import com.erlei.videorecorder.VideoRecorder;
 
 public class CameraFragment extends Fragment {
 
@@ -35,37 +32,7 @@ public class CameraFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Logger.debug("CameraFragment", "onViewCreated");
         PreviewEffectsManager effectsManager = new PreviewEffectsManager();
-        effectsManager.addEffect(new CameraRender.Renderer() {
-            @Override
-            public void create(EGLCore egl, GL20 gl) {
-
-            }
-
-            @Override
-            public void resize(Size viewSize, Size cameraSize) {
-
-            }
-
-            @Override
-            public void render(GL20 gl, FrameBuffer frameBuffer) {
-
-            }
-
-            @Override
-            public void pause() {
-
-            }
-
-            @Override
-            public void resume() {
-
-            }
-
-            @Override
-            public void dispose() {
-
-            }
-        });
+        effectsManager.addEffect(new VideoRecorder());
         mRenderView.setRenderer(new CameraRender(mRenderView, new DefaultCameraControl(getContext()), effectsManager));
         mRenderView.setRenderMode(IRenderView.RenderMode.WHEN_DIRTY);
     }

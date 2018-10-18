@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.assets.loaders.resolvers;
 
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.assets.loaders.FileHandleResolver;
 import com.erlei.gdx.files.FileHandle;
 

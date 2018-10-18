@@ -1,6 +1,6 @@
 package com.erlei.gdx.graphics.glutils;
 
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.GL30;
 import com.erlei.gdx.graphics.VertexAttribute;

@@ -16,7 +16,7 @@
 
 package com.erlei.gdx.graphics.g2d;
 
-import com.erlei.gdx.android.widget.GLContext;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Pixmap.Blending;
@@ -111,7 +111,7 @@ public class PixmapPacker implements Disposable {
     /**
      * Uses {@link GuillotineStrategy}.
      *
-     * @see PixmapPacker#PixmapPacker(com.erlei.gdx.android.widget.GLContext, int, int, com.erlei.gdx.graphics.Pixmap.Format, int, boolean)
+     * @see PixmapPacker#PixmapPacker(com.erlei.gdx.widget.GLContext, int, int, com.erlei.gdx.graphics.Pixmap.Format, int, boolean)
      */
     public PixmapPacker(GLContext context, int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder) {
         this(context, pageWidth, pageHeight, pageFormat, padding, duplicateBorder, new GuillotineStrategy());

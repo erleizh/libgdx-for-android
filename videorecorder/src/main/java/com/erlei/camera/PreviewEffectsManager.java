@@ -1,6 +1,6 @@
 package com.erlei.camera;
 
-import com.erlei.gdx.android.widget.EGLCore;
+import com.erlei.gdx.widget.EGLCore;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.g2d.SpriteBatch;
 import com.erlei.gdx.graphics.glutils.FrameBuffer;
