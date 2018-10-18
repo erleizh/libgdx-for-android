@@ -1,4 +1,4 @@
-package com.erlei.camera;
+package com.erlei.videorecorder.camera;
 
 import com.erlei.gdx.widget.EGLCore;
 import com.erlei.gdx.graphics.GL20;

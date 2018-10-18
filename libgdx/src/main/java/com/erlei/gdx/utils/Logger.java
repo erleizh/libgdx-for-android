@@ -39,7 +39,7 @@ public class Logger {
     private int level = INFO;
 
     public Logger(String tag) {
-        this(tag, ERROR);
+        this(tag, INFO);
     }
 
     public Logger(String tag, int level) {

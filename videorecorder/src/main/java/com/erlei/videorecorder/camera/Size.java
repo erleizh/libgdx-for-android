@@ -1,4 +1,4 @@
-package com.erlei.camera;
+package com.erlei.videorecorder.camera;
 
 
 public class Size {
@@ -17,8 +17,8 @@ public class Size {
         height = size.height;
     }
 
-    public boolean isValid(){
-        return width != -1 && height != -1;
+    public boolean isValid() {
+        return width > 0  && height > 0;
     }
 
     public int getWidth() {
@@ -27,6 +27,12 @@ public class Size {
 
     public void setWidth(int width) {
         this.width = width;
+    }
+
+    public Size set(int width, int height) {
+        this.width = width;
+        this.height = height;
+        return this;
     }
 
     public int getHeight() {

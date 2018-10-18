@@ -1,4 +1,4 @@
-package com.erlei.camera;
+package com.erlei.videorecorder.camera;
 
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
@@ -216,16 +216,6 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
         mRenderView.requestRender();
-    }
-
-    public interface CameraControl {
-
-        Size getPreviewSize();
-
-        void open(SurfaceTexture surfaceTexture);
-
-        void close();
-
     }
 
     public interface Renderer {

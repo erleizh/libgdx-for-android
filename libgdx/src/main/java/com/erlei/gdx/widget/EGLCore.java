@@ -211,6 +211,14 @@ public class EGLCore {
     public boolean swapBuffers(EGLSurface eglSurface) {
         return EGL14.eglSwapBuffers(mEglDisplay, eglSurface);
     }
+
+    /**
+     * Makes our EGL context current,
+     */
+    public void makeCurrent() {
+        makeCurrent(mEglSurface);
+    }
+
     /**
      * Makes our EGL context current, using the supplied surface for both "draw" and "read".
      */

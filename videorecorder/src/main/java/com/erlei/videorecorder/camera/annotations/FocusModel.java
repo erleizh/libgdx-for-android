@@ -1,4 +1,4 @@
-package com.erlei.camera.annotations;
+package com.erlei.videorecorder.camera.annotations;
 
 import android.support.annotation.StringDef;
 

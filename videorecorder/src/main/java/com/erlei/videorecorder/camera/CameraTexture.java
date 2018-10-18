@@ -1,4 +1,4 @@
-package com.erlei.camera;
+package com.erlei.videorecorder.camera;
 
 
 import android.graphics.SurfaceTexture;

@@ -1,4 +1,4 @@
-package com.erlei.videorecorder;
+package com.erlei.videorecorder.recorder;
 
 import android.graphics.Bitmap;
 
@@ -10,14 +10,7 @@ public interface IVideoRecorder {
 
     void stopRecord();
 
-
-    void startPreview();
-
-    void stopPreview();
-
-    void isPreview();
-
-    void isRecording();
+    boolean isRecording();
 
     /**
      * 拍照
@@ -41,6 +34,5 @@ public interface IVideoRecorder {
         File onPictureTaken(Bitmap bitmap);
 
     }
-
 
 }

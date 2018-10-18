@@ -1,4 +1,4 @@
-package com.erlei.camera;
+package com.erlei.videorecorder.camera;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,16 +17,16 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.WindowManager;
 
-import com.erlei.camera.annotations.Antibanding;
-import com.erlei.camera.annotations.ColorEffect;
-import com.erlei.camera.annotations.Facing;
-import com.erlei.camera.annotations.FlashModel;
-import com.erlei.camera.annotations.FocusModel;
-import com.erlei.camera.annotations.PictureFormat;
-import com.erlei.camera.annotations.PreviewFormat;
-import com.erlei.camera.annotations.SceneModel;
-import com.erlei.camera.annotations.WhiteBalance;
 import com.erlei.gdx.utils.Logger;
+import com.erlei.videorecorder.camera.annotations.Antibanding;
+import com.erlei.videorecorder.camera.annotations.ColorEffect;
+import com.erlei.videorecorder.camera.annotations.Facing;
+import com.erlei.videorecorder.camera.annotations.FlashModel;
+import com.erlei.videorecorder.camera.annotations.FocusModel;
+import com.erlei.videorecorder.camera.annotations.PictureFormat;
+import com.erlei.videorecorder.camera.annotations.PreviewFormat;
+import com.erlei.videorecorder.camera.annotations.SceneModel;
+import com.erlei.videorecorder.camera.annotations.WhiteBalance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,7 +93,7 @@ public class Camera {
      */
     public static final int UNSUPPORTED_PICTURE_SIZE = 9;
 
-    private Logger mLogger = new Logger("com.erlei.camera.Camera", Logger.INFO);
+    private Logger mLogger = new Logger("com.erlei.videorecorder.camera.Camera", Logger.INFO);
     private final Context mContext;
     private CameraBuilder mBuilder;
     private int mCameraId = -1;
