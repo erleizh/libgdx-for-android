@@ -7,32 +7,38 @@ import android.opengl.GLES20;
 import android.os.Debug;
 import android.view.WindowManager;
 
+import com.erlei.gdx.AndroidPreferences;
 import com.erlei.gdx.Files;
 import com.erlei.gdx.LifecycleListener;
 import com.erlei.gdx.Preferences;
-import com.erlei.gdx.AndroidPreferences;
 import com.erlei.gdx.files.AndroidFiles;
 import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.GL30;
 import com.erlei.gdx.utils.FPSCounter;
+import com.erlei.gdx.utils.SnapshotArray;
+
+import java.lang.ref.WeakReference;
 
 import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 
-public class GLContext implements IRenderView.Renderer {
+public final class GLContext {
     private static final ThreadLocal<GLContext> sThreadLocal = new ThreadLocal<>();
-    protected final IRenderView mRenderView;
+    protected final WeakReference<IRenderView> mReference;
     protected final Context mContext;
     protected final Files files;
     protected final FPSCounter mFPSCounter;
+    private final SnapshotArray<LifecycleListener> mListeners = new SnapshotArray<>();
     private String extensions;
     public GL20 gl;
     public GL30 gl30;
 
-    public GLContext(IRenderView renderView) {
-        mRenderView = renderView;
-        mContext = renderView.getContext();
+    public GLContext(WeakReference<IRenderView> reference) {
+        mReference = reference;
+        if (reference == null || reference.get() == null)
+            throw new IllegalArgumentException("IRenderView can not be null");
+        mContext = reference.get().getContext();
         files = new AndroidFiles(mContext.getAssets(), mContext.getFilesDir().getAbsolutePath());
         mFPSCounter = initFPSCounter();
     }
@@ -42,80 +48,28 @@ public class GLContext implements IRenderView.Renderer {
     }
 
 
-    @Override
-    public void create(EGLCore egl, GL20 gl) {
+    void create(EGLCore egl, GL20 gl) {
         setGL20(gl);
         sThreadLocal.set(this);
     }
 
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void render(GL20 gl) {
+    void render(GL20 gl) {
         mFPSCounter.update();
     }
 
-    @Override
-    public void pause() {
+    void pause() {
 
     }
 
-    @Override
-    public void resume() {
+    void resume() {
 
     }
 
-    @Override
-    public void dispose() {
+    void dispose() {
         sThreadLocal.remove();
     }
 
-    /**
-     * 使用黑色清除屏幕
-     */
-    protected void clearColor(Color color) {
-        gl.glClearColor(color.r, color.g, color.b, color.a);
-    }
 
-    /**
-     * 使用黑色清除屏幕
-     */
-    protected void clearColor() {
-        clearColor(Color.BLACK);
-    }
-
-    /**
-     * 使用黑色清除屏幕
-     */
-    protected void clear() {
-        clearColor();
-        clearBuffers();
-    }
-
-
-    /**
-     * 清除颜色缓冲区，深度缓冲区
-     */
-    protected void clearBuffers() {
-        gl.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-    }
-
-    /**
-     * 清除颜色缓冲区
-     */
-    protected void clearColorBuffer() {
-        gl.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-    }
-
-    /**
-     * 清除深度缓冲区
-     */
-    protected void clearDepthBuffer() {
-        gl.glClear(GLES20.GL_DEPTH_BUFFER_BIT);
-    }
 
     public float getDeltaTime() {
         return mFPSCounter.getFPS();
@@ -123,19 +77,19 @@ public class GLContext implements IRenderView.Renderer {
 
 
     public int getWidth() {
-        return mRenderView.getSurfaceWidth();
+        return getRenderView().getSurfaceWidth();
     }
 
     public int getHeight() {
-        return mRenderView.getSurfaceHeight();
+        return getRenderView().getSurfaceHeight();
     }
 
     public int getBackBufferWidth() {
-        return mRenderView.getSurfaceWidth();
+        return getRenderView().getSurfaceWidth();
     }
 
     public int getBackBufferHeight() {
-        return mRenderView.getSurfaceHeight();
+        return getRenderView().getSurfaceHeight();
     }
 
     public boolean supportsExtension(String extension) {
@@ -173,7 +127,10 @@ public class GLContext implements IRenderView.Renderer {
     }
 
     public void postRunnable(Runnable runnable) {
-        mRenderView.queueEvent(runnable);
+        IRenderView iRenderView = mReference.get();
+        if (iRenderView != null) {
+            iRenderView.queueEvent(runnable);
+        }
     }
 
     public Context getContext() {
@@ -182,7 +139,7 @@ public class GLContext implements IRenderView.Renderer {
 
 
     public IRenderView getRenderView() {
-        return mRenderView;
+        return mReference.get();
     }
 
     public static GLContext getGLContext() {
@@ -207,10 +164,15 @@ public class GLContext implements IRenderView.Renderer {
     }
 
     public void addLifecycleListener(LifecycleListener listener) {
-
+        synchronized (mListeners) {
+            mListeners.add(listener);
+        }
     }
 
     public void removeLifecycleListener(LifecycleListener lifecycleListener) {
+        synchronized (mListeners) {
+            mListeners.removeValue(lifecycleListener, true);
+        }
     }
 
     public void setGL30(GL30 gl30) {

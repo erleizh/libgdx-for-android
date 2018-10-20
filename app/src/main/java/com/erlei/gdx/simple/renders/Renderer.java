@@ -1,26 +1,21 @@
 package com.erlei.gdx.simple.renders;
 
 
-import com.erlei.gdx.widget.EGLCore;
-import com.erlei.gdx.widget.GLContext;
-import com.erlei.gdx.widget.IRenderView;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.g2d.SpriteBatch;
 import com.erlei.gdx.graphics.glutils.FrameBuffer;
 import com.erlei.gdx.utils.Logger;
+import com.erlei.gdx.widget.BaseRender;
+import com.erlei.gdx.widget.EGLCore;
 
-public class Renderer extends GLContext {
+public class Renderer extends BaseRender {
 
     Logger mLogger = new Logger("Renderer", Logger.DEBUG);
     private SpriteBatch mBatch;
     private Texture mTexture;
     private FrameBuffer mFrameBuffer;
-
-    public Renderer(IRenderView renderView) {
-        super(renderView);
-    }
 
     @Override
     public void create(EGLCore egl, GL20 gl) {

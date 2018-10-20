@@ -55,6 +55,7 @@ class GLThread extends Thread {
      * the GLThread is still alive.
      */
     private WeakReference<IRenderView> mWeakReference;
+    private GLContext mGLContext;
 
     public int getGLESVersion() {
         return mEGLCore.getGLESVersion();
@@ -111,6 +112,7 @@ class GLThread extends Thread {
 
     private void guardedRun() throws InterruptedException {
         mEGLCore = new EGLCore(mWeakReference);
+        mGLContext = new GLContext(mWeakReference);
         mHaveEglContext = false;
         mHaveEglSurface = false;
         mWantRenderNotification = false;
@@ -314,6 +316,7 @@ class GLThread extends Thread {
                     IRenderView view = mWeakReference.get();
                     if (view != null) {
                         try {
+                            mGLContext.create(mEGLCore, gl);
                             view.getRenderer().create(mEGLCore, gl);
                         } catch (Exception e) {
                             mLogger.error("render create error ", e);
@@ -339,6 +342,7 @@ class GLThread extends Thread {
                     IRenderView view = mWeakReference.get();
                     if (view != null) {
                         try {
+                            mGLContext.render(gl);
                             view.getRenderer().render(gl);
                             if (finishDrawingRunnable != null) {
                                 finishDrawingRunnable.run();
@@ -383,6 +387,7 @@ class GLThread extends Thread {
                 try {
                     mLogger.info("dispose() tid=" + Thread.currentThread().getId());
                     iRenderView.getRenderer().dispose();
+                    mGLContext.dispose();
                 } catch (Exception e) {
                     mLogger.error("dispose ", e);
                 }
@@ -402,6 +407,7 @@ class GLThread extends Thread {
         IRenderView view = mWeakReference.get();
         if (view != null) {
             try {
+                mGLContext.pause();
                 view.getRenderer().pause();
             } catch (Exception e) {
                 mLogger.error("pause error ", e);
@@ -414,6 +420,7 @@ class GLThread extends Thread {
         IRenderView view = mWeakReference.get();
         if (view != null) {
             try {
+                mGLContext.resume();
                 view.getRenderer().resume();
             } catch (Exception e) {
                 mLogger.error("resume error ", e);

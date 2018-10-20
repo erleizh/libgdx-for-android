@@ -1,8 +1,5 @@
 package com.erlei.gdx.simple.renders;
 
-import com.erlei.gdx.widget.EGLCore;
-import com.erlei.gdx.widget.GLContext;
-import com.erlei.gdx.widget.IRenderView;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
 import com.erlei.gdx.graphics.Pixmap;
@@ -10,17 +7,15 @@ import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.VertexAttribute;
 import com.erlei.gdx.graphics.VertexAttributes;
 import com.erlei.gdx.graphics.glutils.ShaderProgram;
+import com.erlei.gdx.widget.BaseRender;
+import com.erlei.gdx.widget.EGLCore;
 
-public class ShaderMultiTextureTest extends GLContext {
+public class ShaderMultiTextureTest extends BaseRender {
 
     ShaderProgram shader;
     Texture texture;
     Texture texture2;
     Mesh mesh;
-
-    public ShaderMultiTextureTest(IRenderView renderView) {
-        super(renderView);
-    }
 
     @Override
     public void create(EGLCore egl, GL20 gl) {
@@ -69,7 +64,7 @@ public class ShaderMultiTextureTest extends GLContext {
     @Override
     public void render(GL20 gl) {
         super.render(gl);
-        gl.glViewport(0, 0, getBackBufferWidth(), getBackBufferHeight());
+        gl.glViewport(0, 0, getWidth(), getHeight());
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         gl.glActiveTexture(GL20.GL_TEXTURE0);

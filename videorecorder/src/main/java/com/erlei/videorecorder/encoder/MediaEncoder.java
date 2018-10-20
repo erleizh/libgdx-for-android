@@ -40,7 +40,6 @@ public abstract class MediaEncoder implements Runnable {
     protected static final int MSG_STOP_RECORDING = 9;
 
     protected final Object mSync = new Object();
-    private final VideoRecorder.Config mConfig;
     private Logger mLogger = new Logger(TAG);
     /**
      * Flag that indicate this encoder is capturing now.
@@ -79,9 +78,8 @@ public abstract class MediaEncoder implements Runnable {
      */
     private MediaCodec.BufferInfo mBufferInfo;        // API >= 16(Android4.1.2)
 
-    public MediaEncoder(MediaMuxerWrapper muxer, VideoRecorder.Config config) {
+    public MediaEncoder(MediaMuxerWrapper muxer) {
         if (muxer == null) throw new NullPointerException("MediaMuxerWrapper is null");
-        mConfig = config;
         mWeakMuxer = new WeakReference<MediaMuxerWrapper>(muxer);
         muxer.addEncoder(this);
         synchronized (mSync) {

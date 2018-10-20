@@ -7,11 +7,13 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import com.erlei.gdx.graphics.GL20;
+import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.g2d.SpriteBatch;
 import com.erlei.gdx.graphics.glutils.FrameBuffer;
 import com.erlei.gdx.utils.Logger;
+import com.erlei.gdx.widget.BaseRender;
 import com.erlei.gdx.widget.EGLCore;
-import com.erlei.videorecorder.camera.CameraRender;
+import com.erlei.videorecorder.camera.CameraControl;
 import com.erlei.videorecorder.camera.Size;
 import com.erlei.videorecorder.encoder.MediaAudioEncoder;
 import com.erlei.videorecorder.encoder.MediaMuxerWrapper;
@@ -24,7 +26,7 @@ import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
+public class VideoRecorder extends BaseRender implements IVideoRecorder, RecordableRender.Recorder {
 
 
     private Logger mLogger = new Logger("VideoRecorder");
@@ -52,25 +54,6 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
         startRecord();
     }
 
-    @Override
-    public void resize(Size viewSize, Size cameraSize) {
-        mCameraSize = cameraSize;
-    }
-
-    @Override
-    public void render(GL20 gl, FrameBuffer frameBuffer) {
-        if (mWindowSurface != null && mVideoEncoder != null && isRecording() && mMuxerRunning) {
-            mEGLCore.makeCurrent(mWindowSurface);
-            mVideoEncoder.frameAvailableSoon();
-            mSpriteBatch.begin();
-            mSpriteBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, mCameraSize.getWidth(), mCameraSize.getHeight(), 0, 0,
-                    frameBuffer.getColorBufferTexture().getWidth(),
-                    frameBuffer.getColorBufferTexture().getHeight(), false, true);
-            mSpriteBatch.end();
-            mEGLCore.swapBuffers(mWindowSurface);
-            mEGLCore.makeCurrent();
-        }
-    }
 
     @Override
     public void pause() {
@@ -80,6 +63,27 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
     @Override
     public void resume() {
 
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+    }
+
+    @Override
+    public void render(GL20 gl) {
+        super.render(gl);
+        if (mWindowSurface != null && mVideoEncoder != null && isRecording() && mMuxerRunning) {
+            mEGLCore.makeCurrent(mWindowSurface);
+            mVideoEncoder.frameAvailableSoon();
+            mSpriteBatch.begin();
+//            mSpriteBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, mCameraSize.getWidth(), mCameraSize.getHeight(), 0, 0,
+//                    frameBuffer.getColorBufferTexture().getWidth(),
+//                    frameBuffer.getColorBufferTexture().getHeight(), false, true);
+            mSpriteBatch.end();
+            mEGLCore.swapBuffers(mWindowSurface);
+            mEGLCore.makeCurrent();
+        }
     }
 
     @Override
@@ -149,7 +153,7 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
                         mWindowSurface = mEGLCore.createWindowSurface(mVideoEncoder.getSurface());
                     } catch (Exception e) {
                         e.printStackTrace();
-                        mLogger.error("startEncoder:" + e);
+                        mLogger.error("startEncoder:", e);
                     }
                     mMuxerRunning = true;
                     mRequestStart = false;
@@ -198,7 +202,7 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
         if (mConfig.mOutputFile != null) {
             return mConfig.mOutputFile;
         } else {
-            File path = new File(mConfig.outputPath);
+            File path = new File(mConfig.outputDir);
             if (!path.exists()) {
                 path.mkdirs();
             }
@@ -208,6 +212,11 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
         }
     }
 
+    @Override
+    public FrameBuffer generateFrameBuffer() {
+        Size cameraSize = mConfig.cameraControl.getCameraSize();
+        return new FrameBuffer(Pixmap.Format.RGBA8888, cameraSize.getWidth(), cameraSize.getHeight(), false);
+    }
 
     public static class Builder {
 
@@ -225,6 +234,16 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
          * 设置期望的帧率
          * 默认为25
          */
+        public Builder setCameraControl(CameraControl control) {
+            mP.cameraControl = control;
+            return this;
+        }
+
+
+        /**
+         * 设置期望的帧率
+         * 默认为25
+         */
         public Builder setFrameRate(int frameRate) {
             mP.frameRate = frameRate;
             return this;
@@ -235,15 +254,6 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
          */
         public Builder setChannelCount(@IntRange(from = 1, to = 2) int channelCount) {
             mP.audioChannelCount = channelCount;
-            return this;
-        }
-
-        /**
-         * 设置视频大小
-         * @param size 视频大小
-         */
-        public Builder setVideoSize(Size size) {
-            mP.videoSize = size;
             return this;
         }
 
@@ -291,10 +301,10 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
         }
 
         /**
-         * @param outputPath 输出文件夹 , 只有沒 setOutPutFile ,这个属性才会起作用, 每一次startRecord都会生成一个新的文件
+         * @param outputDir 输出文件夹 , 只有沒 setOutPutFile ,这个属性才会起作用, 每一次startRecord都会生成一个新的文件
          */
-        public Builder setOutPutPath(String outputPath) {
-            mP.outputPath = outputPath;
+        public Builder setOutPutDir(String outputDir) {
+            mP.outputDir = outputDir;
             return this;
         }
 
@@ -303,10 +313,10 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
             if (mP.context == null)
                 throw new IllegalArgumentException("context cannot be null");
 
-            if (mP.mOutputFile == null && mP.outputPath == null) {
+            if (mP.mOutputFile == null && mP.outputDir == null) {
                 File filesDir = mP.context.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
                 if (filesDir == null) filesDir = mP.context.getFilesDir();
-                mP.outputPath = filesDir.getPath();
+                mP.outputDir = filesDir.getPath();
             }
             return new VideoRecorder(mP.clone());
         }
@@ -320,6 +330,7 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
     public static class Config implements Cloneable {
         Context context;
         VideoRecorderHandler viewHandler;
+        CameraControl cameraControl;
         boolean logFPS;
         File mOutputFile;
         int audioBitRate = 64000;
@@ -328,8 +339,7 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
         int audioSampleRate = 44100;
         int audioChannelCount = 1;
         int videoBitRate;
-        Size videoSize;
-        String outputPath;
+        String outputDir;
 
         Config(Context context) {
             this.context = context;
@@ -375,12 +385,8 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
             return videoBitRate;
         }
 
-        public Size getVideoSize() {
-            return videoSize;
-        }
-
-        public String getOutputPath() {
-            return outputPath;
+        public String getOutputDir() {
+            return outputDir;
         }
 
         public void setContext(Context context) {
@@ -415,10 +421,6 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
             this.audioSampleRate = audioSampleRate;
         }
 
-        public void setVideoSize(Size videoSize) {
-            this.videoSize = videoSize;
-        }
-
         public void setAudioChannelCount(int audioChannelCount) {
             this.audioChannelCount = audioChannelCount;
         }
@@ -427,8 +429,16 @@ public class VideoRecorder implements CameraRender.Renderer, IVideoRecorder {
             this.videoBitRate = videoBitRate;
         }
 
-        public void setOutputPath(String outputPath) {
-            this.outputPath = outputPath;
+        public void setOutputDir(String outputDir) {
+            this.outputDir = outputDir;
+        }
+
+        public CameraControl getCameraControl() {
+            return cameraControl;
+        }
+
+        public void setCameraControl(CameraControl cameraControl) {
+            this.cameraControl = cameraControl;
         }
 
         @Override

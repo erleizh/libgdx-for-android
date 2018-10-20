@@ -3,9 +3,6 @@ package com.erlei.videorecorder.camera;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 
-import com.erlei.gdx.widget.EGLCore;
-import com.erlei.gdx.widget.GLContext;
-import com.erlei.gdx.widget.IRenderView;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
 import com.erlei.gdx.graphics.Pixmap;
@@ -16,13 +13,17 @@ import com.erlei.gdx.graphics.glutils.FrameBuffer;
 import com.erlei.gdx.graphics.glutils.ShaderProgram;
 import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.utils.Logger;
+import com.erlei.gdx.widget.BaseRender;
+import com.erlei.gdx.widget.EGLCore;
+import com.erlei.gdx.widget.GLContext;
+import com.erlei.videorecorder.recorder.RecordableRender;
 
 /**
  * Created by lll on 2018/10/8
  * Email : lllemail@foxmail.com
  * Describe : 使用相机的数据作为纹理渲染到renderView
  */
-public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAvailableListener {
+public class CameraRender extends BaseRender implements SurfaceTexture.OnFrameAvailableListener {
     private Logger mLogger = new Logger("CameraRender", Logger.DEBUG);
     private final CameraControl mControl;
     private CameraTexture mCameraTexture;
@@ -31,28 +32,11 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
     private Matrix4 mMatrix4 = new Matrix4();
     private Matrix4 mProjectionViewMatrix = new Matrix4();
     private Mesh mMesh;
-    private Renderer mRenderer;
     private CameraTexture.CameraTextureData mCameraTextureData;
-    private FrameBuffer mFrameBuffer;
 
-    public CameraRender(IRenderView renderView, CameraControl cameraControl) {
-        super(renderView);
+    public CameraRender(CameraControl cameraControl) {
         mControl = cameraControl;
     }
-
-    public CameraRender(IRenderView renderView, CameraControl cameraControl, Renderer renderer) {
-        this(renderView, cameraControl);
-        mRenderer = renderer;
-    }
-
-    public void setRenderer(Renderer renderer) {
-        mRenderer = renderer;
-    }
-
-    public Renderer getRenderer() {
-        return mRenderer;
-    }
-
 
     @Override
     public void create(EGLCore egl, GL20 gl) {
@@ -61,19 +45,12 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         initShaderProgram();
         initMesh();
         openCamera();
-        if (mRenderer != null) initFrameBuffer();
-        if (mRenderer != null) mRenderer.create(egl,gl);
-    }
-
-    protected void initFrameBuffer() {
-        Size previewSize = mControl.getPreviewSize();
-        mFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, previewSize.width, previewSize.height, false);
     }
 
     protected void openCamera() {
         initSurfaceTexture();
         mControl.open(mCameraTexture.getSurfaceTexture());
-        Size cameraSize = mControl.getPreviewSize();
+        Size cameraSize = mControl.getCameraSize();
         adjustTextureSize(new Size(getWidth(), getHeight()), cameraSize);
         mCameraTextureData.setTextureSize(cameraSize);
     }
@@ -89,7 +66,6 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         super.resume();
         mLogger.debug("resume");
         openCamera();
-        if (mRenderer != null) mRenderer.resume();
     }
 
     @Override
@@ -98,9 +74,8 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         mLogger.debug("resize " + width + "x" + height);
 
         Size viewSize = new Size(width, height);
-        Size cameraSize = mControl.getPreviewSize();
+        Size cameraSize = mControl.getCameraSize();
         adjustTextureSize(viewSize, cameraSize);
-        if (mRenderer != null) mRenderer.resize(viewSize, cameraSize);
     }
 
     /**
@@ -110,7 +85,8 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
      * @param cameraSize 相机大小
      */
     private void adjustTextureSize(Size viewSize, Size cameraSize) {
-        if (!isLandscape()) cameraSize = new Size(cameraSize.getHeight(), cameraSize.getWidth());
+        if (!GLContext.getGLContext().isLandscape())
+            cameraSize = new Size(cameraSize.getHeight(), cameraSize.getWidth());
         mProjectionViewMatrix.idt();
         float cameraWidth = cameraSize.width;
         float viewWidth = viewSize.width;
@@ -140,7 +116,6 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         super.pause();
         mLogger.debug("pause");
         closeCamera();
-        if (mRenderer != null) mRenderer.pause();
     }
 
 
@@ -151,7 +126,6 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         mCameraTexture.getSurfaceTexture().updateTexImage();
         mCameraTexture.getSurfaceTexture().getTransformMatrix(mTexMatrix);
 
-        if (mRenderer != null) mFrameBuffer.begin();
         mCameraTexture.bind();
         mProgram.begin();
         mProgram.setUniformMatrix("u_texMatrix", mMatrix4.set(mTexMatrix));
@@ -159,21 +133,15 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         mProgram.setUniformi("u_texture", 0);
         mMesh.render(mProgram, GL20.GL_TRIANGLE_FAN);
         mProgram.end();
-        if (mRenderer != null) mFrameBuffer.end();
-
-        if (mRenderer != null) mRenderer.render(gl,mFrameBuffer);
     }
 
     @Override
     public void dispose() {
-        if (mRenderer != null) mRenderer.dispose();
         mLogger.debug("dispose");
         destroySurfaceTexture();
         mControl.close();
         mProgram.dispose();
         mMesh.dispose();
-        if (mRenderer != null) mFrameBuffer.dispose();
-        super.dispose();
     }
 
     protected void initSurfaceTexture() {
@@ -218,18 +186,5 @@ public class CameraRender extends GLContext implements SurfaceTexture.OnFrameAva
         mRenderView.requestRender();
     }
 
-    public interface Renderer {
 
-        void create(EGLCore egl, GL20 gl);
-
-        void resize(Size viewSize, Size cameraSize);
-
-        void render(GL20 gl, FrameBuffer frameBuffer);
-
-        void pause();
-
-        void resume();
-
-        void dispose();
-    }
 }

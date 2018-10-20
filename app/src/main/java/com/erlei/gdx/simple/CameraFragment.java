@@ -9,13 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.erlei.videorecorder.camera.CameraRender;
-import com.erlei.videorecorder.camera.DefaultCameraControl;
-import com.erlei.videorecorder.camera.PreviewEffectsManager;
+import com.erlei.gdx.utils.Logger;
 import com.erlei.gdx.widget.GLSurfaceView;
 import com.erlei.gdx.widget.IRenderView;
-import com.erlei.gdx.utils.Logger;
+import com.erlei.videorecorder.camera.CameraRender;
+import com.erlei.videorecorder.camera.DefaultCameraControl;
 import com.erlei.videorecorder.camera.Size;
+import com.erlei.videorecorder.recorder.MultipleRender;
 import com.erlei.videorecorder.recorder.VideoRecorder;
 import com.erlei.videorecorder.recorder.VideoRecorderHandler;
 
@@ -36,18 +36,18 @@ public class CameraFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Logger.debug("CameraFragment", "onViewCreated");
-        PreviewEffectsManager effectsManager = new PreviewEffectsManager();
-        effectsManager.addEffect(initVideoRecorder());
-        mRenderView.setRenderer(new CameraRender(mRenderView, new DefaultCameraControl(mRenderView), effectsManager));
+
+//        mRenderView.setRenderer(new RecordableRender(new MultipleRender(new CameraRender(new DefaultCameraControl(mRenderView)))));
+        mRenderView.setRenderer(new MultipleRender(new CameraRender(new DefaultCameraControl(mRenderView))));
         mRenderView.setRenderMode(IRenderView.RenderMode.WHEN_DIRTY);
     }
 
-    private CameraRender.Renderer initVideoRecorder() {
+    private IRenderView.Renderer initVideoRecorder() {
         VideoRecorder.Builder builder = new VideoRecorder.Builder(getContext())
                 .setCallbackHandler(new CallbackHandler())
-                .setOutPutPath(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), File.separator + "VideoRecorder").getAbsolutePath())
+                .setOutPutDir(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), File.separator + "VideoRecorder").getAbsolutePath())
                 .setFrameRate(30)
-                .setVideoSize(new Size(1920,1080))
+                .setVideoSize(new Size(1920, 1080))
                 .setChannelCount(1);
         return builder.build();
     }

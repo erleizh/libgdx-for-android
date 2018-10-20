@@ -49,7 +49,7 @@ public class MediaVideoEncoder extends MediaEncoder {
     private Surface mSurface;
 
     public MediaVideoEncoder(MediaMuxerWrapper muxer, VideoRecorder.Config config) {
-        super(muxer, config);
+        super(muxer);
         mVideoSize = config.getVideoSize();
         mIFrameInterval = config.getIFrameInterval();
         mBitRate = config.getVideoBitRate() <= 0 ? calcBitRate() : config.getVideoBitRate();

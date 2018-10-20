@@ -96,7 +96,7 @@ public class DefaultCameraControl implements CameraControl {
     }
 
     @Override
-    public Size getPreviewSize() {
+    public Size getCameraSize() {
         return mCamera == null ? new Size(0, 0) : mCamera.getPreviewSize();
     }
 

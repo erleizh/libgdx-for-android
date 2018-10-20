@@ -6,9 +6,6 @@ import android.graphics.SurfaceTexture;
 import android.support.annotation.IntRange;
 import android.view.MotionEvent;
 
-import com.erlei.videorecorder.camera.Camera;
-import com.erlei.videorecorder.camera.FpsRange;
-import com.erlei.videorecorder.camera.Size;
 import com.erlei.videorecorder.camera.annotations.Antibanding;
 import com.erlei.videorecorder.camera.annotations.ColorEffect;
 import com.erlei.videorecorder.camera.annotations.Facing;
@@ -16,7 +13,6 @@ import com.erlei.videorecorder.camera.annotations.FlashModel;
 import com.erlei.videorecorder.camera.annotations.FocusModel;
 import com.erlei.videorecorder.camera.annotations.SceneModel;
 import com.erlei.videorecorder.camera.annotations.WhiteBalance;
-import com.erlei.videorecorder.camera.annotations.SceneModel;
 
 import java.util.List;
 
@@ -54,8 +50,14 @@ public interface CameraControl {
 
     Context getContext();
 
-    Size getPreviewSize();
+    /**
+     * @return 获取相机的预览大小
+     */
+    Size getCameraSize();
 
+    /**
+     * @return 获取Surface的大小 (View大小)
+     */
     Size getSurfaceSize();
 
     boolean open(SurfaceTexture texture);
@@ -211,14 +213,15 @@ public interface CameraControl {
     /**
      * 获取相机支持的模式,相机打开之后才能调用
      *
-     * @param modes    modes
+     * @param modes modes
      */
     List<String> getSupportedModes(String... modes);
 
 
     /**
      * 设置模式
-     * @param key key
+     *
+     * @param key   key
      * @param value value
      */
     void setMode(String key, String value);

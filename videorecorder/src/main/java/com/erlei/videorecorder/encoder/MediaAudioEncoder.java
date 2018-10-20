@@ -29,7 +29,6 @@ import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 import android.media.MediaFormat;
 import android.media.MediaRecorder;
-import android.util.Log;
 
 import com.erlei.gdx.utils.Logger;
 import com.erlei.videorecorder.recorder.VideoRecorder;
@@ -51,7 +50,7 @@ public class MediaAudioEncoder extends MediaEncoder {
     private VideoRecorder.Config mConfig;
 
     public MediaAudioEncoder(MediaMuxerWrapper muxer, VideoRecorder.Config config) {
-        super(muxer, config);
+        super(muxer);
         mConfig = config;
         mSampleRate = config.getAudioSampleRate();
         mBitRate = config.getAudioBitRate();
@@ -181,7 +180,7 @@ public class MediaAudioEncoder extends MediaEncoder {
      * @return
      */
     private static final MediaCodecInfo selectAudioCodec(final String mimeType) {
-        Logger.debug(TAG,"selectAudioCodec:");
+        Logger.debug(TAG, "selectAudioCodec:");
 
         MediaCodecInfo result = null;
         // get the list of available codecs
@@ -194,7 +193,7 @@ public class MediaAudioEncoder extends MediaEncoder {
             }
             final String[] types = codecInfo.getSupportedTypes();
             for (int j = 0; j < types.length; j++) {
-                    Logger.debug(TAG,"supportedType:" + codecInfo.getName() + ",MIME=" + types[j]);
+                Logger.debug(TAG, "supportedType:" + codecInfo.getName() + ",MIME=" + types[j]);
                 if (types[j].equalsIgnoreCase(mimeType)) {
                     if (result == null) {
                         result = codecInfo;

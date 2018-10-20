@@ -1244,7 +1244,7 @@ public class Camera {
     public interface CameraCallback {
         /**
          * 打开相机成功
-         * 如果使用的是 SurfaceView预览 , 可以在这个回调里根据camera.getPreviewSize() 重新调整SurfaceView的大小比例 ， 避免预览变形
+         * 如果使用的是 SurfaceView预览 , 可以在这个回调里根据camera.getCameraSize() 重新调整SurfaceView的大小比例 ， 避免预览变形
          */
         void onSuccess(Camera camera);
 
