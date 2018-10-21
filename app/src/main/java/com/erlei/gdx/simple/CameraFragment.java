@@ -12,10 +12,11 @@ import android.view.ViewGroup;
 import com.erlei.gdx.utils.Logger;
 import com.erlei.gdx.widget.GLSurfaceView;
 import com.erlei.gdx.widget.IRenderView;
+import com.erlei.videorecorder.camera.CameraControl;
 import com.erlei.videorecorder.camera.CameraRender;
 import com.erlei.videorecorder.camera.DefaultCameraControl;
-import com.erlei.videorecorder.camera.Size;
 import com.erlei.videorecorder.recorder.MultipleRender;
+import com.erlei.videorecorder.recorder.RecordableRender;
 import com.erlei.videorecorder.recorder.VideoRecorder;
 import com.erlei.videorecorder.recorder.VideoRecorderHandler;
 
@@ -37,17 +38,17 @@ public class CameraFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Logger.debug("CameraFragment", "onViewCreated");
 
-//        mRenderView.setRenderer(new RecordableRender(new MultipleRender(new CameraRender(new DefaultCameraControl(mRenderView)))));
-        mRenderView.setRenderer(new MultipleRender(new CameraRender(new DefaultCameraControl(mRenderView))));
+        DefaultCameraControl cameraControl = new DefaultCameraControl(mRenderView);
+        mRenderView.setRenderer(new RecordableRender(new MultipleRender(new CameraRender(cameraControl), initVideoRecorder(cameraControl))));
+//        mRenderView.setRenderer(new MultipleRender(new CameraRender(new DefaultCameraControl(mRenderView))));
         mRenderView.setRenderMode(IRenderView.RenderMode.WHEN_DIRTY);
     }
 
-    private IRenderView.Renderer initVideoRecorder() {
-        VideoRecorder.Builder builder = new VideoRecorder.Builder(getContext())
+    private IRenderView.Renderer initVideoRecorder(CameraControl cameraControl) {
+        VideoRecorder.Builder builder = new VideoRecorder.Builder(cameraControl)
                 .setCallbackHandler(new CallbackHandler())
                 .setOutPutDir(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), File.separator + "VideoRecorder").getAbsolutePath())
                 .setFrameRate(30)
-                .setVideoSize(new Size(1920, 1080))
                 .setChannelCount(1);
         return builder.build();
     }

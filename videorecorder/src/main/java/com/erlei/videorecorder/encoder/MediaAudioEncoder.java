@@ -31,7 +31,6 @@ import android.media.MediaFormat;
 import android.media.MediaRecorder;
 
 import com.erlei.gdx.utils.Logger;
-import com.erlei.videorecorder.recorder.VideoRecorder;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -47,14 +46,12 @@ public class MediaAudioEncoder extends MediaEncoder {
     private int mBitRate;
     private int mChannelCount;
     private AudioThread mAudioThread = null;
-    private VideoRecorder.Config mConfig;
 
-    public MediaAudioEncoder(MediaMuxerWrapper muxer, VideoRecorder.Config config) {
+    public MediaAudioEncoder(MediaMuxerWrapper muxer,int sampleRate, int bitRate, int channelCount) {
         super(muxer);
-        mConfig = config;
-        mSampleRate = config.getAudioSampleRate();
-        mBitRate = config.getAudioBitRate();
-        mChannelCount = config.getAudioChannelCount();
+        mSampleRate = sampleRate;
+        mBitRate = bitRate;
+        mChannelCount = channelCount;
     }
 
     @Override

@@ -109,6 +109,7 @@ public class CameraRender extends BaseRender implements SurfaceTexture.OnFrameAv
         mLogger.debug("viewSize = " + viewSize.toString() + "\t\t cameraSize = " + cameraSize.toString() + "\t\tscale = " + scale + "\t\t dx = " + (dx / cameraWidth) + "\t\t dy = " + (dy / cameraHeight));
         //mProjectionViewMatrix.translate(dx,dy,0);
         mProjectionViewMatrix.scale(scale, scale, 0f);
+        mProjectionViewMatrix.scale(0.5F, 0.5F, 0f);
     }
 
     @Override

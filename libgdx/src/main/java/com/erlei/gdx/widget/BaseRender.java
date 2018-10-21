@@ -5,12 +5,14 @@ import android.opengl.GLES20;
 import com.erlei.gdx.Files;
 import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.GL20;
+import com.erlei.gdx.utils.Logger;
 
 public abstract class BaseRender implements IRenderView.Renderer {
 
     protected Files files;
     protected GL20 gl;
     protected IRenderView mRenderView;
+    protected Logger mLogger = new Logger("Render");
 
     @Override
     public void create(EGLCore egl, GL20 gl) {

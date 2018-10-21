@@ -30,7 +30,6 @@ import android.view.Surface;
 
 import com.erlei.gdx.utils.Logger;
 import com.erlei.videorecorder.camera.Size;
-import com.erlei.videorecorder.recorder.VideoRecorder;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -48,12 +47,12 @@ public class MediaVideoEncoder extends MediaEncoder {
     private final int mFrameRate;
     private Surface mSurface;
 
-    public MediaVideoEncoder(MediaMuxerWrapper muxer, VideoRecorder.Config config) {
+    public MediaVideoEncoder(MediaMuxerWrapper muxer, Size videoSize, int iFrameInterval, int bitRate, int frameRate) {
         super(muxer);
-        mVideoSize = config.getVideoSize();
-        mIFrameInterval = config.getIFrameInterval();
-        mBitRate = config.getVideoBitRate() <= 0 ? calcBitRate() : config.getVideoBitRate();
-        mFrameRate = config.getFrameRate() <= 0 ? FRAME_RATE : config.getFrameRate();
+        mVideoSize = videoSize;
+        mIFrameInterval = iFrameInterval;
+        mBitRate = bitRate <= 0 ? calcBitRate() : bitRate;
+        mFrameRate = frameRate <= 0 ? FRAME_RATE : frameRate;
     }
 
     @Override

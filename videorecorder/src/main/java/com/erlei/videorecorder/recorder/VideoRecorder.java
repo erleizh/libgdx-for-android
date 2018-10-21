@@ -40,7 +40,9 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
     private EGLCore mEGLCore;
     private EGLSurface mWindowSurface;
     private SpriteBatch mSpriteBatch;
-    private Size mCameraSize;
+    private Size mSize;
+    private FrameBuffer mFrameBuffer;
+    private FrameBuffer mRecordFrameBuffer;
 
     private VideoRecorder(Config config) {
         mThreadExecutor = Executors.newSingleThreadExecutor();
@@ -49,8 +51,9 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
 
     @Override
     public void create(EGLCore egl, GL20 gl) {
+        super.create(egl,gl);
         mEGLCore = egl;
-        mSpriteBatch = new SpriteBatch(1);
+        mSpriteBatch = new SpriteBatch();
         startRecord();
     }
 
@@ -75,12 +78,23 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
         super.render(gl);
         if (mWindowSurface != null && mVideoEncoder != null && isRecording() && mMuxerRunning) {
             mEGLCore.makeCurrent(mWindowSurface);
-            mVideoEncoder.frameAvailableSoon();
+            mRecordFrameBuffer.begin();
+            clear();
             mSpriteBatch.begin();
-//            mSpriteBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, mCameraSize.getWidth(), mCameraSize.getHeight(), 0, 0,
-//                    frameBuffer.getColorBufferTexture().getWidth(),
-//                    frameBuffer.getColorBufferTexture().getHeight(), false, true);
+            mSpriteBatch.draw(mFrameBuffer.getColorBufferTexture(), 0, 0, mSize.getWidth(), mSize.getHeight(), 0, 0,
+                    mSize.getWidth(),
+                    mSize.getHeight(), false, true);
             mSpriteBatch.end();
+            mRecordFrameBuffer.end();
+
+            mSpriteBatch.begin();
+            mSpriteBatch.draw(mRecordFrameBuffer.getColorBufferTexture(), 0, 0, mFrameBuffer.getColorBufferTexture().getWidth(), mFrameBuffer.getColorBufferTexture().getHeight(), 0, 0,
+                    mRecordFrameBuffer.getColorBufferTexture().getWidth(),
+                    mRecordFrameBuffer.getColorBufferTexture().getHeight(), false, true);
+            mSpriteBatch.draw(mRecordFrameBuffer.getColorBufferTexture(),0,0);
+            mSpriteBatch.end();
+            mVideoEncoder.frameAvailableSoon();
+
             mEGLCore.swapBuffers(mWindowSurface);
             mEGLCore.makeCurrent();
         }
@@ -92,6 +106,7 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
             mEGLCore.releaseSurface(mWindowSurface);
             mWindowSurface = null;
         }
+        mRecordFrameBuffer.dispose();
         stopEncoder();
         mSpriteBatch.dispose();
     }
@@ -145,8 +160,8 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
                 synchronized (mSync) {
                     try {
                         mMuxer = new MediaMuxerWrapper(mOutputFile.getAbsolutePath(), mConfig.viewHandler);
-                        mVideoEncoder = new MediaVideoEncoder(mMuxer, mConfig);
-                        new MediaAudioEncoder(mMuxer, mConfig);
+                        mVideoEncoder = new MediaVideoEncoder(mMuxer, mSize, mConfig.getIFrameInterval(), mConfig.getVideoBitRate(), mConfig.getFrameRate());
+                        new MediaAudioEncoder(mMuxer, mConfig.getAudioSampleRate(), mConfig.getAudioBitRate(), mConfig.getAudioChannelCount());
                         mMuxer.prepare();
                         mMuxer.startRecording();
 
@@ -214,16 +229,18 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
 
     @Override
     public FrameBuffer generateFrameBuffer() {
-        Size cameraSize = mConfig.cameraControl.getCameraSize();
-        return new FrameBuffer(Pixmap.Format.RGBA8888, cameraSize.getWidth(), cameraSize.getHeight(), false);
+        mSize = mConfig.cameraControl.getCameraSize();
+        mFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, mSize.getWidth(), mSize.getHeight(), false);
+        mRecordFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, mSize.getWidth(), mSize.getHeight(), false);
+        return mFrameBuffer;
     }
 
     public static class Builder {
 
         private final Config mP;
 
-        public Builder(Context context) {
-            mP = new Config(context);
+        public Builder(CameraControl control) {
+            mP = new Config(control);
         }
 
         public Config getConfig() {
@@ -341,8 +358,10 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
         int videoBitRate;
         String outputDir;
 
-        Config(Context context) {
-            this.context = context;
+
+        public Config(CameraControl control) {
+            context = control.getContext();
+            cameraControl = control;
         }
 
         public Context getContext() {

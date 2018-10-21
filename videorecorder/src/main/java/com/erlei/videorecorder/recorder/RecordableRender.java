@@ -50,6 +50,7 @@ public class RecordableRender extends BaseRender {
     @Override
     public void dispose() {
         super.dispose();
+        mFrameBuffer.dispose();
         mRenderer.dispose();
     }
 
@@ -62,8 +63,8 @@ public class RecordableRender extends BaseRender {
 
         mSpriteBatch.begin();
         mSpriteBatch.draw(mFrameBuffer.getColorBufferTexture(),
-                0, 0, mFrameBuffer.getColorBufferTexture().getWidth(), mFrameBuffer.getColorBufferTexture().getHeight(),
                 0, 0, getWidth(), getHeight(),
+                0, 0, mFrameBuffer.getColorBufferTexture().getWidth(), mFrameBuffer.getColorBufferTexture().getHeight(),
                 false, true);
         mSpriteBatch.end();
     }
