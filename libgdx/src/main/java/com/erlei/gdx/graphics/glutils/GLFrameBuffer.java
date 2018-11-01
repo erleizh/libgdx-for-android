@@ -218,8 +218,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
         int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
         if (result == GL20.GL_FRAMEBUFFER_UNSUPPORTED && bufferBuilder.hasDepthRenderBuffer && bufferBuilder.hasStencilRenderBuffer
-                && (GLContext.getGLContext().supportsExtension("GL_OES_packed_depth_stencil")
-                || GLContext.getGLContext().supportsExtension("GL_EXT_packed_depth_stencil"))) {
+                && (GLContext.get().supportsExtension("GL_OES_packed_depth_stencil")
+                || GLContext.get().supportsExtension("GL_EXT_packed_depth_stencil"))) {
             if (bufferBuilder.hasDepthRenderBuffer) {
                 gl.glDeleteRenderbuffer(depthbufferHandle);
                 depthbufferHandle = 0;
@@ -276,7 +276,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
     }
 
     private void checkValidBuilder() {
-        boolean runningGL30 = GLContext.getGLContext().isGL30Available();
+        boolean runningGL30 = GLContext.get().isGL30Available();
 
         if (!runningGL30) {
             if (bufferBuilder.hasPackedStencilDepthRenderBuffer) {
@@ -291,7 +291,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
                 if (spec.isStencil)
                     throw new GdxRuntimeException("Stencil texture FrameBuffer Attachment not available on GLES 2.0");
                 if (spec.isFloat) {
-                    if (!GLContext.getGLContext().supportsExtension("OES_texture_float")) {
+                    if (!GLContext.get().supportsExtension("OES_texture_float")) {
                         throw new GdxRuntimeException("Float texture FrameBuffer Attachment not available on GLES 2.0");
                     }
                 }
@@ -353,7 +353,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
      * Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on.
      */
     public void end() {
-        end(0, 0, GLContext.getGLContext().getBackBufferWidth(), GLContext.getGLContext().getBackBufferHeight());
+        end(0, 0, GLContext.get().getBackBufferWidth(), GLContext.get().getBackBufferHeight());
     }
 
     /**

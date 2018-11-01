@@ -127,7 +127,7 @@ public class SpriteBatch implements Batch {
                 new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
                 new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
-        projectionMatrix.setToOrtho2D(0, 0, GLContext.getGLContext().getWidth(), GLContext.getGLContext().getHeight());
+        projectionMatrix.setToOrtho2D(0, 0, GLContext.get().getWidth(), GLContext.get().getHeight());
 
         vertices = new float[size * Sprite.SPRITE_SIZE];
 

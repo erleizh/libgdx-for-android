@@ -5,18 +5,15 @@ import android.opengl.GLES11Ext;
 
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Mesh;
-import com.erlei.gdx.graphics.Pixmap;
 import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.VertexAttribute;
 import com.erlei.gdx.graphics.VertexAttributes;
-import com.erlei.gdx.graphics.glutils.FrameBuffer;
 import com.erlei.gdx.graphics.glutils.ShaderProgram;
 import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.utils.Logger;
 import com.erlei.gdx.widget.BaseRender;
 import com.erlei.gdx.widget.EGLCore;
 import com.erlei.gdx.widget.GLContext;
-import com.erlei.videorecorder.recorder.RecordableRender;
 
 /**
  * Created by lll on 2018/10/8
@@ -52,7 +49,7 @@ public class CameraRender extends BaseRender implements SurfaceTexture.OnFrameAv
         mControl.open(mCameraTexture.getSurfaceTexture());
         Size cameraSize = mControl.getCameraSize();
         adjustTextureSize(new Size(getWidth(), getHeight()), cameraSize);
-        mCameraTextureData.setTextureSize(cameraSize);
+        mCameraTextureData.setTextureSize(!GLContext.get().isLandscape()? new Size(cameraSize.getHeight(),cameraSize.getWidth()) : cameraSize);
     }
 
 
@@ -85,7 +82,7 @@ public class CameraRender extends BaseRender implements SurfaceTexture.OnFrameAv
      * @param cameraSize 相机大小
      */
     private void adjustTextureSize(Size viewSize, Size cameraSize) {
-        if (!GLContext.getGLContext().isLandscape())
+        if (!GLContext.get().isLandscape())
             cameraSize = new Size(cameraSize.getHeight(), cameraSize.getWidth());
         mProjectionViewMatrix.idt();
         float cameraWidth = cameraSize.width;
@@ -94,7 +91,7 @@ public class CameraRender extends BaseRender implements SurfaceTexture.OnFrameAv
         float viewHeight = viewSize.height;
 
         //1 . 恢复纹理比例
-        mProjectionViewMatrix.scale(cameraWidth / viewWidth, cameraHeight / viewHeight, 0F);
+//        mProjectionViewMatrix.scale(cameraWidth / viewWidth, cameraHeight / viewHeight, 0F);
 
         //2 . CENTER_CROP (see ImageView CENTER_CROP)
         float scale;
@@ -108,7 +105,7 @@ public class CameraRender extends BaseRender implements SurfaceTexture.OnFrameAv
         }
         mLogger.debug("viewSize = " + viewSize.toString() + "\t\t cameraSize = " + cameraSize.toString() + "\t\tscale = " + scale + "\t\t dx = " + (dx / cameraWidth) + "\t\t dy = " + (dy / cameraHeight));
         //mProjectionViewMatrix.translate(dx,dy,0);
-        mProjectionViewMatrix.scale(scale, scale, 0f);
+//        mProjectionViewMatrix.scale(scale, scale, 0f);
         mProjectionViewMatrix.scale(0.5F, 0.5F, 0f);
     }
 

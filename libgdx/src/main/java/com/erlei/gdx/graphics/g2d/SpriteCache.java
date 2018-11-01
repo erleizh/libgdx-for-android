@@ -150,7 +150,7 @@ public class SpriteCache implements Disposable {
             mesh.setIndices(indices);
         }
 
-        GLContext glContext = GLContext.getGLContext();
+        GLContext glContext = GLContext.get();
         projectionMatrix.setToOrtho2D(0, 0, glContext.getWidth(), glContext.getHeight());
     }
 

@@ -178,7 +178,7 @@ public class ParticleShader extends BaseShader {
 
             @Override
             public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-                shader.set(inputID, (float) GLContext.getGLContext().getWidth());
+                shader.set(inputID, (float) GLContext.get().getWidth());
             }
         };
         public final static Setter worldViewTrans = new Setter() {

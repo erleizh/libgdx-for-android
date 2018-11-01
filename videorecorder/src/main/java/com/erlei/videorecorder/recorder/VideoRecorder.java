@@ -13,6 +13,7 @@ import com.erlei.gdx.graphics.glutils.FrameBuffer;
 import com.erlei.gdx.utils.Logger;
 import com.erlei.gdx.widget.BaseRender;
 import com.erlei.gdx.widget.EGLCore;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.videorecorder.camera.CameraControl;
 import com.erlei.videorecorder.camera.Size;
 import com.erlei.videorecorder.encoder.MediaAudioEncoder;
@@ -51,7 +52,7 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
 
     @Override
     public void create(EGLCore egl, GL20 gl) {
-        super.create(egl,gl);
+        super.create(egl, gl);
         mEGLCore = egl;
         mSpriteBatch = new SpriteBatch();
         startRecord();
@@ -79,19 +80,24 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
         if (mWindowSurface != null && mVideoEncoder != null && isRecording() && mMuxerRunning) {
             mEGLCore.makeCurrent(mWindowSurface);
             mRecordFrameBuffer.begin();
-            clear();
             mSpriteBatch.begin();
-            mSpriteBatch.draw(mFrameBuffer.getColorBufferTexture(), 0, 0, mSize.getWidth(), mSize.getHeight(), 0, 0,
-                    mSize.getWidth(),
-                    mSize.getHeight(), false, true);
+            mSpriteBatch.draw(mFrameBuffer.getColorBufferTexture(),
+                    0, 0,
+                    mFrameBuffer.getColorBufferTexture().getWidth(), mFrameBuffer.getColorBufferTexture().getHeight(),
+                    0, 0,
+                    mRecordFrameBuffer.getWidth(),
+                    mRecordFrameBuffer.getHeight(), false, true);
             mSpriteBatch.end();
             mRecordFrameBuffer.end();
 
             mSpriteBatch.begin();
-            mSpriteBatch.draw(mRecordFrameBuffer.getColorBufferTexture(), 0, 0, mFrameBuffer.getColorBufferTexture().getWidth(), mFrameBuffer.getColorBufferTexture().getHeight(), 0, 0,
+            mSpriteBatch.draw(mRecordFrameBuffer.getColorBufferTexture(),
+                    0, 0,
+                    mRecordFrameBuffer.getColorBufferTexture().getWidth(),
+                    mRecordFrameBuffer.getColorBufferTexture().getHeight(),
+                    0, 0,
                     mRecordFrameBuffer.getColorBufferTexture().getWidth(),
                     mRecordFrameBuffer.getColorBufferTexture().getHeight(), false, true);
-            mSpriteBatch.draw(mRecordFrameBuffer.getColorBufferTexture(),0,0);
             mSpriteBatch.end();
             mVideoEncoder.frameAvailableSoon();
 
@@ -102,12 +108,12 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
 
     @Override
     public void dispose() {
+        stopRecord();
         if (mWindowSurface != null) {
             mEGLCore.releaseSurface(mWindowSurface);
             mWindowSurface = null;
         }
         mRecordFrameBuffer.dispose();
-        stopEncoder();
         mSpriteBatch.dispose();
     }
 
@@ -230,6 +236,7 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
     @Override
     public FrameBuffer generateFrameBuffer() {
         mSize = mConfig.cameraControl.getCameraSize();
+        if (!GLContext.get().isLandscape()) mSize = new Size(mSize.getHeight(), mSize.getWidth());
         mFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, mSize.getWidth(), mSize.getHeight(), false);
         mRecordFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, mSize.getWidth(), mSize.getHeight(), false);
         return mFrameBuffer;

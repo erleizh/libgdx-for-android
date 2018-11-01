@@ -3,7 +3,6 @@ package com.erlei.gdx.widget;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.opengl.GLES10;
-import android.opengl.GLES20;
 import android.os.Debug;
 import android.view.WindowManager;
 
@@ -12,7 +11,6 @@ import com.erlei.gdx.Files;
 import com.erlei.gdx.LifecycleListener;
 import com.erlei.gdx.Preferences;
 import com.erlei.gdx.files.AndroidFiles;
-import com.erlei.gdx.graphics.Color;
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.GL30;
 import com.erlei.gdx.utils.FPSCounter;
@@ -33,6 +31,8 @@ public final class GLContext {
     private String extensions;
     public GL20 gl;
     public GL30 gl30;
+    private int mBackBufferWidth = -1;
+    private int mBackBufferHeight = -1;
 
     public GLContext(WeakReference<IRenderView> reference) {
         mReference = reference;
@@ -70,7 +70,6 @@ public final class GLContext {
     }
 
 
-
     public float getDeltaTime() {
         return mFPSCounter.getFPS();
     }
@@ -85,11 +84,11 @@ public final class GLContext {
     }
 
     public int getBackBufferWidth() {
-        return getRenderView().getSurfaceWidth();
+        return mBackBufferWidth == -1 ? getRenderView().getSurfaceWidth() : mBackBufferWidth;
     }
 
     public int getBackBufferHeight() {
-        return getRenderView().getSurfaceHeight();
+        return mBackBufferHeight == -1 ? getRenderView().getSurfaceHeight() : mBackBufferHeight;
     }
 
     public boolean supportsExtension(String extension) {
@@ -142,7 +141,7 @@ public final class GLContext {
         return mReference.get();
     }
 
-    public static GLContext getGLContext() {
+    public static GLContext get() {
         GLContext glContext = sThreadLocal.get();
         if (glContext == null) {
             throw new IllegalStateException("GLContext == null Cannot be called on a non GL thread = " + Thread.currentThread().getName());
@@ -151,16 +150,16 @@ public final class GLContext {
     }
 
     public static GL20 getGL20() {
-        return getGLContext().gl;
+        return get().gl;
     }
 
     public static GL30 getGL30() {
-        return getGLContext().gl30;
+        return get().gl30;
     }
 
 
     public static Files getFiles() {
-        return getGLContext().files;
+        return get().files;
     }
 
     public void addLifecycleListener(LifecycleListener listener) {
@@ -183,5 +182,10 @@ public final class GLContext {
     public void setGL20(GL20 gl20) {
         this.gl = gl20;
         this.gl30 = isGL30Available() ? (GL30) gl20 : null;
+    }
+
+    public void setBackBufferSize(int width, int height) {
+        mBackBufferWidth = width;
+        mBackBufferHeight = height;
     }
 }

@@ -74,7 +74,7 @@ public class CameraTexture extends Texture {
 
         @Override
         public void consumeCustomData(int target) {
-            if (!GLContext.getGLContext().supportsExtension("OES_texture_float"))
+            if (!GLContext.get().supportsExtension("OES_texture_float"))
                 throw new GdxRuntimeException("Extension OES_texture_float not supported!");
         }
 

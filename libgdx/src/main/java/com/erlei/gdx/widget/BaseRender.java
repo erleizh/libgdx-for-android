@@ -13,16 +13,20 @@ public abstract class BaseRender implements IRenderView.Renderer {
     protected GL20 gl;
     protected IRenderView mRenderView;
     protected Logger mLogger = new Logger("Render");
+    private int mWidth;
+    private int mHeight;
 
     @Override
     public void create(EGLCore egl, GL20 gl) {
         this.gl = gl;
         files = GLContext.getFiles();
-        mRenderView = GLContext.getGLContext().getRenderView();
+        mRenderView = GLContext.get().getRenderView();
     }
 
     @Override
     public void resize(int width, int height) {
+        mWidth = width;
+        mHeight = height;
     }
 
     @Override
@@ -46,11 +50,11 @@ public abstract class BaseRender implements IRenderView.Renderer {
     }
 
     public int getWidth() {
-        return mRenderView.getSurfaceWidth();
+        return mWidth;
     }
 
     public int getHeight() {
-        return mRenderView.getSurfaceHeight();
+        return mHeight;
     }
 
     /**

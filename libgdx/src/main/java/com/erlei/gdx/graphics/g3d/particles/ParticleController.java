@@ -220,7 +220,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 
 	/** Updates the particles data */
 	public void update () {
-		update(GLContext.getGLContext().getDeltaTime());
+		update(GLContext.get().getDeltaTime());
 	}
 
 	/** Updates the particles data */

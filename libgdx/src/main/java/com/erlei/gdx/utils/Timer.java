@@ -233,7 +233,7 @@ public class Timer {
         volatile Timer timer;
 
         public Task() {
-            mGLContext = GLContext.getGLContext();
+            mGLContext = GLContext.get();
         }
 
         /**
@@ -299,7 +299,7 @@ public class Timer {
 
         public TimerThread() {
             files = GLContext.getFiles();
-            GLContext.getGLContext().addLifecycleListener(this);
+            GLContext.get().addLifecycleListener(this);
             resume();
 
             Thread thread = new Thread(this, "Timer");
@@ -358,7 +358,7 @@ public class Timer {
                 instances.clear();
                 threadLock.notifyAll();
             }
-            GLContext.getGLContext().removeLifecycleListener(this);
+            GLContext.get().removeLifecycleListener(this);
         }
     }
 }

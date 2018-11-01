@@ -41,8 +41,8 @@ public final class ScreenUtils {
      * The returned TextureRegion is flipped along the Y axis by default.
      */
     public static TextureRegion getFrameBufferTexture() {
-        final int w = GLContext.getGLContext().getBackBufferWidth();
-        final int h = GLContext.getGLContext().getBackBufferHeight();
+        final int w = GLContext.get().getBackBufferWidth();
+        final int h = GLContext.get().getBackBufferHeight();
         return getFrameBufferTexture(0, 0, w, h);
     }
 
@@ -92,8 +92,8 @@ public final class ScreenUtils {
      * @param flipY whether to flip pixels along Y axis
      */
     public static byte[] getFrameBufferPixels(boolean flipY) {
-        final int w = GLContext.getGLContext().getBackBufferWidth();
-        final int h = GLContext.getGLContext().getBackBufferHeight();
+        final int w = GLContext.get().getBackBufferWidth();
+        final int h = GLContext.get().getBackBufferHeight();
         return getFrameBufferPixels(0, 0, w, h, flipY);
     }
 

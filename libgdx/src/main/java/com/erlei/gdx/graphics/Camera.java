@@ -252,7 +252,7 @@ public abstract class Camera {
     public Vector3 unproject(Vector3 screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
         float x = screenCoords.x, y = screenCoords.y;
         x = x - viewportX;
-        y = GLContext.getGLContext().getHeight() - y - 1;
+        y = GLContext.get().getHeight() - y - 1;
         y = y - viewportY;
         screenCoords.x = (2 * x) / viewportWidth - 1;
         screenCoords.y = (2 * y) / viewportHeight - 1;
@@ -272,7 +272,7 @@ public abstract class Camera {
      * @return the mutated and unprojected screenCoords {@link Vector3}
      */
     public Vector3 unproject(Vector3 screenCoords) {
-        unproject(screenCoords, 0, 0, GLContext.getGLContext().getWidth(), GLContext.getGLContext().getHeight());
+        unproject(screenCoords, 0, 0, GLContext.get().getWidth(), GLContext.get().getHeight());
         return screenCoords;
     }
 
@@ -285,7 +285,7 @@ public abstract class Camera {
      * @return the mutated and projected worldCoords {@link Vector3}
      */
     public Vector3 project(Vector3 worldCoords) {
-        project(worldCoords, 0, 0, GLContext.getGLContext().getWidth(), GLContext.getGLContext().getHeight());
+        project(worldCoords, 0, 0, GLContext.get().getWidth(), GLContext.get().getHeight());
         return worldCoords;
     }
 
@@ -338,6 +338,6 @@ public abstract class Camera {
      * @return the picking Ray.
      */
     public Ray getPickRay(float screenX, float screenY) {
-        return getPickRay(screenX, screenY, 0, 0, GLContext.getGLContext().getWidth(), GLContext.getGLContext().getHeight());
+        return getPickRay(screenX, screenY, 0, 0, GLContext.get().getWidth(), GLContext.get().getHeight());
     }
 }

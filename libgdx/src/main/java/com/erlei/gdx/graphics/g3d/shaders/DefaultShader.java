@@ -756,7 +756,7 @@ public class DefaultShader extends BaseShader {
 			spotLight.set(0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0);
 		lightsSet = false;
 
-		if (has(u_time)) set(u_time, time += GLContext.getGLContext().getDeltaTime());
+		if (has(u_time)) set(u_time, time += GLContext.get().getDeltaTime());
 	}
 
 	@Override

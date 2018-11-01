@@ -67,10 +67,10 @@ public class OrthographicCamera extends Camera {
 	}
 
 	/** Sets this camera to an orthographic projection using a viewport fitting the screen resolution, centered at
-	 * (GLContext.getGLContext().getWidth()/2, GLContext.getGLContext().getHeight()/2), with the y-axis pointing up or down.
+	 * (GLContext.get().getWidth()/2, GLContext.get().getHeight()/2), with the y-axis pointing up or down.
 	 * @param yDown whether y should be pointing down */
 	public void setToOrtho (boolean yDown) {
-		setToOrtho(yDown, GLContext.getGLContext().getWidth(), GLContext.getGLContext().getHeight());
+		setToOrtho(yDown, GLContext.get().getWidth(), GLContext.get().getHeight());
 	}
 
 	/** Sets this camera to an orthographic projection, centered at (viewportWidth/2, viewportHeight/2), with the y-axis pointing up

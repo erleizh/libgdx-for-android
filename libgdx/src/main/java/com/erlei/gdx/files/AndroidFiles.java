@@ -126,7 +126,7 @@ public class AndroidFiles implements Files {
      */
     public boolean setAPKExpansion(int mainVersion, int patchVersion) {
         try {
-            Context context = GLContext.getGLContext().getContext();
+            Context context = GLContext.get().getContext();
             expansionFile = APKExpansionSupport.getAPKExpansionZipFile(
                     context,
                     mainVersion, patchVersion);

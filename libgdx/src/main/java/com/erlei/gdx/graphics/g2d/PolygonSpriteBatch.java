@@ -167,7 +167,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
         } else
             shader = defaultShader;
 
-        GLContext glContext = GLContext.getGLContext();
+        GLContext glContext = GLContext.get();
         projectionMatrix.setToOrtho2D(0, 0, glContext.getWidth(), glContext.getHeight());
     }
 

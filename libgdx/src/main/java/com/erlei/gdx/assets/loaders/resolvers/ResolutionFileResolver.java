@@ -111,7 +111,7 @@ public class ResolutionFileResolver implements FileHandleResolver {
     }
 
     static public Resolution choose(Resolution... descriptors) {
-        GLContext glContext = GLContext.getGLContext();
+        GLContext glContext = GLContext.get();
         int w = glContext.getWidth(), h = glContext.getHeight();
 
         // Prefer the shortest side.

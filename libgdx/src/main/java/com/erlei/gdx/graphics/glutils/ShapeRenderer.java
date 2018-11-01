@@ -117,7 +117,7 @@ public class ShapeRenderer implements Disposable {
 		} else {
 			renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0, defaultShader);
 		}
-		projectionMatrix.setToOrtho2D(0, 0, GLContext.getGLContext().getWidth(), GLContext.getGLContext().getHeight());
+		projectionMatrix.setToOrtho2D(0, 0, GLContext.get().getWidth(), GLContext.get().getHeight());
 		matrixDirty = true;
 	}
 

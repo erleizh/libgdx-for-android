@@ -5,13 +5,14 @@ import com.erlei.gdx.graphics.g2d.SpriteBatch;
 import com.erlei.gdx.graphics.glutils.FrameBuffer;
 import com.erlei.gdx.widget.BaseRender;
 import com.erlei.gdx.widget.EGLCore;
+import com.erlei.gdx.widget.GLContext;
 import com.erlei.gdx.widget.IRenderView;
 
 
 /**
  * Created by lll on 2018/10/19
  * Email : lllemail@foxmail.com
- * Describe : 一个易于记录的渲染器 ，它将数据渲染到FrameBuffer中 , 而不是直接渲染到屏幕上,
+ * Describe : 一个易于记录的渲染器 ，它将数据渲染到FrameBuffer中 , 而不是直接渲染到屏幕上
  */
 public class RecordableRender extends BaseRender {
 
@@ -33,12 +34,13 @@ public class RecordableRender extends BaseRender {
         mSpriteBatch = new SpriteBatch();
         mRenderer.create(egl, gl);
         initFrameBuffer();
+        GLContext.get().setBackBufferSize(mFrameBuffer.getWidth(),mFrameBuffer.getHeight());
     }
 
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
-        mRenderer.resize(width, height);
+        mRenderer.resize(mFrameBuffer.getWidth(), mFrameBuffer.getHeight());
     }
 
     @Override

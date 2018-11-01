@@ -139,7 +139,7 @@ public abstract class Viewport {
         tmp.set(worldCoords.x, worldCoords.y, 0);
         tmp.mul(transformMatrix);
         camera.project(tmp);
-        tmp.y = GLContext.getGLContext().getHeight() - tmp.y;
+        tmp.y = GLContext.get().getHeight() - tmp.y;
         worldCoords.x = tmp.x;
         worldCoords.y = tmp.y;
         return worldCoords;
@@ -268,7 +268,7 @@ public abstract class Viewport {
      * Returns the right gutter (black bar) width in screen coordinates.
      */
     public int getRightGutterWidth() {
-        return GLContext.getGLContext().getWidth() - (screenX + screenWidth);
+        return GLContext.get().getWidth() - (screenX + screenWidth);
     }
 
     /**
@@ -289,6 +289,6 @@ public abstract class Viewport {
      * Returns the top gutter (black bar) height in screen coordinates.
      */
     public int getTopGutterHeight() {
-        return GLContext.getGLContext().getHeight() - (screenY + screenHeight);
+        return GLContext.get().getHeight() - (screenY + screenHeight);
     }
 }
