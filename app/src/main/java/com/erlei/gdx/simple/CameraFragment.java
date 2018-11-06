@@ -14,6 +14,8 @@ import com.erlei.gdx.widget.GLSurfaceView;
 import com.erlei.gdx.widget.IRenderView;
 import com.erlei.videorecorder.camera.CameraControl;
 import com.erlei.videorecorder.camera.CameraRender;
+import com.erlei.videorecorder.camera.CameraTexture;
+import com.erlei.videorecorder.camera.CameraTextureData;
 import com.erlei.videorecorder.camera.DefaultCameraControl;
 import com.erlei.videorecorder.recorder.MultipleRender;
 import com.erlei.videorecorder.recorder.RecordableRender;
@@ -39,8 +41,8 @@ public class CameraFragment extends Fragment {
         Logger.debug("CameraFragment", "onViewCreated");
 
         DefaultCameraControl cameraControl = new DefaultCameraControl(mRenderView);
-        mRenderView.setRenderer(new RecordableRender(new MultipleRender(new CameraRender(cameraControl), initVideoRecorder(cameraControl))));
-//        mRenderView.setRenderer(new MultipleRender(new CameraRender(new DefaultCameraControl(mRenderView))));
+//        mRenderView.setRenderer(new RecordableRender(new MultipleRender(new CameraRender(new CameraTexture(new CameraTexture.CameraTextureData(cameraControl))), initVideoRecorder(cameraControl))));
+        mRenderView.setRenderer(new MultipleRender(new CameraRender(cameraControl)));
         mRenderView.setRenderMode(IRenderView.RenderMode.WHEN_DIRTY);
     }
 
