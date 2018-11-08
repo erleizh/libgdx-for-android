@@ -97,7 +97,7 @@ public class DefaultCameraControl implements CameraControl {
 
     @Override
     public Size getCameraSize() {
-        return mCamera == null ? new Size(0, 0) : mCamera.getPreviewSize();
+        return mCamera == null ? new Size(0, 0) : mCamera.getFixedPreviewSize();
     }
 
 
@@ -112,6 +112,7 @@ public class DefaultCameraControl implements CameraControl {
             Camera.CameraBuilder builder = new Camera.CameraBuilder(getContext());
             builder.useDefaultConfig()
                     .setPreviewSize(new Size(2048, 1536))
+                    .setFacing(CAMERA_FACING_FRONT)
                     .setRecordingHint(true)
                     .setFocusMode(android.hardware.Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)
                     .setSurfaceTexture(texture);

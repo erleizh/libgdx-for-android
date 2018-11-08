@@ -200,18 +200,39 @@ public class Camera {
     public Size getPreviewSize() {
         return mPreviewSize;
     }
+    /**
+     * 图片宽高默认是横屏情况下的，如果是竖屏情需要经过转换
+     *
+     * @return 返回根据当前屏幕方向计算的图片宽高
+     */
+    public Size getFixedPictureSize() {
+        return getFixedSize(mContext, mPictureSize);
+    }
+    /**
+     * 相机的预览宽高默认是横屏情况下的，如果是竖屏情需要经过转换
+     *
+     * @return 返回根据当前屏幕方向计算的预览宽高
+     */
+    public Size getFixedPreviewSize() {
+        return getFixedSize(mContext, mPreviewSize);
+    }
+
+    public static Size getFixedSize(Context context, Size size) {
+        return isLandscape(context) ? size : new Size(size.height, size.width);
+    }
+
 
     /**
      * @return activity is  landscape
      */
-    public boolean isLandscape() {
-        WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+    public static boolean isLandscape(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         if (windowManager != null && windowManager.getDefaultDisplay() != null) {
             int rotation = windowManager.getDefaultDisplay().getRotation();
-            mLogger.debug("rotation=" + rotation);
+            Logger.debug("Camera", "rotation=" + rotation);
             return rotation == ROTATION_90 || rotation == ROTATION_270;
         }
-        return mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        return context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
 
@@ -262,7 +283,7 @@ public class Camera {
             handleCameraCallback(UNSUPPORTED_PREVIEW_SIZE, "没有找到合适的预览尺寸");
             throw new IllegalStateException("没有找到合适的预览尺寸");
         }
-        Logger.info(TAG,"requestPreviewSize ：" + mBuilder.mPreviewSize.toString() + "\t\t previewSize : " + getPreviewSize().toString());
+        Logger.info(TAG, "requestPreviewSize ：" + mBuilder.mPreviewSize.toString() + "\t\t previewSize : " + getPreviewSize().toString());
         cameraParameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
 
 
@@ -277,7 +298,7 @@ public class Camera {
                 handleCameraCallback(UNSUPPORTED_PICTURE_SIZE, "没有找到合适的图片尺寸");
                 throw new IllegalStateException("没有找到合适的图片尺寸");
             }
-            Logger.info(TAG,"requestPictureSize ：" + mBuilder.mPictureSize.toString() + "\t\t pictureSize : " + getPictureSize().toString());
+            Logger.info(TAG, "requestPictureSize ：" + mBuilder.mPictureSize.toString() + "\t\t pictureSize : " + getPictureSize().toString());
             cameraParameters.setPictureSize(mPictureSize.width, mPictureSize.height);
         }
         //拍照的图片缩放

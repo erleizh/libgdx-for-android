@@ -16,7 +16,7 @@ import com.erlei.gdx.widget.GLContext;
  * Email : lllemail@foxmail.com
  * Describe : 使用相机的数据作为纹理渲染到renderView
  */
-public class CameraRender extends BaseRender  {
+public class CameraRender extends BaseRender {
     private Logger mLogger = new Logger("CameraRender", Logger.DEBUG);
     private CameraTexture mCameraTexture;
     private ShaderProgram mProgram;
@@ -37,8 +37,7 @@ public class CameraRender extends BaseRender  {
         initShaderProgram();
         initMesh();
         mCameraTexture = new CameraTexture(new CameraTextureData(mCameraControl));
-        Size cameraSize = new Size(mCameraTexture.getWidth(),mCameraTexture.getHeight());
-        adjustTextureSize(new Size(getWidth(), getHeight()), cameraSize);
+        adjustTextureSize(getWidth(),getHeight(),mCameraTexture.getWidth(), mCameraTexture.getHeight());
     }
 
 
@@ -52,29 +51,23 @@ public class CameraRender extends BaseRender  {
     public void resize(int width, int height) {
         super.resize(width, height);
         mLogger.debug("resize " + width + "x" + height);
-
-        Size viewSize = new Size(width, height);
-        Size cameraSize = new Size(mCameraTexture.getWidth(),mCameraTexture.getHeight());
-        adjustTextureSize(viewSize, cameraSize);
+        adjustTextureSize(width,height,mCameraTexture.getWidth(), mCameraTexture.getHeight());
     }
+
+
 
     /**
      * 调整纹理大小比例
      *
-     * @param viewSize   视图大小
-     * @param cameraSize 相机大小
+     * @param viewWidth    视图宽
+     * @param viewHeight   视图高
+     * @param cameraWidth  相机宽
+     * @param cameraHeight 相机高
      */
-    private void adjustTextureSize(Size viewSize, Size cameraSize) {
-        if (!GLContext.get().isLandscape())
-            cameraSize = new Size(cameraSize.getHeight(), cameraSize.getWidth());
+    protected void adjustTextureSize(float viewWidth, float viewHeight, float cameraWidth, float cameraHeight) {
         mProjectionViewMatrix.idt();
-        float cameraWidth = cameraSize.width;
-        float viewWidth = viewSize.width;
-        float cameraHeight = cameraSize.height;
-        float viewHeight = viewSize.height;
-
         //1 . 恢复纹理比例
-//        mProjectionViewMatrix.scale(cameraWidth / viewWidth, cameraHeight / viewHeight, 0F);
+        mProjectionViewMatrix.scale(cameraWidth / viewWidth, cameraHeight / viewHeight, 0F);
 
         //2 . CENTER_CROP (see ImageView CENTER_CROP)
         float scale;
@@ -86,10 +79,10 @@ public class CameraRender extends BaseRender  {
             scale = viewWidth / cameraWidth;
             dy = (viewHeight - cameraHeight * scale) * 0.5f;
         }
-        mLogger.debug("viewSize = " + viewSize.toString() + "\t\t cameraSize = " + cameraSize.toString() + "\t\tscale = " + scale + "\t\t dx = " + (dx / cameraWidth) + "\t\t dy = " + (dy / cameraHeight));
+        mLogger.debug("viewSize = " + viewWidth + "x" + viewHeight + "\t\t cameraSize = " + cameraWidth + "x" + cameraHeight + "\t\tscale = " + scale + "\t\t dx = " + (dx / cameraWidth) + "\t\t dy = " + (dy / cameraHeight));
         //mProjectionViewMatrix.translate(dx,dy,0);
-//        mProjectionViewMatrix.scale(scale, scale, 0f);
-//        mProjectionViewMatrix.scale(0.5F, 0.5F, 0f);
+        mProjectionViewMatrix.scale(scale, scale, 0f);
+        //mProjectionViewMatrix.scale(0.5F, 0.5F, 0f);
     }
 
     @Override

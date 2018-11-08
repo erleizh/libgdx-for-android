@@ -36,8 +36,7 @@ public class CameraTextureData implements TextureData, SurfaceTexture.OnFrameAva
         if (mControl.isOpen()) throw new GdxRuntimeException("Already prepared");
         if (mSurfaceTexture == null) return;
         mControl.open(mSurfaceTexture);
-        Size cameraSize = mControl.getCameraSize();
-        mSize = !GLContext.get().isLandscape() ? new Size(cameraSize.getHeight(), cameraSize.getWidth()) : cameraSize;
+        mSize = mControl.getCameraSize();
     }
 
     @Override
