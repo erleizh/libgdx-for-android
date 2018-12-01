@@ -236,7 +236,6 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
     @Override
     public FrameBuffer generateFrameBuffer() {
         mSize = mConfig.cameraControl.getCameraSize();
-        if (!GLContext.get().isLandscape()) mSize = new Size(mSize.getHeight(), mSize.getWidth());
         mFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, mSize.getWidth(), mSize.getHeight(), false);
         mRecordFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, mSize.getWidth(), mSize.getHeight(), false);
         return mFrameBuffer;

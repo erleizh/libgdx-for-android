@@ -34,7 +34,7 @@ public class RecordableRender extends BaseRender {
         mSpriteBatch = new SpriteBatch();
         mRenderer.create(egl, gl);
         initFrameBuffer();
-        GLContext.get().setBackBufferSize(mFrameBuffer.getWidth(),mFrameBuffer.getHeight());
+        GLContext.get().setBackBufferSize(mFrameBuffer.getWidth(), mFrameBuffer.getHeight());
     }
 
     @Override
@@ -70,6 +70,7 @@ public class RecordableRender extends BaseRender {
                 false, true);
         mSpriteBatch.end();
     }
+
 
     protected void initFrameBuffer() {
         mFrameBuffer = mRenderer.generateFrameBuffer();
