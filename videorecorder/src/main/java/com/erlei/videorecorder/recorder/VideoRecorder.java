@@ -8,12 +8,13 @@ import android.support.annotation.NonNull;
 
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
+import com.erlei.gdx.graphics.Texture;
 import com.erlei.gdx.graphics.g2d.SpriteBatch;
 import com.erlei.gdx.graphics.glutils.FrameBuffer;
 import com.erlei.gdx.utils.Logger;
+import com.erlei.gdx.utils.ScreenUtils;
 import com.erlei.gdx.widget.BaseRender;
 import com.erlei.gdx.widget.EGLCore;
-import com.erlei.gdx.widget.GLContext;
 import com.erlei.videorecorder.camera.CameraControl;
 import com.erlei.videorecorder.camera.Size;
 import com.erlei.videorecorder.encoder.MediaAudioEncoder;
@@ -81,23 +82,25 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
             mEGLCore.makeCurrent(mWindowSurface);
             mRecordFrameBuffer.begin();
             mSpriteBatch.begin();
-            mSpriteBatch.draw(mFrameBuffer.getColorBufferTexture(),
+            Texture texture = mFrameBuffer.getColorBufferTexture();
+            mSpriteBatch.draw(texture,
                     0, 0,
-                    mFrameBuffer.getColorBufferTexture().getWidth(), mFrameBuffer.getColorBufferTexture().getHeight(),
+                    texture.getWidth(), texture.getHeight(),
                     0, 0,
                     mRecordFrameBuffer.getWidth(),
-                    mRecordFrameBuffer.getHeight(), false, true);
+                    mRecordFrameBuffer.getHeight(), false, false);
             mSpriteBatch.end();
             mRecordFrameBuffer.end();
 
             mSpriteBatch.begin();
-            mSpriteBatch.draw(mRecordFrameBuffer.getColorBufferTexture(),
+            texture = mRecordFrameBuffer.getColorBufferTexture();
+            mSpriteBatch.draw(texture,
                     0, 0,
-                    mRecordFrameBuffer.getColorBufferTexture().getWidth(),
-                    mRecordFrameBuffer.getColorBufferTexture().getHeight(),
+                    texture.getWidth(),
+                    texture.getHeight(),
                     0, 0,
-                    mRecordFrameBuffer.getColorBufferTexture().getWidth(),
-                    mRecordFrameBuffer.getColorBufferTexture().getHeight(), false, true);
+                    texture.getWidth(),
+                    texture.getHeight(), false, false);
             mSpriteBatch.end();
             mVideoEncoder.frameAvailableSoon();
 
@@ -162,7 +165,7 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
         mThreadExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mLogger.error("startEncoder:begin");
+                mLogger.info("startEncoder:begin");
                 synchronized (mSync) {
                     try {
                         mMuxer = new MediaMuxerWrapper(mOutputFile.getAbsolutePath(), mConfig.viewHandler);
@@ -182,6 +185,7 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
                 if (mConfig.viewHandler != null) {
                     mConfig.viewHandler.onCaptureStarted(mOutputFile.getAbsolutePath());
                 }
+                mLogger.info("startEncoder:end");
             }
         });
     }
@@ -190,13 +194,13 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
     private synchronized void stopEncoder() {
         mRecording = false;
         mRequestStop = true;
-        mLogger.info("stopEncoder:begin");
+        mLogger.info("stopEncoder:begin tid=" + Thread.currentThread().getId());
         mThreadExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 if (!mMuxerRunning) return;
                 synchronized (mSync) {
-                    mLogger.info("stopEncoder:begin");
+                    mLogger.info("stopEncoder:begin tid=" + Thread.currentThread().getId());
                     mMuxerRunning = false;
                     try {
                         if (mMuxer != null) {
@@ -213,6 +217,7 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
                 if (mConfig.viewHandler != null) {
                     mConfig.viewHandler.onCaptureStopped(mOutputFile.getAbsolutePath());
                 }
+                mLogger.info("stopEncoder:end tid=" + Thread.currentThread().getId());
             }
         });
     }
@@ -236,7 +241,7 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
     @Override
     public FrameBuffer generateFrameBuffer() {
         mSize = mConfig.cameraControl.getCameraSize();
-        if (!GLContext.get().isLandscape()) mSize = new Size(mSize.getHeight(), mSize.getWidth());
+        mLogger.info("generateFrameBuffer : " + mSize.toString());
         mFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, mSize.getWidth(), mSize.getHeight(), false);
         mRecordFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, mSize.getWidth(), mSize.getHeight(), false);
         return mFrameBuffer;

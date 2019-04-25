@@ -111,8 +111,8 @@ public class DefaultCameraControl implements CameraControl {
         if (mCameraBuilder == null) {
             Camera.CameraBuilder builder = new Camera.CameraBuilder(getContext());
             builder.useDefaultConfig()
-                    .setPreviewSize(new Size(2048, 1536))
-                    .setFacing(CAMERA_FACING_FRONT)
+                    .setPreviewSize(new Size(1440, 1080))
+                    .setFacing(android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT)
                     .setRecordingHint(true)
                     .setFocusMode(android.hardware.Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)
                     .setSurfaceTexture(texture);

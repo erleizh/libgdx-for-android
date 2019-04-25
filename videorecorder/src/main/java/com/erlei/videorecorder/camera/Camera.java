@@ -93,7 +93,7 @@ public class Camera {
      */
     public static final int UNSUPPORTED_PICTURE_SIZE = 9;
 
-    private Logger mLogger = new Logger("com.erlei.videorecorder.camera.Camera", Logger.INFO);
+    private Logger mLogger = new Logger("com.erlei.videorecorder.camera.Camera");
     private final Context mContext;
     private CameraBuilder mBuilder;
     private int mCameraId = -1;
