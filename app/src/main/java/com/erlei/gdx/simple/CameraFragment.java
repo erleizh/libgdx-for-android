@@ -41,8 +41,9 @@ public class CameraFragment extends Fragment {
         Logger.debug("CameraFragment", "onViewCreated");
 
         final DefaultCameraControl cameraControl = new DefaultCameraControl(mRenderView);
-        mRenderView.setRenderer(new RecordableRender(new MultipleRender(new CameraRender(new CameraRender.DefaultCameraTextureFactory(cameraControl)))));
+//        mRenderView.setRenderer(new RecordableRender(new MultipleRender(new CameraRender(new CameraRender.DefaultCameraTextureFactory(cameraControl)))));
 //        mRenderView.setRenderer(new MultipleRender(new CameraRender(new CameraRender.DefaultCameraTextureFactory(cameraControl))));
+        mRenderView.setRenderer(new CameraRender(new CameraRender.DefaultCameraTextureFactory(cameraControl)));
         mRenderView.setRenderMode(IRenderView.RenderMode.WHEN_DIRTY);
     }
 
