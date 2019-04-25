@@ -122,6 +122,7 @@ public class RecordableRender extends BaseRender {
 
     }
 
+
     protected void initFrameBuffer() {
 //        mFrameBuffer = mRenderer.generateFrameBuffer();
 //        if (mFrameBuffer == null) {
