@@ -2,18 +2,20 @@ package com.erlei.videorecorder.recorder;
 
 import android.content.Context;
 import android.opengl.EGLSurface;
+import android.opengl.GLES20;
 import android.os.Environment;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
+import com.erlei.gdx.graphics.PixmapIO;
 import com.erlei.gdx.graphics.g2d.SpriteBatch;
 import com.erlei.gdx.graphics.glutils.FrameBuffer;
 import com.erlei.gdx.utils.Logger;
+import com.erlei.gdx.utils.ScreenUtils;
 import com.erlei.gdx.widget.BaseRender;
 import com.erlei.gdx.widget.EGLCore;
-import com.erlei.gdx.widget.GLContext;
 import com.erlei.videorecorder.camera.CameraControl;
 import com.erlei.videorecorder.camera.Size;
 import com.erlei.videorecorder.encoder.MediaAudioEncoder;
@@ -43,7 +45,6 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
     private SpriteBatch mSpriteBatch;
     private Size mSize;
     private FrameBuffer mFrameBuffer;
-    private FrameBuffer mRecordFrameBuffer;
 
     private VideoRecorder(Config config) {
         mThreadExecutor = Executors.newSingleThreadExecutor();
@@ -79,30 +80,28 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
         super.render(gl);
         if (mWindowSurface != null && mVideoEncoder != null && isRecording() && mMuxerRunning) {
             mEGLCore.makeCurrent(mWindowSurface);
-            mRecordFrameBuffer.begin();
+            gl.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+            gl.glViewport(0, 0, mFrameBuffer.getWidth(), mFrameBuffer.getHeight());
             mSpriteBatch.begin();
             mSpriteBatch.draw(mFrameBuffer.getColorBufferTexture(),
-                    0, 0,
-                    mFrameBuffer.getColorBufferTexture().getWidth(), mFrameBuffer.getColorBufferTexture().getHeight(),
-                    0, 0,
-                    mRecordFrameBuffer.getWidth(),
-                    mRecordFrameBuffer.getHeight(), false, true);
-            mSpriteBatch.end();
-            mRecordFrameBuffer.end();
-
-            mSpriteBatch.begin();
-            mSpriteBatch.draw(mRecordFrameBuffer.getColorBufferTexture(),
-                    0, 0,
-                    mRecordFrameBuffer.getColorBufferTexture().getWidth(),
-                    mRecordFrameBuffer.getColorBufferTexture().getHeight(),
-                    0, 0,
-                    mRecordFrameBuffer.getColorBufferTexture().getWidth(),
-                    mRecordFrameBuffer.getColorBufferTexture().getHeight(), false, true);
+                    0, 0, mFrameBuffer.getWidth(), mFrameBuffer.getHeight(),
+                    0, 0, mFrameBuffer.getWidth(), mFrameBuffer.getHeight(),
+                    false, true);
             mSpriteBatch.end();
             mVideoEncoder.frameAvailableSoon();
 
             mEGLCore.swapBuffers(mWindowSurface);
             mEGLCore.makeCurrent();
+        }
+    }
+
+    private int saveCount = 0;
+
+    private void saveFrame() {
+        saveCount++;
+        if (saveCount % 10 == 0) {
+            Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, mFrameBuffer.getWidth(), mFrameBuffer.getHeight());
+            PixmapIO.writePNG(files.external("DCIM/VideoRecorder/" + System.currentTimeMillis() + ".png"), pixmap);
         }
     }
 
@@ -113,7 +112,6 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
             mEGLCore.releaseSurface(mWindowSurface);
             mWindowSurface = null;
         }
-        mRecordFrameBuffer.dispose();
         mSpriteBatch.dispose();
     }
 
@@ -236,9 +234,7 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
     @Override
     public FrameBuffer generateFrameBuffer() {
         mSize = mConfig.cameraControl.getCameraSize();
-        mFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, mSize.getWidth(), mSize.getHeight(), false);
-        mRecordFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, mSize.getWidth(), mSize.getHeight(), false);
-        return mFrameBuffer;
+        return mFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, mSize.getWidth(), mSize.getHeight(), false);
     }
 
     public static class Builder {

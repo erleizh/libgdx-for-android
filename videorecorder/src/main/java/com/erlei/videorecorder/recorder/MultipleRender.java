@@ -22,7 +22,6 @@ public class MultipleRender implements IRenderView.Renderer, RecordableRender.Re
     private boolean mDispose;
     private boolean mResized;
     private boolean mPaused;
-    private boolean mResumed;
     private EGLCore mEgl;
     private GL20 mGl;
     private int mWidth;
@@ -37,9 +36,7 @@ public class MultipleRender implements IRenderView.Renderer, RecordableRender.Re
         mEgl = egl;
         mGl = gl;
         mCreated = true;
-        for (IRenderView.Renderer renderer : mRendererList) {
-            renderer.create(egl, gl);
-        }
+        for (IRenderView.Renderer renderer : mRendererList) renderer.create(egl, gl);
     }
 
     @Override
@@ -47,47 +44,40 @@ public class MultipleRender implements IRenderView.Renderer, RecordableRender.Re
         mResized = true;
         mWidth = width;
         mHeight = height;
-        for (IRenderView.Renderer renderer : mRendererList) {
-            renderer.resize(width, height);
-        }
+        for (IRenderView.Renderer renderer : mRendererList) renderer.resize(width, height);
     }
 
     @Override
     public void render(GL20 gl) {
-        for (IRenderView.Renderer renderer : mRendererList) {
-            renderer.render(gl);
-        }
+        for (IRenderView.Renderer renderer : mRendererList) renderer.render(gl);
     }
 
     @Override
     public void pause() {
         mPaused = true;
-        for (IRenderView.Renderer renderer : mRendererList) {
-            renderer.pause();
-        }
+        for (IRenderView.Renderer renderer : mRendererList) renderer.pause();
     }
 
     @Override
     public void resume() {
-        mResumed = true;
-        for (IRenderView.Renderer renderer : mRendererList) {
-            renderer.resume();
-        }
+        mPaused = false;
+        for (IRenderView.Renderer renderer : mRendererList) renderer.resume();
     }
 
     @Override
     public void dispose() {
         mDispose = true;
-        for (IRenderView.Renderer renderer : mRendererList) {
-            renderer.dispose();
-        }
+        mCreated = false;
+        mResized = false;
+        mPaused = false;
+        for (IRenderView.Renderer renderer : mRendererList) renderer.dispose();
     }
 
     public int size() {
         return mRendererList.size();
     }
 
-    public void add(IRenderView.Renderer renderer) {
+    public boolean add(IRenderView.Renderer renderer) {
         if (mCreated) {
             renderer.create(mEgl, mGl);
         }
@@ -97,7 +87,7 @@ public class MultipleRender implements IRenderView.Renderer, RecordableRender.Re
         if (mPaused) {
             renderer.pause();
         }
-        mRendererList.add(renderer);
+        return mRendererList.add(renderer);
     }
 
     public boolean contains(IRenderView.Renderer renderer) {

@@ -1,8 +1,11 @@
 package com.erlei.videorecorder.recorder;
 
 import com.erlei.gdx.graphics.GL20;
+import com.erlei.gdx.graphics.Pixmap;
+import com.erlei.gdx.graphics.PixmapIO;
 import com.erlei.gdx.graphics.g2d.SpriteBatch;
 import com.erlei.gdx.graphics.glutils.FrameBuffer;
+import com.erlei.gdx.utils.ScreenUtils;
 import com.erlei.gdx.widget.BaseRender;
 import com.erlei.gdx.widget.EGLCore;
 import com.erlei.gdx.widget.GLContext;
@@ -21,7 +24,7 @@ public class RecordableRender extends BaseRender {
     protected SpriteBatch mSpriteBatch;
 
     /**
-     * @param renderer 需要Recorder对象返回一个
+     * @param renderer 需要Recorder对象返回一个FrameBuffer ， 用于存储每一次渲染的帧数据
      * @see Recorder
      */
     public RecordableRender(Recorder renderer) {
