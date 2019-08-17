@@ -9,7 +9,6 @@ import com.erlei.gdx.math.Matrix4;
 import com.erlei.gdx.utils.Logger;
 import com.erlei.gdx.widget.BaseRender;
 import com.erlei.gdx.widget.EGLCore;
-import com.erlei.gdx.widget.GLContext;
 
 /**
  * Created by lll on 2018/10/8
@@ -17,17 +16,49 @@ import com.erlei.gdx.widget.GLContext;
  * Describe : 使用相机的数据作为纹理渲染到renderView
  */
 public class CameraRender extends BaseRender {
+
+    /**
+     * create camera Texture
+     */
+    public interface CameraTextureFactory{
+
+        CameraTexture createTexture();
+
+        void destroyTexture(CameraTexture cameraTexture);
+    }
+
+    public static  class DefaultCameraTextureFactory implements CameraTextureFactory {
+
+
+        private final CameraControl mControl;
+
+        public DefaultCameraTextureFactory(CameraControl control) {
+            mControl = control;
+        }
+
+        @Override
+        public CameraTexture createTexture() {
+            return new CameraTexture(new CameraTextureData(mControl));
+        }
+
+        @Override
+        public void destroyTexture(CameraTexture cameraTexture) {
+            cameraTexture.dispose();
+        }
+    }
+
+
     private Logger mLogger = new Logger("CameraRender", Logger.DEBUG);
     private CameraTexture mCameraTexture;
+    private final CameraTextureFactory mTextureFactory;
     private ShaderProgram mProgram;
     private float[] mTexMatrix = new float[16];
     private Matrix4 mMatrix4 = new Matrix4();
     private Matrix4 mProjectionViewMatrix = new Matrix4();
     private Mesh mMesh;
-    private final CameraControl mCameraControl;
 
-    public CameraRender(CameraControl cameraControl) {
-        mCameraControl = cameraControl;
+    public CameraRender(CameraTextureFactory textureFactory) {
+        mTextureFactory = textureFactory;
     }
 
     @Override
@@ -36,8 +67,7 @@ public class CameraRender extends BaseRender {
         mLogger.debug("create");
         initShaderProgram();
         initMesh();
-        mCameraTexture = new CameraTexture(new CameraTextureData(mCameraControl));
-        adjustTextureSize(getWidth(),getHeight(),mCameraTexture.getWidth(), mCameraTexture.getHeight());
+        mCameraTexture = mTextureFactory.createTexture();
     }
 
 
@@ -82,7 +112,6 @@ public class CameraRender extends BaseRender {
         mLogger.debug("viewSize = " + viewWidth + "x" + viewHeight + "\t\t cameraSize = " + cameraWidth + "x" + cameraHeight + "\t\tscale = " + scale + "\t\t dx = " + (dx / cameraWidth) + "\t\t dy = " + (dy / cameraHeight));
         //mProjectionViewMatrix.translate(dx,dy,0);
         mProjectionViewMatrix.scale(scale, scale, 0f);
-        //mProjectionViewMatrix.scale(0.5F, 0.5F, 0f);
     }
 
     @Override
@@ -113,7 +142,7 @@ public class CameraRender extends BaseRender {
         mLogger.debug("dispose");
         mProgram.dispose();
         mMesh.dispose();
-        mCameraTexture.dispose();
+        mTextureFactory.destroyTexture(mCameraTexture);
     }
 
 
