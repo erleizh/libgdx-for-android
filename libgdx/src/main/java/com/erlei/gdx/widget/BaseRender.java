@@ -58,7 +58,7 @@ public abstract class BaseRender implements IRenderView.Renderer {
     }
 
     /**
-     * 使用黑色清除屏幕
+     * 使用指定颜色 清除屏幕
      */
     protected void clearColor(Color color) {
         gl.glClearColor(color.r, color.g, color.b, color.a);

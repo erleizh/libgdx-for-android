@@ -3,7 +3,7 @@ package com.erlei.videorecorder.camera;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
-import android.support.annotation.IntRange;
+import androidx.annotation.IntRange;
 import android.view.MotionEvent;
 
 import com.erlei.videorecorder.camera.annotations.Antibanding;

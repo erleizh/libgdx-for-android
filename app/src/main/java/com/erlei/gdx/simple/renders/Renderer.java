@@ -21,7 +21,6 @@ public class Renderer extends BaseRender {
     public void create(EGLCore egl, GL20 gl) {
         super.create(egl, gl);
         mLogger.info("create");
-        mFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, getWidth(), getHeight(), false);
         mBatch = new SpriteBatch();
         mTexture = new Texture(files.internal("593522e9ea624.png"));
     }
@@ -53,6 +52,8 @@ public class Renderer extends BaseRender {
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
+        if (mFrameBuffer != null) mFrameBuffer.dispose();
+        mFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, getWidth(), getHeight(), false);
         mLogger.info("resize = " + width + "*" + height);
     }
 
@@ -70,7 +71,7 @@ public class Renderer extends BaseRender {
 
     @Override
     public void dispose() {
-        //before super.dispose();
+        super.dispose();
         mLogger.info("dispose");
         mTexture.dispose();
         mTexture = null;
@@ -78,7 +79,6 @@ public class Renderer extends BaseRender {
         mFrameBuffer = null;
         mBatch.dispose();
         mBatch = null;
-        super.dispose();
     }
 
 }

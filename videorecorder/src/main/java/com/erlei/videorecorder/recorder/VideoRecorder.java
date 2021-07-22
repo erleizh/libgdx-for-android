@@ -4,8 +4,8 @@ import android.content.Context;
 import android.opengl.EGLSurface;
 import android.opengl.GLES20;
 import android.os.Environment;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
 
 import com.erlei.gdx.graphics.GL20;
 import com.erlei.gdx.graphics.Pixmap;
@@ -32,7 +32,7 @@ import java.util.concurrent.Executors;
 public class VideoRecorder extends BaseRender implements IVideoRecorder, RecordableRender.Recorder {
 
 
-    private Logger mLogger = new Logger("VideoRecorder");
+    private final Logger mLogger = new Logger("VideoRecorder");
     private final Executor mThreadExecutor;
     private volatile boolean mRecording, mRequestStart, mMuxerRunning, mRequestStop;
     private final Object mSync = new Object();
@@ -54,6 +54,7 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
     @Override
     public void create(EGLCore egl, GL20 gl) {
         super.create(egl, gl);
+        mLogger.info("create");
         mEGLCore = egl;
         mSpriteBatch = new SpriteBatch();
         startRecord();
@@ -62,17 +63,18 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
 
     @Override
     public void pause() {
-
+        mLogger.info("pause");
     }
 
     @Override
     public void resume() {
-
+        mLogger.info("resume");
     }
 
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
+        mLogger.info(String.format("resize %sx%s", width, height));
     }
 
     @Override
@@ -107,6 +109,7 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
 
     @Override
     public void dispose() {
+        mLogger.info("dispose");
         stopRecord();
         if (mWindowSurface != null) {
             mEGLCore.releaseSurface(mWindowSurface);
@@ -234,6 +237,7 @@ public class VideoRecorder extends BaseRender implements IVideoRecorder, Recorda
     @Override
     public FrameBuffer generateFrameBuffer() {
         mSize = mConfig.cameraControl.getCameraSize();
+        mLogger.info(String.format("generateFrameBuffer:%s", mSize));
         return mFrameBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, mSize.getWidth(), mSize.getHeight(), false);
     }
 

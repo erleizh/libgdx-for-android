@@ -51,8 +51,6 @@ public class CameraTextureData implements TextureData, SurfaceTexture.OnFrameAva
 
     @Override
     public void consumeCustomData(int target) {
-        if (!GLContext.get().supportsExtension("OES_texture_float"))
-            throw new GdxRuntimeException("Extension OES_texture_float not supported!");
     }
 
 
@@ -68,7 +66,7 @@ public class CameraTextureData implements TextureData, SurfaceTexture.OnFrameAva
 
     @Override
     public Pixmap.Format getFormat() {
-        return Pixmap.Format.RGBA8888; // it's not true, but FloatTextureData.getFormat() isn't used anywhere
+        return Pixmap.Format.RGBA8888;
     }
 
     @Override
